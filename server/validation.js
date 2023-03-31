@@ -6,7 +6,7 @@ const registerValidation = (data) => {
     username: Joi.string().min(3).max(50).required(),
     email: Joi.string().min(6).max(50).required().email(),
     password: Joi.string().min(6).max(255).required(),
-    role: Joi.string().required().valid("donor", "proposer"),
+    role: Joi.string().required().valid("donor", "proposer", "admin"),
   });
   return schema.validate(data);
 };
@@ -20,12 +20,23 @@ const loginValidation = (data) => {
   return schema.validate(data);
 };
 
-//課程發布認證是否為jwt
+//提案發布認證+提案單位，含表單1與表單2
 const caseValidation = (data) => {
   const schema = Joi.object({
-    title: Joi.string().min(6).max(50).required(),
+    //提案內容認證
+    title: Joi.string().required(),
     description: Joi.string().min(6).max(50).required(),
-    need: Joi.number().min(10).max(9999).required(),
+    target: Joi.string().required(),
+    deadline: Joi.string().required(),
+    image: Joi.string().required(),
+    //提案單位認證
+    organizeImage: Joi.string().min(2).max(999999).required(),
+    organizeName: Joi.string().min(2).max(12).required(),
+    personName: Joi.string().min(2).max(4).required(),
+    idNumber: Joi.string().min(8).max(10).required(),
+    phoneNumber: Joi.number().required(),
+    email: Joi.string().min(2).max(50).required(),
+    introduction: Joi.string().min(10).max(200).required(),
   });
   return schema.validate(data);
 };

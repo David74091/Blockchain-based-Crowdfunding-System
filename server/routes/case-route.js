@@ -7,8 +7,10 @@ router.use((req, res, next) => {
   next();
 });
 
-//尋找全部課程
+//尋找全部案子
 router.get("/", (req, res) => {
+  console.log("請求進入尋找全部的API");
+
   Case.find({})
     .populate("proposer", ["username", "email"])
     .then((cases) => {
@@ -58,6 +60,20 @@ router.get("/:_id", (req, res) => {
     });
 });
 
+//尋找所有提案
+router.get("/proposer/:_proposer_id", (req, res) => {
+  console.log("請求進入尋找id的API");
+  let { _proposer_id } = req.params;
+  Case.find({}) //查找資料庫內instructor == _proposer_id的資料
+    .populate("proposer", ["username", "email"])
+    .then((data) => {
+      res.send(data);
+      console.log("資料在此", data);
+    })
+    .catch((err) => {
+      res.status(500).send("找不到案子資訊");
+    });
+});
 //根據提案人的id尋找提案
 router.get("/proposer/:_proposer_id", (req, res) => {
   console.log("請求進入尋找id的API");
@@ -73,13 +89,26 @@ router.get("/proposer/:_proposer_id", (req, res) => {
     });
 });
 
-//發布課程
+//上傳提案與提案單位
 router.post("/", async (req, res) => {
   //validate the inputs before making a new course
   const { error } = caseValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
-  let { title, description, need } = req.body;
+  let {
+    title,
+    description,
+    target,
+    deadline,
+    image,
+    organizeImage,
+    organizeName,
+    personName,
+    idNumber,
+    phoneNumber,
+    email,
+    introduction,
+  } = req.body;
 
   //   if(req.user.isStudent()) 報錯-isStudent() not a function
   if (req.user.role == "donor") {
@@ -89,15 +118,24 @@ router.post("/", async (req, res) => {
   let newCase = new Case({
     title,
     description,
-    need,
+    target,
+    deadline,
+    image,
     proposer: req.user._id,
+    organizeImage,
+    organizeName,
+    personName,
+    idNumber,
+    phoneNumber,
+    email,
+    introduction,
   });
 
   try {
     await newCase.save();
     res.status(200).send("新案子已經創建");
   } catch (err) {
-    res.status(400).send("無法創建新案子");
+    res.status(400).send(err);
   }
 });
 
