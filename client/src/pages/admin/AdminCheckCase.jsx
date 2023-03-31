@@ -4,6 +4,7 @@ import CaseService from "../../services/case.service";
 
 const AdminCheckCase = (props) => {
   let { currentUser, setCurrentUser } = props;
+  const [Loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleTakeToLogin = () => {
     navigate("/login");
@@ -12,6 +13,7 @@ const AdminCheckCase = (props) => {
   let [caseData, setCaseData] = useState(null);
   useEffect(() => {
     console.log("Using effect.");
+    setLoading(true);
     // let _id;
     // if (currentUser) {
     //   _id = currentUser.user._id;
@@ -20,10 +22,11 @@ const AdminCheckCase = (props) => {
     // }
 
     if (currentUser.user.role == "admin") {
-      CaseService.getAll()
+      CaseService.getAllFalse()
         .then((data) => {
           console.log(data);
           setCaseData(data.data);
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
@@ -34,6 +37,14 @@ const AdminCheckCase = (props) => {
   const handleClick = (cases) => {
     navigate(cases.title, { state: cases });
   };
+  if (Loading) {
+    return (
+      <div className="w-full h-[720px] flex flex-col justify-center items-center">
+        <progress className="progress progress-accent w-56 "></progress>
+        <h1 className="mt-3">請稍等...</h1>
+      </div>
+    );
+  }
 
   return (
     <div style={{ padding: "3rem" }}>

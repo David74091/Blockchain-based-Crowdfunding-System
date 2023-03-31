@@ -5,8 +5,8 @@ module.exports = {
     defaultNetwork: "goerli",
     networks: {
       hardhat: {},
-      goerli: {
-        url: "https://rpc.ankr.com/eth_goerli",
+      bsctest: {
+        url: "binance-testnet.rpc.thirdweb.com",
         accounts: [`0x${process.env.PRIVATE_KEY}`],
       },
     },

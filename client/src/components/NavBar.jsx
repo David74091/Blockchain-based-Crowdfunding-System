@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import { useStateContext } from "../context";
+import CaseService from "../services/case.service";
 
 import Heart from "../assets/Heart";
 import Ellipse1 from "../assets/Ellipse1";
@@ -14,6 +15,51 @@ import Group7836 from "../assets/Group7836";
 import Group7837 from "../assets/Group7837";
 
 const NavBar = (props) => {
+  let { setCaseData, setLoading } = props;
+  useEffect(() => {
+    console.log("Using effect.");
+    setLoading(true);
+    // let _id;
+    // if (currentUser) {
+    //   _id = currentUser.user._id;
+    // } else {
+    //   _id = "";
+    // }
+
+    CaseService.getAllTrue()
+      .then((data) => {
+        console.log("Data", data.data);
+        setCaseData(data.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  const handleChange = (e) => {
+    setSearchInput(e.target.value);
+    console.log(searchInput);
+  };
+  const [selectedValue, setSelectedValue] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const handleSelectChange = (e) => {
+    setSelectedValue(e.target.value);
+  };
+
+  const handleSearch = async () => {
+    setLoading(true);
+    CaseService.getCaseByName(searchInput, selectedValue)
+      .then((data) => {
+        console.log("searchInput: ", searchInput);
+        console.log("資料在此: ", data);
+        setCaseData(data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
+  };
   const { connect, address } = useStateContext();
   let { currentUser, setCurrentUser } = props;
   const navigate = useNavigate;
@@ -30,6 +76,38 @@ const NavBar = (props) => {
         <div class="flex-1">
           <a class="btn btn-ghost normal-case text-xl">區塊鏈募款-Demo</a>
         </div>
+        <div className="flex justify-center">
+          <div className="dropdown">
+            <select
+              className="select p-2 shadow bg-base-100 rounded-box w-[100px] bg-info"
+              value={selectedValue}
+              onChange={handleSelectChange}
+            >
+              <option disabled>提案類別</option>
+              <option value="教育">教育</option>
+              <option value="醫療">醫療</option>
+              <option value="環境">環境</option>
+              <option value="兒少">兒少</option>
+              <option value="長者">長者</option>
+              <option value="人本關懷">人本關懷</option>
+              <option value="動物保育">動物保育</option>
+              <option value="翻轉人生">翻轉人生</option>
+              <option value="藝術人文">藝術人文</option>
+              <option value="地方創生">地方創生</option>
+              <option value="國際支援">國際支援</option>
+            </select>
+          </div>
+          <input
+            type="text"
+            value={searchInput}
+            onChange={handleChange}
+            placeholder="輸入搜尋文字"
+            className="input"
+          />
+          <button className="btn btn-accent" onClick={handleSearch}>
+            搜尋
+          </button>
+        </div>
         <div class="flex-none">
           <ul class="menu menu-horizontal px-1">
             <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
@@ -40,7 +118,7 @@ const NavBar = (props) => {
             {/* // currentUser.user.role != "admin" && */}
             <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
               <Link className="nav-link" to="/profile">
-                我的提案
+                個人資料
               </Link>
             </li>
             {/* )} */}

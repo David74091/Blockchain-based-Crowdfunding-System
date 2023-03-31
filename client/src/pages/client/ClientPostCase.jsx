@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseService from "../../services/case.service";
 import { checkIfImage } from "../../utils";
+import { Editor } from "@tinymce/tinymce-react";
+
 const ClientPoastCase = (props) => {
   //設定步驟
   const [step, setStep] = useState(1);
@@ -172,7 +174,7 @@ const ClientPoastCase = (props) => {
         <div className="w-full max-w-">
           <label className="label">
             <span className="flex abel-text">
-              標題<div style={{ color: "red" }}>*</div>
+              提案標題<div style={{ color: "red" }}>*</div>
             </span>
           </label>
           <input
@@ -190,10 +192,10 @@ const ClientPoastCase = (props) => {
         <div className="w-full max-w-">
           <label className="label">
             <span className="flex abel-text">
-              描述<div style={{ color: "red" }}>*</div>
+              提案描述<div style={{ color: "red" }}>*</div>
             </span>
           </label>
-          <textarea
+          <input
             value={form2.description}
             className="form-control"
             id="description"
@@ -204,7 +206,124 @@ const ClientPoastCase = (props) => {
         </div>
 
         <br />
+        <label className="label">
+          <span className="flex abel-text">
+            提案類別<div style={{ color: "red" }}>*</div>
+          </span>
+        </label>
+        <div className="w-full">
+          <div className="form-control flex flex-row">
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="教育"
+                checked={category.includes("教育")}
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">教育</span>
+            </label>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="醫療"
+                checked={category.includes("醫療")}
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">醫療</span>
+            </label>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="環境"
+                checked={category.includes("環境")}
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">環境</span>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="兒少"
+                  onChange={handleCategoryChange}
+                  className="checkbox"
+                />
+                <span className="label-text">兒少</span>
+              </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="長者"
+                  checked={category.includes("長者")}
+                  onChange={handleCategoryChange}
+                  className="checkbox"
+                />
+                <span className="label-text">長者</span>
+              </label>
+            </label>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="人本關懷"
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">人本關懷</span>
+            </label>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="動物保育"
+                checked={category.includes("動物保育")}
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">動物保育</span>
+            </label>
 
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="翻轉人生"
+                checked={category.includes("翻轉人生")}
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">翻轉人生</span>
+            </label>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="藝術人文"
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">藝術人文</span>
+            </label>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="地方創生"
+                checked={category.includes("地方創生")}
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">地方創生</span>
+            </label>
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                value="國際支援"
+                checked={category.includes("國際支援")}
+                onChange={handleCategoryChange}
+                className="checkbox"
+              />
+              <span className="label-text">國際支援</span>
+            </label>
+          </div>
+        </div>
+        <br />
         <div className="w-full max-w-">
           <label className="label">
             <span className="flex abel-text">
@@ -245,7 +364,7 @@ const ClientPoastCase = (props) => {
         <div className="w-full max-w-">
           <label className="label">
             <span className="flex abel-text">
-              圖片網址<div style={{ color: "red" }}>*</div>
+              提案封面<div style={{ color: "red" }}>*</div>
             </span>
           </label>
           <input
@@ -259,6 +378,23 @@ const ClientPoastCase = (props) => {
         </div>
 
         <br />
+        <div className="w-full max-w-">
+          <label className="label">
+            <span className="flex abel-text">
+              提案介紹<div style={{ color: "red" }}>*</div>
+            </span>
+          </label>
+          <Editor
+            apiKey="l6bke7fwg8cl802x8oy76223gddk3sj0ksi4bwucln0eseq5"
+            value={details}
+            onEditorChange={handleEditorChange}
+            init={{
+              required: true,
+            }}
+          />
+        </div>
+        <br />
+
         <div className="ml-auto grid gap-4 grid-cols-2">
           <button className="btn btn-error" onClick={handlePrev}>
             上一步
@@ -278,7 +414,29 @@ const ClientPoastCase = (props) => {
       </div>
     </div>
   );
+  const [category, setCategory] = useState([]);
 
+  const handleCategoryChange = (event) => {
+    const value = event.target.value;
+    const checked = event.target.checked;
+
+    //category 的狀態中與 value 相等的元素從陣列中移除，並更新 category 狀態為移除後的新陣列。
+    //例如，如果 category 狀態是 ['A', 'B', 'C']，且 value 為 'B'，那麼這行程式碼會返回新陣列 ['A', 'C']，並且將其設定回 category 狀態中。
+    if (checked) {
+      setCategory([...category, value]);
+    } else {
+      setCategory(category.filter((categoryItem) => categoryItem !== value));
+    }
+    setForm2((prevForm2) => ({ ...prevForm2, category: [...category, value] }));
+    console.log(category);
+  };
+
+  const [details, setDetails] = useState("");
+
+  const handleEditorChange = (details, editor) => {
+    setDetails(details);
+    setForm2({ ...form2, ["details"]: details });
+  };
   const renderStep3 = () => (
     <div className="flex flex-col form-group border-2 rounded-lg p-4">
       <p className="mt-4 ">
@@ -357,8 +515,11 @@ const ClientPoastCase = (props) => {
         <button className="btn btn-error" onClick={handlePrev}>
           上一步
         </button>
-        <button className="btn btn-accent" onClick={postCase}>
-          送出提案
+        <button
+          className={`btn btn-accent ${btnLoading ? "loading" : ""}`}
+          onClick={postCase}
+        >
+          {!btnLoading ? "送出提案" : ""}
         </button>
       </div>
     </div>
@@ -390,7 +551,8 @@ const ClientPoastCase = (props) => {
         form2.title == "" ||
         form2.description == "" ||
         form2.target == "" ||
-        form2.image == ""
+        form2.image == "" ||
+        form2.details == ""
       ) {
         alert("請填寫第二步驟裡所有的欄位");
         return;
@@ -432,19 +594,20 @@ const ClientPoastCase = (props) => {
 
   const handleForm1Change = (formName, e) => {
     setForm1({ ...form1, [formName]: e.target.value });
-    console.log(form1);
   };
 
   let [form2, setForm2] = useState({
     title: "",
     description: "",
+    category: [],
     target: "",
     deadline: "",
     image: "",
+    details: "",
   });
   const handleForm2Change = (formName, e) => {
     setForm2({ ...form2, [formName]: e.target.value });
-    console.log(form1, form2);
+    console.log(form2);
   };
 
   let [message, setMessage] = useState("");
@@ -484,17 +647,23 @@ const ClientPoastCase = (props) => {
   //   const handleChangeImage = (e) => {
   //     setImage(e.target.value);
   //   };
+  //btn loading動畫
+  const [btnLoading, setBtnLoading] = useState(false);
+
   const postCase = async (e) => {
     if (isChecked == true) {
       e.preventDefault();
       checkIfImage(form2.image, async (exists) => {
         if (exists) {
+          setBtnLoading(true);
           CourseService.postCase(
             form2.title,
             form2.description,
+            category,
             form2.target,
             form2.deadline,
             form2.image,
+            form2.details,
             organizeImage,
             form1.organizeName,
             form1.personName,
@@ -503,7 +672,6 @@ const ClientPoastCase = (props) => {
             form1.email,
             form1.introduction
           )
-
             .then(() => {
               alert("已成功上傳，等待管理員審核後，會有專人向您聯繫");
               navigate("/");
@@ -511,6 +679,9 @@ const ClientPoastCase = (props) => {
             .catch((error) => {
               console.log(error);
               alert("無法上傳");
+            })
+            .finally(() => {
+              setBtnLoading(false);
             });
         } else {
           alert("請提供有效網址");

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 
-import fs from "fs";
+import CaseService from "../../services/case.service";
 
 import { useStateContext } from "../../context";
 import { CountBox, CustomButton, Loader } from "../../components";
@@ -32,12 +32,20 @@ const AdminCaseDetails = (props) => {
   const handleClick = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    await createCampaign({
-      ...form,
-      target: ethers.utils.parseUnits(form.target, 18),
-    });
+
+    CaseService.verifiedCase(state._id)
+      .then(() => {
+        alert("已成功驗證");
+      })
+      .catch((err) => {
+        alert(err);
+      });
+    // await createCampaign({
+    //   ...form,
+    //   target: ethers.utils.parseUnits(form.target, 18),
+    // });
     setIsLoading(false);
-    navigate("/");
+    // navigate("/");
   };
 
   const fetchDonators = async () => {
@@ -119,6 +127,17 @@ const AdminCaseDetails = (props) => {
 
           <div>
             <h4 className="font-epilogue font-semibold text-[18px] uppercase">
+              提案分類
+            </h4>
+
+            <div className="mt-[20px] flex gap-2 w-full">
+              {state.category.map((categories) => (
+                <div>{categories}</div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h4 className="font-epilogue font-semibold text-[18px] uppercase">
               提案單位資料
             </h4>
 
@@ -136,6 +155,7 @@ const AdminCaseDetails = (props) => {
               </p>
             </div>
           </div>
+          <div dangerouslySetInnerHTML={{ __html: state.details }}></div>
         </div>
 
         <div className="flex-1">

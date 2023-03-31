@@ -25,18 +25,20 @@ const caseValidation = (data) => {
   const schema = Joi.object({
     //提案內容認證
     title: Joi.string().required(),
-    description: Joi.string().min(6).max(50).required(),
+    description: Joi.string().required(),
+    category: Joi.array().items(Joi.string()).min(1),
     target: Joi.string().required(),
     deadline: Joi.string().required(),
     image: Joi.string().required(),
+    details: Joi.string().required(),
     //提案單位認證
-    organizeImage: Joi.string().min(2).max(999999).required(),
-    organizeName: Joi.string().min(2).max(12).required(),
-    personName: Joi.string().min(2).max(4).required(),
-    idNumber: Joi.string().min(8).max(10).required(),
+    organizeImage: Joi.string().required(),
+    organizeName: Joi.string().required(),
+    personName: Joi.string().required(),
+    idNumber: Joi.string().required(),
     phoneNumber: Joi.number().required(),
-    email: Joi.string().min(2).max(50).required(),
-    introduction: Joi.string().min(10).max(200).required(),
+    email: Joi.string().required(),
+    introduction: Joi.string().required(),
   });
   return schema.validate(data);
 };

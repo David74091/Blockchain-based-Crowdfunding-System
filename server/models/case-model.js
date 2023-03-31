@@ -1,5 +1,17 @@
 const mongoose = require("mongoose");
 
+const donorSchema = new mongoose.Schema({
+  _id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+});
+
 const caseSchema = new mongoose.Schema({
   //表單1
   id: { type: String },
@@ -11,6 +23,8 @@ const caseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  category: { type: [String], required: true },
+
   target: {
     type: Number,
     required: true,
@@ -23,11 +37,18 @@ const caseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  details: {
+    type: String,
+    required: true,
+  },
   proposer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-
+  donor: {
+    type: [donorSchema],
+    default: [],
+  },
   //表單2
   organizeImage: {
     type: String,
@@ -57,10 +78,10 @@ const caseSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // donor: {
-  //   type: [String],
-  //   default: [],
-  // },
+  Verified: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Case = mongoose.model("Case", caseSchema);

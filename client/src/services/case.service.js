@@ -6,9 +6,11 @@ class CaseService {
   postCase(
     title,
     description,
+    category,
     target,
     deadline,
     image,
+    details,
     organizeImage,
     organizeName,
     personName,
@@ -28,9 +30,11 @@ class CaseService {
       {
         title,
         description,
+        category,
         target,
         deadline,
         image,
+        details,
         organizeImage,
         organizeName,
         personName,
@@ -59,27 +63,42 @@ class CaseService {
     });
   }
 
-  getCaseByName(name) {
+  getCaseByName(name, category) {
     let token;
     if (localStorage.getItem("user")) {
       token = JSON.parse(localStorage.getItem("user")).token;
     } else {
       token = "";
     }
-    return axios.get(API_URL + "/findByName/" + name, {
+    return axios.get(API_URL + "/findByName", {
+      params: { name: name, category: category },
       headers: { Authorization: token },
     });
   }
 
-  //尋找所有的case
-  getAll() {
+  //尋找所有verified為true的case
+  getAllTrue() {
     let token;
     if (localStorage.getItem("user")) {
       token = JSON.parse(localStorage.getItem("user")).token;
     } else {
       token = "";
     }
-    return axios.get(API_URL, {
+    return axios.get(API_URL + "/verified", {
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
+  //尋找所有verified為false的case
+  getAllFalse() {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.get(API_URL + "/!verified", {
       headers: {
         Authorization: token,
       },
@@ -111,6 +130,22 @@ class CaseService {
       API_URL + "/donate/" + _id,
       { user_id },
       { headers: { Authorization: token } }
+    );
+  }
+
+  verifiedCase(_id) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.put(
+      API_URL + "/verified/" + _id,
+      {},
+      {
+        headers: { Authorization: token },
+      }
     );
   }
 }

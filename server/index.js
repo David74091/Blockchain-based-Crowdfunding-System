@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 dotenv.config();
 const authRoute = require("./routes").auth;
 const caseRoute = require("./routes").case;
+const userRoute = require("./routes").user;
+const messageRoute = require("./routes").message;
+const donationRoute = require("./routes").donation;
 const passport = require("passport");
 require("./config/passport")(passport);
 const cors = require("cors");
@@ -26,7 +29,10 @@ mongoose
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
-app.use("/api/user", authRoute);
+app.use("/api/auth", authRoute);
+app.use("/api/user", userRoute);
+app.use("/api/message", messageRoute);
+app.use("/api/donation", donationRoute);
 app.use(
   "/api/cases",
   passport.authenticate("jwt", { session: false }),

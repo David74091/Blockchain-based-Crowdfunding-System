@@ -19,13 +19,25 @@ import { NavBar, Case } from "./components/index";
 import AuthService from "./services/auth.service";
 
 function App() {
-  let [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
+  let [caseData, setCaseData] = useState(null);
+  const [Loading, setLoading] = useState(false);
 
+  let [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
+  console.log("App page: ", caseData);
   return (
     <div>
-      <NavBar currentUser={currentUser} setCurrentUser={setCurrentUser} />
+      <NavBar
+        currentUser={currentUser}
+        setCurrentUser={setCurrentUser}
+        setCaseData={setCaseData}
+        setLoading={setLoading}
+      />
       <Routes>
-        <Route exact path="/" element={<Home />} />
+        <Route
+          exact
+          path="/"
+          element={<Home caseData={caseData} Loading={Loading} />}
+        />
         <Route exact path="/register" element={<Register />} />
         <Route
           exact
@@ -39,8 +51,8 @@ function App() {
           path="/profile"
           element={
             <Profile
-            // currentUser={currentUser}
-            // setCurrentUser={setCurrentUser}
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
             />
           }
         />

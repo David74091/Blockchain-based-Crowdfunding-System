@@ -2,17 +2,27 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
-  username: {
+  picture: {
     type: String,
-    required: true,
-    minLength: 3,
-    maxLength: 50,
+    required: false,
+    default: null,
   },
   email: {
     type: String,
     required: true,
     minLength: 6,
     maxLength: 100,
+  },
+  username: {
+    type: String,
+    required: true,
+    minLength: 3,
+    maxLength: 50,
+  },
+  phoneNumber: {
+    type: String,
+    require: false,
+    default: null,
   },
   password: {
     type: String,
@@ -25,9 +35,24 @@ const userSchema = new mongoose.Schema({
     enum: ["donor", "proposer", "admin"],
     require: true,
   },
+  birth: {
+    type: String,
+    require: false,
+    default: null,
+  },
+  sex: {
+    type: String,
+    require: false,
+    default: null,
+  },
+  address: {
+    type: String,
+    require: false,
+  },
   date: {
     type: Date,
     default: Date.now,
+    default: null,
   },
 });
 

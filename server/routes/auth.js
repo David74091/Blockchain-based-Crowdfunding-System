@@ -32,6 +32,10 @@ router.post("/register", async (req, res) => {
     username: req.body.username,
     password: req.body.password,
     role: req.body.role,
+    address: req.body.address,
+    birth: req.body.birth,
+    phoneNumber: req.body.phoneNumber,
+    sex: req.body.sex,
   });
   try {
     const savedUser = await newUser.save();
@@ -39,6 +43,17 @@ router.post("/register", async (req, res) => {
   } catch (err) {
     res.status(400).send("使用者無法儲存");
   }
+});
+
+router.get("/userData/:_id", async (req, res) => {
+  let { _id } = req.params;
+  User.findOne({ _id })
+    .then((data) => {
+      res.status(200).send(data);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
 });
 
 router.post("/login", async (req, res) => {

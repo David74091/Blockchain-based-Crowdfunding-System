@@ -21,9 +21,9 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   const { contract } = useContract(
-    "0x2C8bEA2DB895152e5F6eF317055D82d0EC9a54f2"
+    "0x9871a6D76A5D11CC0E8F382aA355C1a747Ab0Df4"
   );
-  const { mutateAsync: createCampaign } = useContractWrite(
+  const { mutateAsync: createCampaign, isLoading } = useContractWrite(
     contract,
     "createCampaign"
   );
@@ -36,16 +36,34 @@ export const StateContextProvider = ({ children }) => {
       const data = await createCampaign([
         address, // owner
         form.title, // title
-        form.description, // description
+        form.description,
         form.target,
-        new Date(form.deadline).getTime(), // deadline,
-        form.image,
+        new Date(form.deadline).getTime(),
+        form.image, // deadline,
       ]);
 
       console.log("contract call success", data);
     } catch (error) {
       console.log("contract call failure", error);
     }
+  };
+
+  const searchCampaigns = async (searchTerm) => {
+    const campaigns = await contract.call("searchCampaigns", searchTerm);
+    //整理從智能合約上得到的數據
+    const parsedCampaings = campaigns.map((campaign, i) => ({
+      owner: campaign.owner,
+      title: campaign.title,
+      description: campaign.description,
+      target: ethers.utils.formatEther(campaign.target.toString()),
+      deadline: campaign.deadline.toNumber(),
+      amountCollected: ethers.utils.formatEther(
+        campaign.amountCollected.toString()
+      ),
+      image: campaign.image,
+      pId: i,
+    }));
+    return parsedCampaings;
   };
 
   const getCampaigns = async () => {
@@ -112,6 +130,7 @@ export const StateContextProvider = ({ children }) => {
         getUserCampaigns,
         donate,
         getDonations,
+        searchCampaigns,
       }}
     >
       {children}

@@ -20,6 +20,8 @@ contract CrowdFunding {
     uint256 public numberOfCampaigns = 0;
 
     function createCampaign(address _owner, string memory _title, string memory _description, uint256 _target, uint256 _deadline, string memory _image) public returns (uint256){
+
+        //將類別array push近來
         Campaign storage campaign = campaigns[numberOfCampaigns];
 
         // is everything okay?
@@ -66,4 +68,58 @@ contract CrowdFunding {
 
         return allCampaigns;
     }
-} 
+    
+    function searchCampaigns(string memory _searchTerm) public view returns (Campaign[] memory) {
+    Campaign[] memory matchingCampaigns = new Campaign[](numberOfCampaigns);
+    uint256 matchingCampaignsCount = 0;
+
+    for (uint256 i = 0; i < numberOfCampaigns; i++) {
+        Campaign storage campaign = campaigns[i];
+
+        // check if title contains search term
+        if (bytes(campaign.title).length > 0 && bytes(_searchTerm).length > 0 && 
+            containsIgnoreCase(campaign.title, _searchTerm)) {
+            matchingCampaigns[matchingCampaignsCount] = campaign;
+            matchingCampaignsCount++;
+        }
+    }
+
+    // create a new array with only the matching campaigns
+    Campaign[] memory result = new Campaign[](matchingCampaignsCount);
+    for (uint256 i = 0; i < matchingCampaignsCount; i++) {
+        result[i] = matchingCampaigns[i];
+    }
+
+    return result;
+}
+
+function containsIgnoreCase(string memory _str, string memory _substr) internal pure returns (bool) {
+    bytes memory strBytes = bytes(_str);
+    bytes memory substrBytes = bytes(_substr);
+    uint256 strLen = strBytes.length;
+    uint256 substrLen = substrBytes.length;
+
+    for (uint256 i = 0; i <= strLen - substrLen; i++) {
+        bool ismatch = true;
+        for (uint256 j = 0; j < substrLen; j++) {
+            if (lowercase(strBytes[i + j]) != lowercase(substrBytes[j])) {
+                ismatch = false;
+                break;
+            }
+        }
+        if (ismatch) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// helper function to convert a byte to lowercase
+function lowercase(bytes1 _b) internal pure returns (bytes1) {
+    if (_b >= 0x41 && _b <= 0x5a) {
+        return bytes1(uint8(_b) + 32);
+    }
+    return _b;
+}
+}
