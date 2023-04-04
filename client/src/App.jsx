@@ -5,10 +5,10 @@ import {
   Register,
   Login,
   Profile,
+  ProfileCampaign,
   PostCase,
   Donate,
   CampaignDetails,
-  ProfileCampaign,
   ClientPostCase,
   AdminCheckCase,
   AdminCaseDetails,
@@ -58,6 +58,16 @@ function App() {
         />
         <Route
           exact
+          path="/profilecases"
+          element={
+            <ProfileCampaign
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          }
+        />
+        <Route
+          exact
           path="/case"
           element={
             <Case currentUser={currentUser} setCurrentUser={setCurrentUser} />
@@ -81,12 +91,14 @@ function App() {
           }
         />
         <Route exact path="/:title" element={<CampaignDetails />} />
-        <Route exact path="profile/:title" element={<ProfileCampaign />} />
+
         <Route
           exact
           path="admincheckcase/:title"
           element={<AdminCaseDetails />}
         />
+
+        <Route exact path="profilecases/:title" element={<CampaignDetails />} />
         <Route
           exact
           path="/clientpostcase"

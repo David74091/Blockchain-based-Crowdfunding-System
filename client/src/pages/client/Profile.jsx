@@ -63,7 +63,7 @@ const ProfileComponent = (props) => {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     if (userData) {

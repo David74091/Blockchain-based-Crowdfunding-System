@@ -1,6 +1,6 @@
 export { default as Case } from "./Case";
 export { default as CustomButton } from "./CustomButton";
-export { default as DisplayCampaigns } from "./DisplayCampaigns";
+export { default as DisplayCases } from "./DisplayCases";
 export { default as DisplayUserCampaigns } from "./DisplayUserCampaigns";
 export { default as FundCard } from "./FundCard";
 export { default as Loader } from "./Loader";
