@@ -44,40 +44,74 @@ const caseSchema = new mongoose.Schema({
   proposer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
   donor: {
     type: [donorSchema],
     default: [],
   },
+  organize: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Organize",
+    required: true,
+  },
+  oneHundredDonation: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  ],
+  fiveHundredDonation: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  ],
+  oneThousandDonation: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  ],
+  fiveThousandDonation: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+  ],
   //表單2
-  organizeImage: {
-    type: String,
-    required: true,
-  },
-  organizeName: {
-    type: String,
-    required: true,
-  },
-  personName: {
-    type: String,
-    required: true,
-  },
-  idNumber: {
-    type: String,
-    required: true,
-  },
-  phoneNumber: {
-    type: Number,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
-  introduction: {
-    type: String,
-    required: true,
-  },
+  // organizeImage: {
+  //   type: String,
+  //   required: true,
+  // },
+  // organizeName: {
+  //   type: String,
+  //   required: true,
+  // },
+  // personName: {
+  //   type: String,
+  //   required: true,
+  // },
+  // idNumber: {
+  //   type: String,
+  //   required: true,
+  // },
+  // phoneNumber: {
+  //   type: Number,
+  //   required: true,
+  // },
+  // email: {
+  //   type: String,
+  //   required: true,
+  // },
+  // introduction: {
+  //   type: String,
+  //   required: true,
+  // },
   Verified: {
     type: Boolean,
     default: false,

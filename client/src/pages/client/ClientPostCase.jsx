@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseService from "../../services/case.service";
+import OrganizeService from "../../services/organize.service";
+import UserService from "../../services/user.service";
 import { checkIfImage } from "../../utils";
 import { Editor } from "@tinymce/tinymce-react";
 
 const ClientPoastCase = (props) => {
+  let { setUserUpdate } = props;
   //設定步驟
   const [step, setStep] = useState(1);
 
@@ -334,7 +337,7 @@ const ClientPoastCase = (props) => {
             value={form2.target}
             name="target"
             type="number"
-            step="0.0001"
+            step="100"
             className="form-control"
             id="target"
             onChange={(e) => handleForm2Change("target", e)}
@@ -656,33 +659,68 @@ const ClientPoastCase = (props) => {
       checkIfImage(form2.image, async (exists) => {
         if (exists) {
           setBtnLoading(true);
-          CourseService.postCase(
-            form2.title,
-            form2.description,
-            category,
-            form2.target,
-            form2.deadline,
-            form2.image,
-            form2.details,
-            organizeImage,
-            form1.organizeName,
-            form1.personName,
-            form1.idNumber,
-            form1.phoneNumber,
-            form1.email,
-            form1.introduction
-          )
-            .then(() => {
-              alert("已成功上傳，等待管理員審核後，會有專人向您聯繫");
-              navigate("/");
-            })
-            .catch((error) => {
-              console.log(error);
-              alert("無法上傳");
-            })
-            .finally(() => {
-              setBtnLoading(false);
-            });
+          try {
+            const response = await OrganizeService.createOrganize(
+              currentUser.user._id,
+              organizeImage,
+              form1.organizeName,
+              form1.personName,
+              form1.idNumber,
+              form1.phoneNumber,
+              form1.email,
+              form1.introduction
+            );
+            const organizeId = response._id;
+            try {
+              const caseResponse = await CourseService.postCase(
+                form2.title,
+                form2.description,
+                category,
+                form2.target,
+                form2.deadline,
+                form2.image,
+                form2.details,
+                currentUser.user._id,
+                organizeId
+              );
+              console.log("caseResponse:", caseResponse);
+              try {
+                await OrganizeService.pushCase(organizeId, caseResponse._id);
+                try {
+                  UserService.addOrganize(currentUser.user._id, organizeId)
+                    .then(() => {
+                      UserService.getCurrentUser(currentUser.user._id)
+                        .then((response) => {
+                          localStorage.setItem(
+                            "user",
+                            JSON.stringify(response.data)
+                          );
+                          console.log("新獲取的用戶資訊：", response.data);
+                          setCurrentUser(response.data);
+                          alert("提案組織及提案已創建，請等待管理員審核");
+                        })
+                        .catch((error) => {
+                          console.log("獲取新用戶資訊失敗", error);
+                        });
+                    })
+                    .catch((error) => {
+                      console.log("User新增organizeg失敗", error);
+                    });
+                } catch (error) {
+                  console.log(error);
+                }
+              } catch (error) {
+                console.log("推送提案進組織失敗", error);
+              }
+            } catch (error) {
+              console.log("創建提案失敗", error);
+            }
+          } catch (error) {
+            console.log(error);
+            alert("無法上傳");
+          } finally {
+            setBtnLoading(false);
+          }
         } else {
           alert("請提供有效網址");
           setForm2({ ...form2, image: "" });

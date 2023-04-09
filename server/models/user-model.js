@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const { required } = require("joi");
 
 const userSchema = new mongoose.Schema({
   picture: {
@@ -52,6 +53,12 @@ const userSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
+    default: null,
+  },
+  organize: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Organize",
+    require: false,
     default: null,
   },
 });

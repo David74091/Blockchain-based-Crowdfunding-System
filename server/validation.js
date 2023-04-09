@@ -31,14 +31,16 @@ const caseValidation = (data) => {
     deadline: Joi.string().required(),
     image: Joi.string().required(),
     details: Joi.string().required(),
+    organizeId: Joi.string(),
+    proposer: Joi.string(),
     //提案單位認證
-    organizeImage: Joi.string().required(),
-    organizeName: Joi.string().required(),
-    personName: Joi.string().required(),
-    idNumber: Joi.string().required(),
-    phoneNumber: Joi.number().required(),
-    email: Joi.string().required(),
-    introduction: Joi.string().required(),
+    // organizeImage: Joi.string().required(),
+    // organizeName: Joi.string().required(),
+    // personName: Joi.string().required(),
+    // idNumber: Joi.string().required(),
+    // phoneNumber: Joi.number().required(),
+    // email: Joi.string().required(),
+    // introduction: Joi.string().required(),
   });
   return schema.validate(data);
 };

@@ -12,9 +12,10 @@ import {
   ClientPostCase,
   AdminCheckCase,
   AdminCaseDetails,
+  Organize,
 } from "./pages/index";
 
-import { NavBar, Case } from "./components/index";
+import { NavBar, Case, Footer } from "./components/index";
 
 import AuthService from "./services/auth.service";
 
@@ -23,6 +24,7 @@ function App() {
   const [Loading, setLoading] = useState(false);
 
   let [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
+  console.log("currentuser:", currentUser);
   console.log("App page: ", caseData);
   return (
     <div>
@@ -119,7 +121,18 @@ function App() {
             />
           }
         />
+        <Route
+          exact
+          path="/organize"
+          element={
+            <Organize
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          }
+        />
       </Routes>
+      <Footer />
     </div>
   );
 }

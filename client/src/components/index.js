@@ -8,3 +8,4 @@ export { default as NavBar } from "./NavBar";
 export { default as Proposal } from "./Proposal";
 export { default as CountBox } from "./CountBox";
 export { default as StripeBuyButton } from "./StripeBuyButton";
+export { default as Footer } from "./Footer";

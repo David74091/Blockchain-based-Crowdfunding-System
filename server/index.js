@@ -6,8 +6,8 @@ dotenv.config();
 const authRoute = require("./routes").auth;
 const caseRoute = require("./routes").case;
 const userRoute = require("./routes").user;
+const organizeRoute = require("./routes").organize;
 const messageRoute = require("./routes").message;
-const donationRoute = require("./routes").donation;
 const passport = require("passport");
 require("./config/passport")(passport);
 const cors = require("cors");
@@ -32,7 +32,7 @@ app.use(cors());
 app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
 app.use("/api/message", messageRoute);
-app.use("/api/donation", donationRoute);
+app.use("/api/organize", organizeRoute);
 app.use(
   "/api/cases",
   passport.authenticate("jwt", { session: false }),

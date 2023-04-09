@@ -16,6 +16,17 @@ class UserService {
     });
     return response.data;
   }
+
+  addOrganize(_id, _organize) {
+    console.log("userService: ", _organize);
+    return axios.post(API_URL + "/addorganize/" + _id, {
+      _organize,
+    });
+  }
+
+  getCurrentUser(_id) {
+    return axios.get(API_URL + "/getcurrentuser/" + _id);
+  }
 }
 
 export default new UserService();

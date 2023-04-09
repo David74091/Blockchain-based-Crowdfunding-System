@@ -203,6 +203,11 @@ const NavBar = (props) => {
                       </Link>
                     </li>
                     <li>
+                      <Link to="/organize" className="justify-between">
+                        提案身份
+                      </Link>
+                    </li>
+                    <li>
                       <Link to="/profilecases">我的提案</Link>
                     </li>
                     <li>

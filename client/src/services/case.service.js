@@ -11,44 +11,42 @@ class CaseService {
     deadline,
     image,
     details,
-    organizeImage,
-    organizeName,
-    personName,
-    idNumber,
-    phoneNumber,
-    email,
-    introduction
+    proposer,
+    organizeId
   ) {
+    console.log("case.service:", proposer);
     let token;
     if (localStorage.getItem("user")) {
       token = JSON.parse(localStorage.getItem("user")).token;
     } else {
       token = "";
     }
-    return axios.post(
-      API_URL,
-      {
-        title,
-        description,
-        category,
-        target,
-        deadline,
-        image,
-        details,
-        organizeImage,
-        organizeName,
-        personName,
-        idNumber,
-        phoneNumber,
-        email,
-        introduction,
-      },
-      {
-        headers: {
-          Authorization: token,
+    return axios
+      .post(
+        API_URL,
+        {
+          title,
+          description,
+          category,
+          target,
+          deadline,
+          image,
+          details,
+          proposer,
+          organizeId,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      )
+      .then((response) => {
+        return response.data;
+      })
+      .catch((error) => {
+        return error;
+      });
   }
 
   getDonatedCases(_id) {

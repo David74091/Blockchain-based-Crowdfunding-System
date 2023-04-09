@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const Case = require("../models").caseModel;
+
 const caseValidation = require("../validation").caseValidation;
 
 router.use((req, res, next) => {
-  console.log("請求已進入api...");
+  console.log("請求已進入case api...");
   next();
 });
 
@@ -97,7 +98,7 @@ router.get("/donor/:_donor_id", (req, res) => {
     });
 });
 
-//根據_id尋找課程
+//根據_id尋找提案
 router.get("/:_id", (req, res) => {
   let { _id } = req.params;
   Case.findOne({ _id })
@@ -111,9 +112,8 @@ router.get("/:_id", (req, res) => {
 });
 
 //尋找所有提案
-router.get("/proposer/:_proposer_id", (req, res) => {
-  console.log("請求進入尋找id的API");
-  let { _proposer_id } = req.params;
+router.get("/AllCases", (req, res) => {
+  console.log("請求進入尋找全部cases的API");
   Case.find({}) //查找資料庫內instructor == _proposer_id的資料
     .populate("proposer", ["username", "email"])
     .then((data) => {
@@ -124,25 +124,27 @@ router.get("/proposer/:_proposer_id", (req, res) => {
       res.status(500).send("找不到案子資訊");
     });
 });
+
 //根據提案人的id尋找提案
 router.get("/proposer/:_proposer_id", (req, res) => {
-  console.log("請求進入尋找id的API");
+  console.log("請求已進入根據提案人的id尋找提案的API");
   let { _proposer_id } = req.params;
   Case.find({ proposer: _proposer_id }) //查找資料庫內instructor == _proposer_id的資料
-    .populate("proposer", ["username", "email"])
+    // .populate("proposer", ["username", "email"])
     .then((data) => {
-      res.send(data);
-      console.log("資料在此", data);
+      res.status(200).send(data);
     })
     .catch((err) => {
-      res.status(500).send("找不到案子資訊");
+      res.status(500).send("找不到案子資訊", err);
     });
 });
 
 //上傳提案與提案單位
 router.post("/", async (req, res) => {
+  console.log("請求已進入創建提案的API");
   //validate the inputs before making a new course
-  const { error } = caseValidation(req.body);
+
+  const { error } = caseValidation(req.body); // 将整个 req.body 对象传递给 caseValidation() 函数
   if (error) return res.status(400).send(error.details[0].message);
 
   let {
@@ -153,14 +155,10 @@ router.post("/", async (req, res) => {
     deadline,
     image,
     details,
-    organizeImage,
-    organizeName,
-    personName,
-    idNumber,
-    phoneNumber,
-    email,
-    introduction,
+    organizeId,
+    proposer,
   } = req.body;
+  console.log("proposerId:", proposer);
 
   //   if(req.user.isStudent()) 報錯-isStudent() not a function
   if (req.user.role == "donor") {
@@ -175,37 +173,52 @@ router.post("/", async (req, res) => {
     deadline,
     image,
     details,
-    proposer: req.user._id,
-    organizeImage,
-    organizeName,
-    personName,
-    idNumber,
-    phoneNumber,
-    email,
-    introduction,
+    proposer,
+    organize: organizeId,
   });
 
   try {
-    await newCase.save();
+    const savedCase = await newCase.save();
+    res.status(200).json({ message: "新提案已創建！", _id: savedCase._id });
     console.log(category);
-    res.status(200).send("新案子已經創建");
   } catch (err) {
     res.status(400).send(err);
   }
 });
 
 router.post("/donate/:_id", async (req, res) => {
-  let { _id } = req.params;
-  let { user_id } = req.body;
   try {
-    let cases = await Case.findOne({ _id });
-    cases.donor.push(user_id);
-    await cases.save();
-    res.send("捐款成功");
+    const caseId = req.params.id;
+    const newDonorId = req.body.donorId;
+    const newDonorAmount = req.body.amount;
+
+    const updatedCase = await Case.findOneAndUpdate(
+      { _id: caseId },
+      { $push: { donor: { _id: newDonorId, amount: newDonorAmount } } },
+      { new: true }
+    )
+      .populate("proposer")
+      .populate("donor");
+
+    res.json(updatedCase);
   } catch (err) {
-    res.send(err);
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
   }
 });
+
+// router.post("/donate/:_id", async (req, res) => {
+//   let { _id } = req.params;
+//   let { user_id } = req.body;
+//   try {
+//     let cases = await Case.findOne({ _id });
+//     cases.donor.push(user_id);
+//     await cases.save();
+//     res.send("捐款成功");
+//   } catch (err) {
+//     res.send(err);
+//   }
+// });
 
 router.patch("/:_id", async (req, res) => {
   const { error } = caseValidation(req.body);
