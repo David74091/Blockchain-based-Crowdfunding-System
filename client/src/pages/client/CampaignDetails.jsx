@@ -255,11 +255,20 @@ const CampaignDetails = () => {
                     {state.organizeName}
                   </div>
                   <div className="flex flex-row">
-                    目標：NT<div className="text-mycolor">$100,000</div>
+                    目標：NT
+                    <div className="text-mycolor">
+                      ${new Intl.NumberFormat().format(state.target)}
+                    </div>
                   </div>
                   <div className="flex flex-row mt-1">
-                    已募：NT<div className="text-mycolor">$8,600</div>
+                    已募：NT
+                    {donations && donations.totalAmount && (
+                      <div className="text-mycolor">
+                        ${new Intl.NumberFormat().format(donations.totalAmount)}
+                      </div>
+                    )}
                   </div>
+
                   <div className="relative w-full h-[15px] bg-gray-200 mt-2 flex-2 rounded-md">
                     <div
                       className="absolute h-full bg-accent rounded-md"
@@ -514,7 +523,8 @@ const CampaignDetails = () => {
             {pageNumber === 4 && (
               <div>
                 <div className="mt-10 ml-14 text-[1.5rem] font-bold">
-                  募款總額NT ${donations.totalAmount}
+                  募款總額NT $
+                  {new Intl.NumberFormat().format(donations.totalAmount)}
                 </div>
                 <div className="flex flex-row flex-wrap gap-4 justify-center mt-2">
                   {Array.isArray(donations.donorsByTime) &&
@@ -530,7 +540,9 @@ const CampaignDetails = () => {
                             alt={donor.donor.username}
                           />
                           <p>{donor.donor.username}</p>
-                          <p>$ {donor.amount}</p>
+                          <p>
+                            $ {new Intl.NumberFormat().format(donor.amount)}
+                          </p>
                         </div>
                       );
                     })}
