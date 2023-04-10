@@ -139,6 +139,18 @@ router.get("/proposer/:_proposer_id", (req, res) => {
     });
 });
 
+//取得case的捐款名單
+router.get("/getdonorsbytime/:_id", async (req, res) => {
+  try {
+    const theCase = await Case.findById(req.params._id).populate("donations");
+    const donorsByTime = await theCase.getDonorsByTime(); // 等待 Promise 完成
+    res.json(donorsByTime);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 //上傳提案與提案單位
 router.post("/", async (req, res) => {
   console.log("請求已進入創建提案的API");
@@ -186,21 +198,46 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/donate/:_id", async (req, res) => {
+// router.post("/donate/:_id", async (req, res) => {
+//   try {
+//     const caseId = req.params.id;
+//     const newDonorId = req.body.donorId;
+//     const newDonorAmount = req.body.amount;
+
+//     const updatedCase = await Case.findOneAndUpdate(
+//       { _id: caseId },
+//       { $push: { donor: { _id: newDonorId, amount: newDonorAmount } } },
+//       { new: true }
+//     )
+//       .populate("proposer")
+//       .populate("donor");
+
+//     res.json(updatedCase);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Server Error" });
+//   }
+// });
+
+//push捐款者資訊
+router.post("/pushdonation", async (req, res) => {
+  console.log("請求已進入push捐款資訊的API");
   try {
-    const caseId = req.params.id;
-    const newDonorId = req.body.donorId;
-    const newDonorAmount = req.body.amount;
+    const { caseId, donorId, amount } = req.body;
+    console.log("caseApi:caseId,donorId,amount", caseId, donorId, amount);
+    const theCase = await Case.findById(caseId);
 
-    const updatedCase = await Case.findOneAndUpdate(
-      { _id: caseId },
-      { $push: { donor: { _id: newDonorId, amount: newDonorAmount } } },
-      { new: true }
-    )
-      .populate("proposer")
-      .populate("donor");
+    const donation = {
+      donor: donorId,
+      amount: amount,
+      donateDate: new Date(),
+    };
 
-    res.json(updatedCase);
+    theCase.donations.push(donation);
+
+    await theCase.save();
+
+    res.status(200).json(theCase);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error" });

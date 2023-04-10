@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const donorSchema = new mongoose.Schema({
-  _id: {
+const donationSchema = new mongoose.Schema({
+  donor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -10,10 +10,14 @@ const donorSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  donateDate: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
 });
 
 const caseSchema = new mongoose.Schema({
-  //表單1
   id: { type: String },
   title: {
     type: String,
@@ -46,76 +50,72 @@ const caseSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  donor: {
-    type: [donorSchema],
-    default: [],
-  },
+  // donor: {
+  //   type: [donorSchema],
+  //   default: [],
+  // },
   organize: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Organize",
     required: true,
   },
-  oneHundredDonation: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-  ],
-  fiveHundredDonation: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-  ],
-  oneThousandDonation: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-  ],
-  fiveThousandDonation: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-  ],
-  //表單2
-  // organizeImage: {
-  //   type: String,
-  //   required: true,
-  // },
-  // organizeName: {
-  //   type: String,
-  //   required: true,
-  // },
-  // personName: {
-  //   type: String,
-  //   required: true,
-  // },
-  // idNumber: {
-  //   type: String,
-  //   required: true,
-  // },
-  // phoneNumber: {
-  //   type: Number,
-  //   required: true,
-  // },
-  // email: {
-  //   type: String,
-  //   required: true,
-  // },
-  // introduction: {
-  //   type: String,
-  //   required: true,
-  // },
+  donations: {
+    type: [donationSchema],
+    default: [],
+  },
   Verified: {
     type: Boolean,
     default: false,
   },
+});
+
+caseSchema.methods.getDonorsByTime = async function () {
+  const caseWithDonations = await Case.findById(this._id).populate(
+    "donations.donor",
+    "username picture"
+  );
+
+  return caseWithDonations.donations
+    .sort((a, b) => new Date(a.donateDate) - new Date(b.donateDate))
+    .map(({ donor, amount, donateDate }) => ({
+      donor: {
+        id: donor._id,
+        username: donor.username,
+        picture: donor.picture,
+      },
+      amount,
+      donateDate,
+    }));
+};
+
+// 定義一個名為 `donorsByAmount` 的 virtual property
+caseSchema.virtual("donorsByAmount").get(function () {
+  const donorsByAmount = {
+    100: [],
+    500: [],
+    1000: [],
+    5000: [],
+  };
+
+  // 將每筆捐款者資料放入對應的欄位
+  this.donations.forEach(({ donor, amount, donateDate }) => {
+    switch (amount) {
+      case 100:
+        donorsByAmount[100].push({ donor, donateDate });
+        break;
+      case 500:
+        donorsByAmount[500].push({ donor, donateDate });
+        break;
+      case 1000:
+        donorsByAmount[1000].push({ donor, donateDate });
+        break;
+      case 5000:
+        donorsByAmount[5000].push({ donor, donateDate });
+        break;
+    }
+  });
+
+  return donorsByAmount;
 });
 
 const Case = mongoose.model("Case", caseSchema);

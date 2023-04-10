@@ -146,6 +146,34 @@ class CaseService {
       }
     );
   }
+
+  pushDonation(caseId, donorId, amount) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.post(
+      API_URL + "/pushdonation",
+      { caseId, donorId, amount },
+      {
+        headers: { Authorization: token },
+      }
+    );
+  }
+
+  getAllDonations(_id) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.get(API_URL + "/getdonorsbytime/" + _id, {
+      headers: { Authorization: token },
+    });
+  }
 }
 
 export default new CaseService();
