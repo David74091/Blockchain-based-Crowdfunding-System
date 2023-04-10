@@ -142,9 +142,14 @@ router.get("/proposer/:_proposer_id", (req, res) => {
 //取得case的捐款名單
 router.get("/getdonorsbytime/:_id", async (req, res) => {
   try {
-    const theCase = await Case.findById(req.params._id).populate("donations");
-    const donorsByTime = await theCase.getDonorsByTime(); // 等待 Promise 完成
-    res.json(donorsByTime);
+    const theCase = await Case.findById(req.params._id).populate(
+      "donations.donor"
+    );
+    const donorsByTime = await theCase.getDonorsByTime();
+    const totalAmount = theCase.getTotalAmount();
+    const donorsByAmount = theCase.donorsByAmount;
+
+    res.json({ donorsByTime, totalAmount, donorsByAmount });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error" });
@@ -154,7 +159,7 @@ router.get("/getdonorsbytime/:_id", async (req, res) => {
 //上傳提案與提案單位
 router.post("/", async (req, res) => {
   console.log("請求已進入創建提案的API");
-  //validate the inputs before making a new course
+  //validate the inputs before making a new Case
 
   const { error } = caseValidation(req.body); // 将整个 req.body 对象传递给 caseValidation() 函数
   if (error) return res.status(400).send(error.details[0].message);

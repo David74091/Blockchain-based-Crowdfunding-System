@@ -51,7 +51,7 @@ const PostCase = (props) => {
     <div style={{ padding: "3rem" }} className="w-[600px] container mx-auto">
       {!currentUser && (
         <div>
-          <p>You must login first before posting a new course.</p>
+          <p>You must login first before posting a new Case.</p>
           <button
             className="btn btn-primary btn-lg"
             onClick={handleTakeToLogin}
@@ -62,7 +62,7 @@ const PostCase = (props) => {
       )}
       {currentUser && currentUser.user.role !== "proposer" && (
         <div>
-          <p>Only instrcutors can post new courses.</p>
+          <p>Only instrcutors can post new Cases.</p>
         </div>
       )}
       {currentUser && currentUser.user.role === "proposer" && (

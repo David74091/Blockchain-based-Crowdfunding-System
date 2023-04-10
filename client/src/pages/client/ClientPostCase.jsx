@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import CourseService from "../../services/case.service";
+import CaseService from "../../services/case.service";
 import OrganizeService from "../../services/organize.service";
 import UserService from "../../services/user.service";
 import { checkIfImage } from "../../utils";
@@ -672,7 +672,7 @@ const ClientPoastCase = (props) => {
             );
             const organizeId = response._id;
             try {
-              const caseResponse = await CourseService.postCase(
+              const caseResponse = await CaseService.postCase(
                 form2.title,
                 form2.description,
                 category,

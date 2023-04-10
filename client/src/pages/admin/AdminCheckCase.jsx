@@ -50,7 +50,7 @@ const AdminCheckCase = (props) => {
     <div style={{ padding: "3rem" }}>
       {!currentUser && (
         <div>
-          <p>You must login before seeing your courses.</p>
+          <p>You must login before seeing your Cases.</p>
           <button
             onClick={handleTakeToLogin}
             className="btn btn-primary btn-lg"
@@ -61,12 +61,12 @@ const AdminCheckCase = (props) => {
       )}
       {currentUser && currentUser.user.role == "proposer" && (
         <div>
-          <h1>Welcome to instructor's Course page.</h1>
+          <h1>Welcome to instructor's Case page.</h1>
         </div>
       )}
       {currentUser && currentUser.user.role == "donor" && (
         <div>
-          <h1>Welcome to student's Course page.</h1>
+          <h1>Welcome to student's Case page.</h1>
         </div>
       )}
       {currentUser && caseData && caseData.length != 0 && (

@@ -75,7 +75,7 @@ caseSchema.methods.getDonorsByTime = async function () {
     "username picture"
   );
 
-  return caseWithDonations.donations
+  const sortedDonations = caseWithDonations.donations
     .sort((a, b) => new Date(a.donateDate) - new Date(b.donateDate))
     .map(({ donor, amount, donateDate }) => ({
       donor: {
@@ -86,6 +86,13 @@ caseSchema.methods.getDonorsByTime = async function () {
       amount,
       donateDate,
     }));
+
+  console.log("sortedDonations:", sortedDonations);
+  return sortedDonations;
+};
+
+caseSchema.methods.getTotalAmount = function () {
+  return this.donations.reduce((total, donation) => total + donation.amount, 0);
 };
 
 // 定義一個名為 `donorsByAmount` 的 virtual property

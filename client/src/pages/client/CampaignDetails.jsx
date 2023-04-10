@@ -10,6 +10,7 @@ import { loveIcon } from "../../assets";
 import { calculateBarPercentage, daysLeft } from "../../utils";
 
 const CampaignDetails = () => {
+  let amountCount = 0;
   const { state } = useLocation();
   const navigate = useNavigate();
   const { donate, getDonations, contract, address } = useStateContext();
@@ -108,7 +109,7 @@ const CampaignDetails = () => {
       .then((data) => {
         setDonations(data.data);
 
-        console.log("捐款名單在此", donations[0]);
+        console.log("捐款名單在此", data.data);
       })
       .catch((error) => {
         console.log("獲取捐款名單失敗!", error);
@@ -512,20 +513,28 @@ const CampaignDetails = () => {
             )}
             {pageNumber === 4 && (
               <div>
-                {Array.isArray(donations) &&
-                  donations.map((donor) => {
-                    return (
-                      <div key={donor.donor.id}>
-                        <img
-                          src={donor.donor.picture}
-                          alt={donor.donor.username}
-                        />
-                        <p>{donor.donor.username}</p>
-                        <p>{donor.amount}</p>
-                        <p>{donor.donateDate}</p>
-                      </div>
-                    );
-                  })}
+                <div className="mt-10 ml-14 text-[1.5rem] font-bold">
+                  募款總額NT ${donations.totalAmount}
+                </div>
+                <div className="flex flex-row flex-wrap gap-4 justify-center mt-2">
+                  {Array.isArray(donations.donorsByTime) &&
+                    donations.donorsByTime.map((donor) => {
+                      return (
+                        <div
+                          className="flex flex-col items-center border-1 rounded-xl p-4 gap-3 bg-[#E8EDED]"
+                          key={donor.donor.id}
+                        >
+                          <img
+                            className="w-20 h-20 rounded-full"
+                            src={donor.donor.picture}
+                            alt={donor.donor.username}
+                          />
+                          <p>{donor.donor.username}</p>
+                          <p>$ {donor.amount}</p>
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
             )}
           </div>
@@ -558,8 +567,12 @@ const CampaignDetails = () => {
                 捐 款
               </button>
               <div className="flex gap-1 mb-3">
-                <img src={loveIcon} />
-                0人捐款
+                {donations && donations.donorsByAmount && (
+                  <>
+                    <img src={loveIcon} />
+                    {donations.donorsByAmount[100].length}人捐款
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -576,8 +589,12 @@ const CampaignDetails = () => {
                 捐 款
               </button>
               <div className="flex gap-1 mb-3">
-                <img src={loveIcon} />
-                0人捐款
+                {donations && donations.donorsByAmount && (
+                  <>
+                    <img src={loveIcon} />
+                    {donations.donorsByAmount[500].length}人捐款
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -594,8 +611,12 @@ const CampaignDetails = () => {
                 捐 款
               </button>
               <div className="flex gap-1 mb-3">
-                <img src={loveIcon} />
-                0人捐款
+                {donations && donations.donorsByAmount && (
+                  <>
+                    <img src={loveIcon} />
+                    {donations.donorsByAmount[1000].length}人捐款
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -612,8 +633,12 @@ const CampaignDetails = () => {
                 捐 款
               </button>
               <div className="flex gap-1 mb-3">
-                <img src={loveIcon} />
-                0人捐款
+                {donations && donations.donorsByAmount && (
+                  <>
+                    <img src={loveIcon} />
+                    {donations.donorsByAmount[5000].length}人捐款
+                  </>
+                )}
               </div>
             </div>
           </div>
