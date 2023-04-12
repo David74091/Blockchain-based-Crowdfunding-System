@@ -35,7 +35,7 @@ app.use("/api/message", messageRoute);
 app.use("/api/organize", organizeRoute);
 app.use(
   "/api/cases",
-  passport.authenticate("jwt", { session: false }),
+  // passport.authenticate("jwt", { session: false }),
   caseRoute
 );
 

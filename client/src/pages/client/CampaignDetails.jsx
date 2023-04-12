@@ -13,9 +13,10 @@ const CampaignDetails = () => {
   let amountCount = 0;
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { donate, getDonations, contract, address } = useStateContext();
+  // const { donate, getDonations, contract, address } = useStateContext();
   const [pageLoading, setPageLoading] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [donations, setDonations] = useState(null);
   //按鈕loading
   const [btnLoading, setBtnLoading] = useState(false);
   const [amount, setAmount] = useState("");
@@ -90,31 +91,26 @@ const CampaignDetails = () => {
   }
 
   useEffect(() => {
-    MessageService.getMessage(state._id)
-      .then((response) => {
-        setMessages(response.data);
-        console.log("message here:", messages[0].reply[0].message);
-      })
-      .catch((error) => {
-        console.log("抓取留言失敗 ", error);
-      })
-      .finally(() => {
-        setPageLoading(false);
-      });
-  }, [state]);
-  const [donations, setDonations] = useState(null);
-
-  useEffect(() => {
-    CaseService.getAllDonations(state._id)
-      .then((data) => {
-        setDonations(data.data);
-
-        console.log("捐款名單在此", data.data);
-      })
-      .catch((error) => {
-        console.log("獲取捐款名單失敗!", error);
-      });
-  }, [state]);
+    Promise.all([
+      MessageService.getMessage(state._id)
+        .then((response) => {
+          setMessages(response.data);
+        })
+        .catch((error) => {
+          console.log("抓取留言失敗 ", error);
+        }),
+      CaseService.getAllDonations(state._id)
+        .then((data) => {
+          setDonations(data.data);
+          console.log("捐款名單在此", data.data);
+        })
+        .catch((error) => {
+          console.log("獲取捐款名單失敗!", error);
+        }),
+    ]).then(() => {
+      setPageLoading(false);
+    });
+  }, []);
 
   //從mongodb裡抓資料
   if (pageLoading) {
@@ -273,11 +269,10 @@ const CampaignDetails = () => {
                     <div
                       className="absolute h-full bg-accent rounded-md"
                       style={{
-                        // width: `${calculateBarPercentage(
-                        //   state.target,
-                        //   state.amountCollected
-                        // )}%`,
-                        width: "8.6%",
+                        width: `${calculateBarPercentage(
+                          state.target,
+                          donations.totalAmount
+                        )}%`,
                         maxWidth: "100%",
                       }}
                     ></div>
@@ -445,7 +440,7 @@ const CampaignDetails = () => {
                                   {message.userId.username}
                                 </p>
                                 {!message.reply[0] &&
-                                  currentUser.user._id ==
+                                  currentUser?.user?._id ==
                                     state.proposer._id && (
                                     <button
                                       className="text-sm text-blue-500 dark:text-blue-300 hover:underline focus:outline-none"

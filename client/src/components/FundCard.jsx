@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useStateContext } from "../context";
 import { calculateBarPercentage, daysLeft } from "../utils";
+import CaseService from "../services/case.service";
 import { tagtype } from "../assets";
 const FundCard = ({
+  _id,
   Verified,
   category,
   deadline,
@@ -22,6 +24,18 @@ const FundCard = ({
   title,
   handleClick,
 }) => {
+  const [donations, setDonations] = useState();
+  useEffect(() => {
+    CaseService.getAllDonations(_id)
+      .then((data) => {
+        setDonations(data);
+        console.log("FundCard donations Data", donations);
+      })
+      .catch((error) => {
+        console.log("FundCard donations error", error);
+      });
+  }, [image]);
+
   const remainingDays = daysLeft(deadline);
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);

@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const Message = require("../models").messageModel;
+const Case = require("../models").caseModel;
 
 router.use((req, res, next) => {
   console.log("請求已進入message API");

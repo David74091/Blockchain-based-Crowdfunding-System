@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import FundCard from "./FundCard";
 
 // import { calculateBarPercentage, daysLeft } from "../utils";

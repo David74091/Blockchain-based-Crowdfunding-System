@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import { useStateContext } from "../context";
 import CaseService from "../services/case.service";
+import MessageService from "../services/message.service";
 import { searchIcon } from "../assets";
 
 const NavBar = (props) => {
@@ -25,7 +26,7 @@ const NavBar = (props) => {
       _id = "";
     }
 
-    CaseService.getAllTrue()
+    MessageService.getAllTrue()
       .then((data) => {
         console.log("Data", data.data);
         setCaseData(data.data);
