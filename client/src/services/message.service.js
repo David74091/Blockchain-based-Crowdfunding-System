@@ -13,19 +13,5 @@ class MessageService {
   postReply(messageId, reply) {
     return axios.post(API_URL + "/postreply", { messageId, reply });
   }
-
-  getAllTrue() {
-    let token;
-    if (localStorage.getItem("user")) {
-      token = JSON.parse(localStorage.getItem("user")).token;
-    } else {
-      token = "";
-    }
-    return axios.get(API_URL + "/verified", {
-      headers: {
-        Authorization: token,
-      },
-    });
-  }
 }
 export default new MessageService();

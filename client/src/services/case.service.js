@@ -75,19 +75,19 @@ class CaseService {
   }
 
   //尋找所有verified為true的case
-  // getAllTrue() {
-  //   let token;
-  //   if (localStorage.getItem("user")) {
-  //     token = JSON.parse(localStorage.getItem("user")).token;
-  //   } else {
-  //     token = "";
-  //   }
-  //   return axios.get(API_URL + "/verified", {
-  //     headers: {
-  //       Authorization: token,
-  //     },
-  //   });
-  // }
+  getAllTrue() {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.get(API_URL + "/verified", {
+      headers: {
+        Authorization: token,
+      },
+    });
+  }
   //尋找所有verified為false的case
   getAllFalse() {
     let token;

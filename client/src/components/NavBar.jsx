@@ -14,7 +14,7 @@ const NavBar = (props) => {
   };
   const [userData, setUserData] = useState();
 
-  let { setCaseData, setLoading, currentUser, setCurrentUser } = props;
+  let { setCaseData, setLoading, currentUser, setCurrentUser, onHome } = props;
 
   useEffect(() => {
     console.log("Using effect.");
@@ -26,16 +26,16 @@ const NavBar = (props) => {
       _id = "";
     }
 
-    MessageService.getAllTrue()
+    CaseService.getAllTrue()
       .then((data) => {
-        console.log("Data", data.data);
+        console.log("NavBar Data", data.data);
         setCaseData(data.data);
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [currentUser]);
 
   useEffect(() => {
     console.log("Using effect.");
@@ -57,7 +57,7 @@ const NavBar = (props) => {
       .catch((err) => {
         console.log(err);
       });
-  }, [currentUser]);
+  }, []);
 
   const renderUserImage = () => {
     if (currentUser && userData) {

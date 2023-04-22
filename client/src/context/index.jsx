@@ -21,7 +21,7 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   const { contract } = useContract(
-    "0x9871a6D76A5D11CC0E8F382aA355C1a747Ab0Df4"
+    "0x003303d2Bd3e2932CC9E946920E3a97414A9dEb3"
   );
   const { mutateAsync: createCampaign, isLoading } = useContractWrite(
     contract,
@@ -31,20 +31,42 @@ export const StateContextProvider = ({ children }) => {
   const address = useAddress();
   const connect = useMetamask();
 
-  const publishCampaign = async (form) => {
+  const publishCampaign = async (
+    title,
+    description,
+    target,
+    deadline,
+    image
+  ) => {
     try {
       const data = await createCampaign([
-        address, // owner
-        form.title, // title
-        form.description,
-        form.target,
-        new Date(form.deadline).getTime(),
-        form.image, // deadline,
+        title, // title
+        description,
+        target,
+        //在Binance Smart Chain（BSC）區塊鏈上，通常使用以秒為單位的Unix時間戳來表示時間。
+        //在這種情況下，將截止日期轉換為時間戳是有必要的，但需要注意的是，JavaScript的getTime()方法返回的是毫秒單位的時間戳。
+        // 以下是轉換前後的範例：
+
+        // 假設deadline是一個日期字符串，例如："2023-05-01"。
+        // 轉換前，deadline的值為："2023-05-01"
+
+        // 轉換後（使用new Date(deadline).getTime()），獲得的毫秒時間戳為：1672444800000
+        new Date(deadline).getTime(),
+        image,
       ]);
 
       console.log("contract call success", data);
     } catch (error) {
       console.log("contract call failure", error);
+    }
+  };
+
+  const withdraw = async (pId) => {
+    try {
+      const data = await contract.send("withdraw", [pId]);
+      console.log("Withdraw success", data);
+    } catch (error) {
+      console.log("Withdraw failure", error);
     }
   };
 
@@ -131,6 +153,7 @@ export const StateContextProvider = ({ children }) => {
         donate,
         getDonations,
         searchCampaigns,
+        withdraw, // Add the new withdraw function to the context
       }}
     >
       {children}

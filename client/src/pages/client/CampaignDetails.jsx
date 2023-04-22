@@ -18,13 +18,65 @@ const CampaignDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [donations, setDonations] = useState(null);
   //按鈕loading
-  const [btnLoading, setBtnLoading] = useState(false);
+
+  function useMultiState(initialState, callback) {
+    const [state1, setState1] = useState(initialState);
+
+    const updateState1 = (key, value) => {
+      setState1((prevState) => {
+        const newState = { ...prevState, [key]: value };
+        if (callback) {
+          callback(newState);
+        }
+        return newState;
+      });
+    };
+
+    return [state1, updateState1];
+  }
+
+  const [btnLoading, setBtnLoading] = useMultiState({
+    message: false,
+    reply: false,
+    100: false,
+    500: false,
+    1000: false,
+    5000: false,
+  });
+
+  //處理捐款按鈕點擊事件
+  const handleDonation = async (amount) => {
+    if (donations.totalAmount >= state.target) {
+      alert("已超過募款金額");
+      return;
+    }
+    setBtnLoading({ amount: true });
+    alert(`確認捐款${amount}?`);
+    try {
+      setBtnLoading(true);
+      await CaseService.pushDonation(state._id, currentUser.user._id, amount);
+      alert("捐款成功！");
+    } catch (error) {
+      console.log("捐款失敗", error);
+    } finally {
+      setBtnLoading({ amount: false });
+      window.location.reload();
+    }
+  };
+
+  //處理提案人頭像點擊事件
+  const handlesOrganizClick = () => {
+    navigate("/organizeInfo");
+  };
+
   const [amount, setAmount] = useState("");
   const [donators, setDonators] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
+  //確認募款金額是否已經超過目標金額
+  const [completeDonation, setCompleteDonation] = useState(false);
 
   const remainingDays = daysLeft(state.deadline);
 
@@ -41,6 +93,7 @@ const CampaignDetails = () => {
   };
 
   const handleReplyPost = async (messageId) => {
+    setBtnLoading("reply", true);
     try {
       await MessageService.postReply(messageId, reply);
 
@@ -61,13 +114,9 @@ const CampaignDetails = () => {
         });
     } catch (err) {
       console.log("回覆失敗", err);
+    } finally {
+      setBtnLoading("reply", false);
     }
-  };
-
-  const fetchDonators = async () => {
-    const data = await getDonations(state.pId);
-
-    setDonators(data);
   };
 
   function timeAgo(timestamp) {
@@ -91,6 +140,7 @@ const CampaignDetails = () => {
   }
 
   useEffect(() => {
+    console.log("campaign state", state);
     Promise.all([
       MessageService.getMessage(state._id)
         .then((response) => {
@@ -111,6 +161,13 @@ const CampaignDetails = () => {
       setPageLoading(false);
     });
   }, []);
+
+  //確認募款金額是否已經超過目標金額
+  useEffect(() => {
+    if (donations?.totalAmount >= state.target) {
+      setCompleteDonation(true);
+    }
+  }, [donations]);
 
   //從mongodb裡抓資料
   if (pageLoading) {
@@ -140,7 +197,7 @@ const CampaignDetails = () => {
   };
 
   const handleMessageClick = async () => {
-    setBtnLoading(true);
+    setBtnLoading("message", true);
     try {
       await MessageService.postMessage(
         message,
@@ -160,60 +217,11 @@ const CampaignDetails = () => {
           console.log("抓取留言失敗 ", error);
         })
         .finally(() => {
-          setBtnLoading(false);
+          setBtnLoading("message", false);
         });
     } catch (error) {
       alert("留言失敗");
       console.log("留言失敗", error);
-    }
-  };
-
-  const donate100 = async () => {
-    alert("確認捐款100?");
-    try {
-      setBtnLoading(true);
-      await CaseService.pushDonation(state._id, currentUser.user._id, 100);
-      alert("捐款成功！");
-    } catch (error) {
-      console.log("捐款失敗", error);
-    } finally {
-      setBtnLoading(fasle);
-    }
-  };
-  const donate500 = async () => {
-    alert("確認捐款500?");
-    try {
-      setBtnLoading(true);
-      await CaseService.pushDonation(state._id, currentUser.user._id, 500);
-      alert("捐款成功！");
-    } catch (error) {
-      console.log("捐款失敗", error);
-    } finally {
-      setBtnLoading(fasle);
-    }
-  };
-  const donate1000 = async () => {
-    alert("確認捐款1000?");
-    try {
-      setBtnLoading(true);
-      await CaseService.pushDonation(state._id, currentUser.user._id, 1000);
-      alert("捐款成功！");
-    } catch (error) {
-      console.log("捐款失敗", error);
-    } finally {
-      setBtnLoading(fasle);
-    }
-  };
-  const donate5000 = async () => {
-    alert("確認捐款5000?");
-    try {
-      setBtnLoading(true);
-      await CaseService.pushDonation(state._id, currentUser.user._id, 5000);
-      alert("捐款成功！");
-    } catch (error) {
-      console.log("捐款失敗", error);
-    } finally {
-      setBtnLoading(fasle);
     }
   };
 
@@ -248,7 +256,7 @@ const CampaignDetails = () => {
                 <div className="flex flex-col ">
                   <div className="flex flex-row mb-3">
                     <div className="text-mycolor ">提案人：</div>
-                    {state.organizeName}
+                    {state.organize.organizeName}
                   </div>
                   <div className="flex flex-row">
                     目標：NT
@@ -405,11 +413,11 @@ const CampaignDetails = () => {
                   ></textarea>
                   <button
                     className={`btn  btn-accent ${
-                      btnLoading ? "loading" : ""
+                      btnLoading.message ? "loading" : ""
                     } self-end px-4 py-2 mt-2 ml-auto text-white bg-blue-600 rounded-md hover:bg-blue-700`}
                     onClick={handleMessageClick}
                   >
-                    {!btnLoading ? "送出" : ""}
+                    {!btnLoading.message ? "送出" : ""}
                   </button>
                   <h2 className="text-xl">留言列表：</h2>
                   {messages
@@ -470,10 +478,12 @@ const CampaignDetails = () => {
                                   value={reply}
                                 ></textarea>
                                 <button
-                                  className="btn btn-accent self-end px-4 py-2 mt-2 ml-auto text-white bg-blue-600 rounded-md hover:bg-blue-700"
+                                  className={`btn btn-accent ${
+                                    btnLoading.reply ? "loading" : ""
+                                  } self-end px-4 py-2 mt-2 ml-auto text-white bg-blue-600 rounded-md hover:bg-blue-700`}
                                   onClick={() => handleReplyPost(message._id)}
                                 >
-                                  送出回覆
+                                  {!btnLoading.reply ? "送出回覆" : ""}
                                 </button>
                               </div>
                             )}
@@ -485,7 +495,7 @@ const CampaignDetails = () => {
                                     <div className="flex items-start space-x-4 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
                                       <img
                                         className="w-10 h-10 rounded-full"
-                                        src={state.organizeImage}
+                                        src={state.organize.organizeImage}
                                         alt=""
                                         width="40"
                                         height="40"
@@ -548,7 +558,10 @@ const CampaignDetails = () => {
         </div>
         <div className="w-1/4 flex flex-col mt-10 ml-8">
           <div className="border-2 rounded">
-            <div className="flex flex-col items-center mt-4 mb-2">
+            <div
+              onClick={handlesOrganizClick}
+              className="flex flex-col items-center mt-4 mb-2 cursor-pointer"
+            >
               <div
                 style={{ fontSize: "1.25rem" }}
                 className="font-semibold text-mycolor"
@@ -556,9 +569,9 @@ const CampaignDetails = () => {
                 提案人
               </div>
               <div className="m-2 rounded">
-                <img className="rounded " src={state.organizeImage} />
+                <img className="rounded " src={state.organize.organizeImage} />
               </div>
-              <div>{state.organizeName}</div>
+              <div>{state.organize.organizeName}</div>
             </div>
           </div>
           <br />
@@ -567,11 +580,12 @@ const CampaignDetails = () => {
               <div className="mt-3 font-bold text-[1.5rem]">NT $100</div>
               <button
                 className={`px-5 btn btn-primary text-[1.1rem] ${
-                  btnLoading ? "loading" : ""
+                  btnLoading[100] ? "loading" : ""
                 }`}
-                onClick={donate100}
+                onClick={() => handleDonation(100)}
+                disabled={completeDonation}
               >
-                捐 款
+                {completeDonation ? "募款結束" : "捐款"}
               </button>
               <div className="flex gap-1 mb-3">
                 {donations && donations.donorsByAmount && (
@@ -589,11 +603,12 @@ const CampaignDetails = () => {
               <div className="mt-3 font-bold text-[1.5rem]">NT $500</div>
               <button
                 className={`px-5 btn btn-primary text-[1.1rem] ${
-                  btnLoading ? "loading" : ""
+                  btnLoading[500] ? "loading" : ""
                 }`}
-                onClick={donate500}
+                onClick={() => handleDonation(500)}
+                disabled={completeDonation}
               >
-                捐 款
+                {completeDonation ? "募款結束" : "捐款"}
               </button>
               <div className="flex gap-1 mb-3">
                 {donations && donations.donorsByAmount && (
@@ -611,11 +626,12 @@ const CampaignDetails = () => {
               <div className="mt-3 font-bold text-[1.5rem]">NT $1000</div>
               <button
                 className={`px-5 btn btn-primary text-[1.1rem] ${
-                  btnLoading ? "loading" : ""
+                  btnLoading[1000] ? "loading" : ""
                 }`}
-                onClick={donate1000}
+                onClick={() => handleDonation(1000)}
+                disabled={completeDonation}
               >
-                捐 款
+                {completeDonation ? "募款結束" : "捐款"}
               </button>
               <div className="flex gap-1 mb-3">
                 {donations && donations.donorsByAmount && (
@@ -633,11 +649,12 @@ const CampaignDetails = () => {
               <div className="mt-3 font-bold text-[1.5rem]">NT $5000</div>
               <button
                 className={`px-5 btn btn-primary text-[1.1rem] ${
-                  btnLoading ? "loading" : ""
+                  btnLoading[5000] ? "loading" : ""
                 }`}
-                onClick={donate5000}
+                onClick={() => handleDonation(5000)}
+                disabled={completeDonation}
               >
-                捐 款
+                {completeDonation ? "募款結束" : "捐款"}
               </button>
               <div className="flex gap-1 mb-3">
                 {donations && donations.donorsByAmount && (

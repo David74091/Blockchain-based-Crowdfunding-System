@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
+import axios from "axios";
 
 import CaseService from "../../services/case.service";
 
@@ -11,13 +12,13 @@ import { calculateBarPercentage, daysLeft } from "../../utils";
 const AdminCaseDetails = (props) => {
   let { currentUser } = props;
   const { state } = useLocation();
-  const [form, setForm] = useState({
-    title: state.title,
-    description: state.description,
-    target: state.target.toString(),
-    deadline: state.deadline,
-    image: state.image,
-  });
+  // const [form, setForm] = useState({
+  //   title: state.title,
+  //   description: state.description,
+  //   target: state.target.toString(),
+  //   deadline: state.deadline,
+  //   image: state.image,
+  // });
 
   const navigate = useNavigate();
   const { donate, getDonations, contract, address } = useStateContext();
@@ -29,34 +30,79 @@ const AdminCaseDetails = (props) => {
   const remainingDays = daysLeft(state.deadline);
   const { createCampaign } = useStateContext();
 
-  const handleClick = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  //台幣兌換美金即時匯率
+  const [exchangeRate, setExchangeRate] = useState(null);
+  const [amountUSD, setAmountUSD] = useState(null);
+  const [amountTWD, setAmountTWD] = useState(state.target); // Replace with your custom TWD amount
 
-    CaseService.verifiedCase(state._id)
-      .then(() => {
+  const fetchExchangeRate = async () => {
+    try {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+        headers: {
+          apikey: "F3BOVFd97oEBIyGu3t8xQF1SEa0erhpg", // Replace with your API key
+        },
+      };
+
+      const response = await fetch(
+        `https://api.apilayer.com/exchangerates_data/convert?to=USD&from=TWD&amount=${amountTWD}`,
+        requestOptions
+      );
+      const result = await response.json();
+
+      if (result.success) {
+        setExchangeRate(result.result);
+        setAmountUSD(result.result);
+        return result.result;
+      } else {
+        console.error("Error fetching exchange rate:", result.error);
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching exchange rate:", error);
+      return null;
+    }
+  };
+
+  const handleClick = async () => {
+    try {
+      setIsLoading(true);
+
+      const fetchedAmountUSD = await fetchExchangeRate();
+
+      await createCampaign(
+        state.title,
+        state.description,
+        ethers.utils.parseUnits(String(fetchedAmountUSD), 18).toString(),
+        state.deadline,
+        state.image
+      );
+
+      await CaseService.verifiedCase(state._id).then(() => {
         alert("已成功驗證");
-      })
-      .catch((err) => {
-        alert(err);
       });
-    // await createCampaign({
-    //   ...form,
-    //   target: ethers.utils.parseUnits(form.target, 18),
-    // });
-    setIsLoading(false);
-    // navigate("/");
+
+      setIsLoading(false);
+      // navigate("/");
+
+      console.log(state);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error in handleClick:", error);
+      alert("發生錯誤，請查看控制台以獲取更多信息。");
+    }
   };
 
-  const fetchDonators = async () => {
-    const data = await getDonations(state.pId);
+  // const fetchDonators = async () => {
+  //   const data = await getDonations(state.pId);
 
-    setDonators(data);
-  };
+  //   setDonators(data);
+  // };
 
-  useEffect(() => {
-    if (contract) fetchDonators();
-  }, [contract, address]);
+  // useEffect(() => {
+  //   if (contract) fetchDonators();
+  // }, [contract, address]);
 
   return (
     <div className="container mx-auto">

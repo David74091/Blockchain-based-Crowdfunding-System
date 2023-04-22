@@ -12,7 +12,7 @@ import {
   ClientPostCase,
   AdminCheckCase,
   AdminCaseDetails,
-  Organize,
+  OrganizeInfo,
 } from "./pages/index";
 
 import { NavBar, Case, Footer } from "./components/index";
@@ -22,6 +22,7 @@ import AuthService from "./services/auth.service";
 function App() {
   let [caseData, setCaseData] = useState(null);
   const [Loading, setLoading] = useState(false);
+  const [onHome, setOnHome] = useState(false);
 
   let [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
   console.log("currentuser:", currentUser);
@@ -33,12 +34,20 @@ function App() {
         setCurrentUser={setCurrentUser}
         setCaseData={setCaseData}
         setLoading={setLoading}
+        onHome={onHome}
       />
       <Routes>
         <Route
           exact
           path="/"
-          element={<Home caseData={caseData} Loading={Loading} />}
+          element={
+            <Home
+              caseData={caseData}
+              Loading={Loading}
+              onHome={onHome}
+              setOnHome={setOnHome}
+            />
+          }
         />
         <Route exact path="/register" element={<Register />} />
         <Route
@@ -123,9 +132,9 @@ function App() {
         />
         <Route
           exact
-          path="/organize"
+          path="/organizeInfo"
           element={
-            <Organize
+            <OrganizeInfo
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
             />

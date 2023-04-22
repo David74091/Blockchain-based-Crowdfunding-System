@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { DisplayCases } from "../../components";
 
 const Home = (props) => {
-  let { currentUser, setCurrentUser, caseData, Loading } = props;
+  let { setOnHome, onHome, currentUser, setCurrentUser, caseData, Loading } =
+    props;
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Home CaseData:", caseData);
-  }, [caseData]);
+    setOnHome(!onHome);
+  }, []);
 
   const handleTakeToLogin = () => {
     navigate("/login");

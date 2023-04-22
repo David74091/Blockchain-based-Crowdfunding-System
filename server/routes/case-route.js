@@ -38,6 +38,7 @@ router.get("/verified", (req, res) => {
 
   Case.find({ Verified: true })
     .populate("proposer", ["username", "email"])
+    .populate("organize")
     .then((cases) => {
       res.send(cases);
     })
@@ -178,9 +179,9 @@ router.post("/", async (req, res) => {
   console.log("proposerId:", proposer);
 
   //   if(req.user.isStudent()) 報錯-isStudent() not a function
-  if (req.user.role == "donor") {
-    res.status(400).send("只有提案者可以發布提案");
-  }
+  // if (req.user.role == "donor") {
+  //   res.status(400).send("只有提案者可以發布提案");
+  // }
 
   let newCase = new Case({
     title,
