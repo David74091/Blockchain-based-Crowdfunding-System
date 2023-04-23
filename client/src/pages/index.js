@@ -8,7 +8,10 @@ export { default as Register } from "./client/Register";
 export { default as CampaignDetails } from "./client/CampaignDetails";
 export { default as ProfileCampaign } from "./client/ProfileCampaign";
 export { default as OrganizeInfo } from "./client/OrganizeInfo";
-//admin
-export { default as AdminCheckCase } from "./admin/AdminCheckCase";
 export { default as ClientPostCase } from "./client/ClientPostCase";
+
+//admin
+
+export { default as AdminCheckCase } from "./admin/AdminCheckCase";
 export { default as AdminCaseDetails } from "./admin/AdminCaseDetails";
+export { default as CashFlowDashboard } from "./admin/CashFlowDashBoard";

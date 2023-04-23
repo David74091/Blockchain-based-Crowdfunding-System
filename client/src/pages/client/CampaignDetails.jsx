@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import MessageService from "../../services/message.service";
 import AuthService from "../../services/auth.service";
 import CaseService from "../../services/case.service";
+import DonationService from "../../services/donation.service";
 import { useStateContext } from "../../context";
 
 import { loveIcon } from "../../assets";
@@ -54,7 +55,11 @@ const CampaignDetails = () => {
     alert(`確認捐款${amount}?`);
     try {
       setBtnLoading(true);
-      await CaseService.pushDonation(state._id, currentUser.user._id, amount);
+      await DonationService.pushDonation(
+        state._id,
+        currentUser.user._id,
+        amount
+      );
       alert("捐款成功！");
     } catch (error) {
       console.log("捐款失敗", error);

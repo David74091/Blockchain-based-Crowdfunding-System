@@ -47,7 +47,7 @@ const NavBar = (props) => {
       _id = "";
     }
 
-    // 获取用户数据
+    // 獲取用戶數據
     AuthService.getUserData(_id)
       .then((data) => {
         console.log("User data", data.data);
@@ -163,6 +163,15 @@ const NavBar = (props) => {
               <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
                 <Link className="nav-link" to="/admincheckcase">
                   審核提案
+                </Link>
+              </li>
+            )}
+          {currentUser &&
+            currentUser.user.role &&
+            currentUser.user.role === "admin" && (
+              <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
+                <Link className="nav-link" to="/CashFlowDashBoard">
+                  審核金流
                 </Link>
               </li>
             )}

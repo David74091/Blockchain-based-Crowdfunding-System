@@ -13,7 +13,7 @@ import { ethers } from "ethers";
 
 const StateContext = createContext();
 
-//   這段代碼中，export const StateContextProvider = ({ chirldren }) => { 是定義了一個名為 StateContextProvider 的 React 組件，並且使用 export 關鍵字導出了這個組件。在組件函數中，使用了 useContract 和 useContractWrite 這兩個 Hooks 來調用智能合約。其中，useContract Hooks 的作用是獲取指定地址的智能合約實例，而 useContractWrite Hooks 則用來調用智能合約中的寫操作（即修改合約狀態的操作）。
+//   這段代碼中，export const StateContextProvider = ({ children }) => { 是定義了一個名為 StateContextProvider 的 React 組件，並且使用 export 關鍵字導出了這個組件。在組件函數中，使用了 useContract 和 useContractWrite 這兩個 Hooks 來調用智能合約。其中，useContract Hooks 的作用是獲取指定地址的智能合約實例，而 useContractWrite Hooks 則用來調用智能合約中的寫操作（即修改合約狀態的操作）。
 
 //   在這段代碼中，useContract Hooks 獲取了一個智能合約實例，並將其賦值給了 contract 變量。而 useContractWrite Hooks 則用於調用智能合約中名為 createCampaign 的方法。這個方法用來創建一個新的活動（campaign）。
 
@@ -40,18 +40,11 @@ export const StateContextProvider = ({ children }) => {
   ) => {
     try {
       const data = await createCampaign([
-        title, // title
+        title,
         description,
         target,
-        //在Binance Smart Chain（BSC）區塊鏈上，通常使用以秒為單位的Unix時間戳來表示時間。
-        //在這種情況下，將截止日期轉換為時間戳是有必要的，但需要注意的是，JavaScript的getTime()方法返回的是毫秒單位的時間戳。
-        // 以下是轉換前後的範例：
-
-        // 假設deadline是一個日期字符串，例如："2023-05-01"。
-        // 轉換前，deadline的值為："2023-05-01"
-
-        // 轉換後（使用new Date(deadline).getTime()），獲得的毫秒時間戳為：1672444800000
-        new Date(deadline).getTime(),
+        // 将毫秒时间戳转换为秒时间戳
+        Math.round(new Date(deadline).getTime() / 1000),
         image,
       ]);
 
@@ -89,6 +82,10 @@ export const StateContextProvider = ({ children }) => {
   };
 
   const getCampaigns = async () => {
+    if (!contract) {
+      throw new Error("Contract is not initialized");
+    }
+
     const campaigns = await contract.call("getCampaigns");
 
     //整理從智能合約上得到的數據
@@ -97,7 +94,7 @@ export const StateContextProvider = ({ children }) => {
       title: campaign.title,
       description: campaign.description,
       target: ethers.utils.formatEther(campaign.target.toString()),
-      deadline: campaign.deadline.toNumber(),
+      deadline: new Date(campaign.deadline.toNumber()),
       amountCollected: ethers.utils.formatEther(
         campaign.amountCollected.toString()
       ),

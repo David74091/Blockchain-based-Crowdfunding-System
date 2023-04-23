@@ -653,82 +653,73 @@ const ClientPoastCase = (props) => {
   //btn loading動畫
   const [btnLoading, setBtnLoading] = useState(false);
 
+  // 首先，檢查isChecked變量，如果用戶未勾選同意條款，則直接返回提示。
+  // 檢查圖片URL是否有效，如果無效則提示並返回。
+  // 使用try-catch語句依次執行創建組織、創建案例、將案例添加到組織以及將組織添加到用戶的操作。如果有任何錯誤，將顯示一個一般性的錯誤消息並輸出具體的錯誤日誌。
   const postCase = async (e) => {
-    if (isChecked == true) {
-      e.preventDefault();
-      checkIfImage(form2.image, async (exists) => {
-        if (exists) {
-          setBtnLoading(true);
-          try {
-            const response = await OrganizeService.createOrganize(
-              currentUser.user._id,
-              organizeImage,
-              form1.organizeName,
-              form1.personName,
-              form1.idNumber,
-              form1.phoneNumber,
-              form1.email,
-              form1.introduction
-            );
-            const organizeId = response._id;
-            try {
-              const caseResponse = await CaseService.postCase(
-                form2.title,
-                form2.description,
-                category,
-                form2.target,
-                form2.deadline,
-                form2.image,
-                form2.details,
-                currentUser.user._id,
-                organizeId
-              );
-              console.log("caseResponse:", caseResponse);
-              try {
-                await OrganizeService.pushCase(organizeId, caseResponse._id);
-                try {
-                  UserService.addOrganize(currentUser.user._id, organizeId)
-                    .then(() => {
-                      UserService.getCurrentUser(currentUser.user._id)
-                        .then((response) => {
-                          localStorage.setItem(
-                            "user",
-                            JSON.stringify(response.data)
-                          );
-                          console.log("新獲取的用戶資訊：", response.data);
-                          setCurrentUser(response.data);
-                          alert("提案組織及提案已創建，請等待管理員審核");
-                        })
-                        .catch((error) => {
-                          console.log("獲取新用戶資訊失敗", error);
-                        });
-                    })
-                    .catch((error) => {
-                      console.log("User新增organizeg失敗", error);
-                    });
-                } catch (error) {
-                  console.log(error);
-                }
-              } catch (error) {
-                console.log("推送提案進組織失敗", error);
-              }
-            } catch (error) {
-              console.log("創建提案失敗", error);
-            }
-          } catch (error) {
-            console.log(error);
-            alert("無法上傳");
-          } finally {
-            setBtnLoading(false);
-          }
-        } else {
-          alert("請提供有效網址");
-          setForm2({ ...form2, image: "" });
-        }
-      });
-    } else {
+    if (!isChecked) {
       alert("請閱讀完合約後勾選同意方框");
+      return;
     }
+
+    e.preventDefault();
+    checkIfImage(form2.image, async (exists) => {
+      if (!exists) {
+        alert("請提供有效網址");
+        setForm2({ ...form2, image: "" });
+        return;
+      }
+
+      setBtnLoading(true);
+
+      try {
+        const response = await OrganizeService.createOrganize(
+          currentUser.user._id,
+          organizeImage,
+          form1.organizeName,
+          form1.personName,
+          form1.idNumber,
+          form1.phoneNumber,
+          form1.email,
+          form1.introduction
+        );
+        console.log("Organize created:", response);
+        const organizeId = response._id;
+
+        const caseResponse = await CaseService.postCase(
+          form2.title,
+          form2.description,
+          category,
+          form2.target,
+          form2.deadline,
+          form2.image,
+          form2.details,
+          currentUser.user._id,
+          organizeId
+        );
+        console.log("1.caseResponse:", caseResponse);
+
+        await OrganizeService.pushCase(organizeId, caseResponse._id);
+        console.log("2.Case pushed to Organize");
+
+        await UserService.addOrganize(currentUser.user._id, organizeId);
+        console.log("3.Organize added to user");
+
+        const userResponse = await UserService.getCurrentUser(
+          currentUser.user._id
+        );
+        localStorage.setItem("user", JSON.stringify(userResponse.data));
+        console.log("4.新獲取的用戶資訊：", userResponse.data);
+        setCurrentUser(userResponse.data);
+
+        alert("提案組織及提案已創建，請等待管理員審核");
+      } catch (error) {
+        console.log("創建提案組織或提案失敗", error);
+        alert("無法上傳");
+      } finally {
+        setBtnLoading(false);
+      }
+    });
   };
 
   const handleStep1Click = () => {

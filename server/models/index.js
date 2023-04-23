@@ -3,4 +3,5 @@ module.exports = {
   caseModel: require("./case-model"),
   messageModel: require("./message-model"),
   organizeModel: require("./organize-model"),
+  donationModel: require("./donation-model"),
 };

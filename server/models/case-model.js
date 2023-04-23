@@ -1,22 +1,5 @@
 const mongoose = require("mongoose");
 
-const donationSchema = new mongoose.Schema({
-  donor: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  amount: {
-    type: Number,
-    required: true,
-  },
-  donateDate: {
-    type: Date,
-    default: Date.now,
-    required: true,
-  },
-});
-
 const caseSchema = new mongoose.Schema({
   id: { type: String },
   title: {
@@ -50,17 +33,14 @@ const caseSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  // donor: {
-  //   type: [donorSchema],
-  //   default: [],
-  // },
   organize: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Organize",
     required: true,
   },
   donations: {
-    type: [donationSchema],
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Donation",
     default: [],
   },
   Verified: {
@@ -70,10 +50,13 @@ const caseSchema = new mongoose.Schema({
 });
 
 caseSchema.methods.getDonorsByTime = async function () {
-  const caseWithDonations = await Case.findById(this._id).populate(
-    "donations.donor",
-    "username picture"
-  );
+  const caseWithDonations = await Case.findById(this._id).populate({
+    path: "donations",
+    populate: {
+      path: "donor",
+      select: "username picture",
+    },
+  });
 
   const sortedDonations = caseWithDonations.donations
     .sort((a, b) => new Date(a.donateDate) - new Date(b.donateDate))
@@ -91,12 +74,20 @@ caseSchema.methods.getDonorsByTime = async function () {
   return sortedDonations;
 };
 
-caseSchema.methods.getTotalAmount = function () {
-  return this.donations.reduce((total, donation) => total + donation.amount, 0);
+caseSchema.methods.getTotalAmount = async function () {
+  const caseWithDonations = await Case.findById(this._id).populate("donations");
+  console.log("donations:", caseWithDonations.donations);
+  return caseWithDonations.donations.reduce(
+    (total, donation) => total + donation.amount,
+    0
+  );
 };
 
-// 定義一個名為 `donorsByAmount` 的 virtual property
 caseSchema.virtual("donorsByAmount").get(function () {
+  return this.getDonorsByAmount();
+});
+
+caseSchema.methods.getDonorsByAmount = async function () {
   const donorsByAmount = {
     100: [],
     500: [],
@@ -104,8 +95,17 @@ caseSchema.virtual("donorsByAmount").get(function () {
     5000: [],
   };
 
-  // 將每筆捐款者資料放入對應的欄位
-  this.donations.forEach(({ donor, amount, donateDate }) => {
+  const populatedCase = await this.model("Case")
+    .findById(this._id)
+    .populate({
+      path: "donations",
+      populate: {
+        path: "donor",
+        select: "username picture",
+      },
+    });
+
+  populatedCase.donations.forEach(({ donor, amount, donateDate }) => {
     switch (amount) {
       case 100:
         donorsByAmount[100].push({ donor, donateDate });
@@ -123,7 +123,7 @@ caseSchema.virtual("donorsByAmount").get(function () {
   });
 
   return donorsByAmount;
-});
+};
 
 const Case = mongoose.model("Case", caseSchema);
 module.exports = Case;

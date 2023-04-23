@@ -11,6 +11,7 @@ import {
   CampaignDetails,
   ClientPostCase,
   AdminCheckCase,
+  CashFlowDashboard,
   AdminCaseDetails,
   OrganizeInfo,
 } from "./pages/index";
@@ -125,6 +126,16 @@ function App() {
           path="/admincheckcase"
           element={
             <AdminCheckCase
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          }
+        />
+        <Route
+          exact
+          path="/CashFlowDashBoard"
+          element={
+            <CashFlowDashboard
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
             />

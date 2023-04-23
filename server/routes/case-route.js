@@ -147,8 +147,8 @@ router.get("/getdonorsbytime/:_id", async (req, res) => {
       "donations.donor"
     );
     const donorsByTime = await theCase.getDonorsByTime();
-    const totalAmount = theCase.getTotalAmount();
-    const donorsByAmount = theCase.donorsByAmount;
+    const totalAmount = await theCase.getTotalAmount();
+    const donorsByAmount = await theCase.donorsByAmount;
 
     res.json({ donorsByTime, totalAmount, donorsByAmount });
   } catch (err) {
@@ -198,9 +198,10 @@ router.post("/", async (req, res) => {
   try {
     const savedCase = await newCase.save();
     res.status(200).json({ message: "新提案已創建！", _id: savedCase._id });
-    console.log(category);
+    console.log("幹你娘提案已經創建");
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send(err.message);
+    console.log("幹你娘出錯啦！！！！");
   }
 });
 
@@ -224,31 +225,6 @@ router.post("/", async (req, res) => {
 //     res.status(500).json({ message: "Server Error" });
 //   }
 // });
-
-//push捐款者資訊
-router.post("/pushdonation", async (req, res) => {
-  console.log("請求已進入push捐款資訊的API");
-  try {
-    const { caseId, donorId, amount } = req.body;
-    console.log("caseApi:caseId,donorId,amount", caseId, donorId, amount);
-    const theCase = await Case.findById(caseId);
-
-    const donation = {
-      donor: donorId,
-      amount: amount,
-      donateDate: new Date(),
-    };
-
-    theCase.donations.push(donation);
-
-    await theCase.save();
-
-    res.status(200).json(theCase);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
-  }
-});
 
 // router.post("/donate/:_id", async (req, res) => {
 //   let { _id } = req.params;
