@@ -8,6 +8,7 @@ module.exports = {
       bsctest: {
         url: "binance-testnet.rpc.thirdweb.com",
         accounts: [`0x${process.env.PRIVATE_KEY}`],
+        // tokenAddress: "0xE67A4EECc331005F97Ff66ebA80df63348D66aA8", // Add your ERC20 token address here
       },
     },
     settings: {
