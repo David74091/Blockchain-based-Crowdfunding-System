@@ -24,6 +24,7 @@ const loginValidation = (data) => {
 const caseValidation = (data) => {
   const schema = Joi.object({
     //提案內容認證
+    bId: Joi.number().required(),
     title: Joi.string().required(),
     description: Joi.string().required(),
     category: Joi.array().items(Joi.string()).min(1),

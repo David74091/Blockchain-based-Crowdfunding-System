@@ -97,6 +97,15 @@ const CampaignDetails = () => {
     console.log(reply);
   };
 
+  //處理捐款名單頭像點擊導向至區塊鏈查詢網站hash
+  const handleDonorClick = (hash) => {
+    if (!hash) {
+      alert("該交易待處理中，請稍候管理員上鏈");
+      return;
+    }
+    window.open(`https://testnet.bscscan.com/tx/${hash}`);
+  };
+
   const handleReplyPost = async (messageId) => {
     setBtnLoading("reply", true);
     try {
@@ -541,8 +550,9 @@ const CampaignDetails = () => {
                     donations.donorsByTime.map((donor) => {
                       return (
                         <div
-                          className="flex flex-col items-center border-1 rounded-xl p-4 gap-3 bg-[#E8EDED]"
+                          className="flex flex-col items-center border-1 rounded-xl p-4 gap-3 bg-[#E8EDED] cursor-pointer"
                           key={donor.donor.id}
+                          onClick={() => handleDonorClick(donor.hash)}
                         >
                           <img
                             className="w-20 h-20 rounded-full"

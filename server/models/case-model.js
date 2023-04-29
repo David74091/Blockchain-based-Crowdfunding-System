@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const caseSchema = new mongoose.Schema({
   id: { type: String },
+  bId: { type: String, required: true },
   title: {
     type: String,
     required: true,
@@ -52,6 +53,7 @@ const caseSchema = new mongoose.Schema({
 caseSchema.methods.getDonorsByTime = async function () {
   const caseWithDonations = await Case.findById(this._id).populate({
     path: "donations",
+    select: "hash amount", // 將 select 移動到與 populate 平行的位置
     populate: {
       path: "donor",
       select: "username picture",
@@ -60,7 +62,7 @@ caseSchema.methods.getDonorsByTime = async function () {
 
   const sortedDonations = caseWithDonations.donations
     .sort((a, b) => new Date(a.donateDate) - new Date(b.donateDate))
-    .map(({ donor, amount, donateDate }) => ({
+    .map(({ donor, amount, donateDate, hash }) => ({
       donor: {
         id: donor._id,
         username: donor.username,
@@ -68,6 +70,7 @@ caseSchema.methods.getDonorsByTime = async function () {
       },
       amount,
       donateDate,
+      hash, // 添加hash字段
     }));
 
   console.log("sortedDonations:", sortedDonations);

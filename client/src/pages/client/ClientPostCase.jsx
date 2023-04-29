@@ -5,11 +5,14 @@ import OrganizeService from "../../services/organize.service";
 import UserService from "../../services/user.service";
 import { checkIfImage } from "../../utils";
 import { Editor } from "@tinymce/tinymce-react";
+import { useStateContext } from "../../context";
 
 const ClientPoastCase = (props) => {
   let { setUserUpdate } = props;
   //設定步驟
   const [step, setStep] = useState(1);
+  const { fetchNumberOfCampaigns } = useStateContext();
+  const [bId, setBId] = useState();
 
   const renderStep1 = () => (
     <div>
@@ -673,6 +676,8 @@ const ClientPoastCase = (props) => {
       setBtnLoading(true);
 
       try {
+        const blockChainId = await fetchNumberOfCampaigns();
+        setBId(blockChainId);
         const response = await OrganizeService.createOrganize(
           currentUser.user._id,
           organizeImage,
@@ -687,6 +692,7 @@ const ClientPoastCase = (props) => {
         const organizeId = response._id;
 
         const caseResponse = await CaseService.postCase(
+          bId,
           form2.title,
           form2.description,
           category,

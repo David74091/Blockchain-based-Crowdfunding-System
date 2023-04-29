@@ -19,6 +19,14 @@ const donationSchema = new mongoose.Schema({
     default: Date.now,
     required: true,
   },
+  Verified: {
+    type: Boolean,
+    default: false,
+  },
+  hash: {
+    type: String,
+    default: null,
+  },
 });
 
 const Donation = mongoose.model("Donation", donationSchema);

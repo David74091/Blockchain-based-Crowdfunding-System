@@ -49,6 +49,7 @@ export const StateContextProvider = ({ children }) => {
       ]);
 
       console.log("contract call success", data);
+      return data;
     } catch (error) {
       console.log("contract call failure", error);
     }
@@ -116,11 +117,15 @@ export const StateContextProvider = ({ children }) => {
   };
 
   const donate = async (pId, amount) => {
-    const data = await contract.call("donateToCampaign", pId, {
-      value: ethers.utils.parseEther(amount),
-    });
+    console.log("context donate收到", pId, amount);
+    const data = await contract.call(
+      "donateToCampaign",
+      pId,
+      ethers.utils.parseEther(amount)
+    );
+    console.log("donate完後的訊息：", data.receipt.transactionHash);
 
-    return data;
+    return data.receipt.transactionHash;
   };
 
   const getDonations = async (pId) => {
@@ -138,6 +143,15 @@ export const StateContextProvider = ({ children }) => {
     return parsedDonations;
   };
 
+  const fetchNumberOfCampaigns = async () => {
+    if (!contract) {
+      throw new Error("Contract is not initialized");
+    }
+
+    const campaignCount = await contract.call("numberOfCampaigns");
+    return campaignCount.toNumber();
+  };
+
   return (
     <StateContext.Provider
       value={{
@@ -151,6 +165,7 @@ export const StateContextProvider = ({ children }) => {
         getDonations,
         searchCampaigns,
         withdraw, // Add the new withdraw function to the context
+        fetchNumberOfCampaigns, // Add the new fetchNumberOfCampaigns function to the context
       }}
     >
       {children}
