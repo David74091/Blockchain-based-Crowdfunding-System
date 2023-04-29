@@ -9,7 +9,7 @@ export { default as CampaignDetails } from "./client/CampaignDetails";
 export { default as ProfileCampaign } from "./client/ProfileCampaign";
 export { default as OrganizeInfo } from "./client/OrganizeInfo";
 export { default as ClientPostCase } from "./client/ClientPostCase";
-
+export { default as DonationHistory } from "./client/DonationHistory";
 //admin
 
 export { default as AdminCheckCase } from "./admin/AdminCheckCase";

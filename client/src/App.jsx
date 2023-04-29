@@ -14,6 +14,7 @@ import {
   CashFlowDashboard,
   AdminCaseDetails,
   OrganizeInfo,
+  DonationHistory,
 } from "./pages/index";
 
 import { NavBar, Case, Footer } from "./components/index";
@@ -146,6 +147,16 @@ function App() {
           path="/organizeInfo"
           element={
             <OrganizeInfo
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          }
+        />
+        <Route
+          exact
+          path="/DonationHistory"
+          element={
+            <DonationHistory
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
             />

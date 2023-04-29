@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useStateContext } from "../../context";
 import DonationService from "../../services/donation.service";
-import { PageLoading } from "../../components";
+import { PageLoading, Loader } from "../../components";
 import { ethers } from "ethers";
 
 const CashFlowDashBoard = () => {
   const { getCampaigns, donate, fetchNumberOfCampaigns } = useStateContext();
   const [blockChainData, setBlockChainData] = useState();
   const [cashFlowData, setCashFlowData] = useState();
+
+  const [loader, setLoader] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const [pId, setPId] = useState();
   //台幣兌換美金即時匯率
@@ -76,6 +78,7 @@ const CashFlowDashBoard = () => {
   //   fetchData();
   // }, []);
   const handleDonate = async (pId, amount, donation_id) => {
+    setLoader(true);
     const fetchedAmountUSD = await fetchExchangeRate(amount);
     console.log("轉成美金數值：", fetchedAmountUSD);
 
@@ -91,10 +94,13 @@ const CashFlowDashBoard = () => {
         console.log("hash:", hash);
         await DonationService.pushHash(donation_id, hash);
         await DonationService.DonationVerified(donation_id);
+        setLoader(false);
+        location.reload();
       } catch (err) {
         console.log(err);
       }
     } else {
+      setLoader(false);
       console.log("用戶取消了交易。");
     }
   };
@@ -105,6 +111,7 @@ const CashFlowDashBoard = () => {
 
   return (
     <div>
+      {loader && <Loader />}
       <div className="flex justify-center h-screen">
         <div className="overflow-x-auto w-9/12 border rounded-xl my-20">
           <table className="table w-full">
@@ -124,13 +131,18 @@ const CashFlowDashBoard = () => {
                   return (
                     <tr>
                       <th>{index + 1}</th>
-                      <td
-                        style={{ cursor: "pointer" }}
-                        onClick={() => handleClick(flow)}
-                        key={flow._id}
-                      >
-                        {flow.belong.title}
-                      </td>
+                      <th>
+                        <div className="flex items-center gap-1">
+                          <div className="h-10 w-10 rounded-full">
+                            <img
+                              className="rounded-full"
+                              src={flow.belong.image}
+                            />
+                          </div>
+                          {flow.belong.title}
+                        </div>
+                      </th>
+
                       <td>{flow.amount}</td>
                       <td>
                         {new Date(flow.donateDate).toLocaleString("zh-TW", {

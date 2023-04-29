@@ -221,7 +221,7 @@ const NavBar = (props) => {
                       <Link to="/profilecases">我的提案</Link>
                     </li>
                     <li>
-                      <a>捐款紀錄</a>
+                      <Link to="/DonationHistory">捐款紀錄</Link>
                     </li>
                   </ul>
                 )}

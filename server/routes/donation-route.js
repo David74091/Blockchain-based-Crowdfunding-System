@@ -41,6 +41,23 @@ router.put("/hash/:_id", async (req, res) => {
   }
 });
 
+//取得個人捐款紀錄
+router.get("/getDonationHistory/:_id", async (req, res) => {
+  console.log("請求已進入取得個人捐款紀錄的API");
+  let { _id } = req.params;
+  try {
+    let history = await Donation.find({ donor: _id }).populate("belong", [
+      "image",
+      "title",
+    ]);
+    res.status(200).json(history);
+  } catch {
+    (err) => {
+      res.status(404).send(err);
+    };
+  }
+});
+
 //取得還沒驗證的捐款
 router.get("/getdonations/false", async (req, res) => {
   console.log("請求已進入get donations False的API");
