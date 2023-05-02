@@ -27,7 +27,7 @@ const DisplayCases = ({ title, isLoading, caseData }) => {
             .map((cases) => (
               <FundCard
                 key={cases.id}
-                {...cases}
+                cases={cases} //等同於：<FundCard id={cases.id} title={cases.title} description={cases.description} />
                 handleClick={() => handleNavigate(cases)}
               />
             ))

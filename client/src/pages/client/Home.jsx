@@ -1,75 +1,131 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { DisplayCases } from "../../components";
+import { useNavigate, Link } from "react-router-dom";
+import { DisplayCases, PageLoading } from "../../components";
+import { notion } from "../../assets";
 
 const Home = (props) => {
-  let { setOnHome, onHome, currentUser, setCurrentUser, caseData, Loading } =
-    props;
+  let {
+    setOnHome,
+    onHome,
+    currentUser,
+    setCurrentUser,
+    caseData,
+    Loading,
+    setInCampaignPage,
+  } = props;
   const navigate = useNavigate();
 
+  const [isScrolled, setIsScrolled] = useState(false);
   useEffect(() => {
-    setOnHome(!onHome);
+    setInCampaignPage(false);
+    const fadeInElement = document.querySelector(".transition-opacity");
+    setTimeout(() => {
+      fadeInElement.classList.add("opacity-100");
+    }, 500); // 从 100 改为 500
   }, []);
 
-  const handleTakeToLogin = () => {
-    navigate("/login");
-  };
-
-  const handleClick = (cases) => {
-    navigate(cases.title, { state: cases });
-  };
-  if (caseData == null) {
-    return (
-      <div className="w-full h-[720px] flex flex-col justify-center items-center">
-        <progress className="progress progress-accent w-56 "></progress>
-        <h1 className="mt-3">請稍等...</h1>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY > 200) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   return (
-    // <div style={{ padding: "3rem" }}>
-    //   {caseData && caseData.length > 0 && (
-    //     <div className="flex flex-wrap gap-5 justify-center ">
-    //       {caseData.map((cases) => (
-    //         <div
-    //           className="card bg-base-100 shadow-xl"
-    //           style={{ width: "18rem" }}
-    //         >
-    //           <figure className="h-[250px]">
-    //             <img
-    //               className="w-full object-cover"
-    //               src={cases.image}
-    //               alt="caseImage"
-    //             />
-    //           </figure>
-    //           <div className="card-body">
-    //             <h1 style={{ fontSize: "1.5rem" }} className="card-title">
-    //               {cases.title}
-    //             </h1>
-    //             <h2 style={{ fontSize: "1.15rem" }}>{cases.description}</h2>
-    //             <p style={{ fontSize: "0.5rem" }}>目標金額：{cases.target}</p>
-    //             <p style={{ fontSize: "0.5rem" }}>有效日期：{cases.deadline}</p>
-    //             <div className="card-actions justify-center mt-4">
-    //               <button
-    //                 className="btn btn-accent"
-    //                 onClick={() => handleClick(cases)}
-    //               >
-    //                 進行審核
-    //               </button>
-    //             </div>
-    //           </div>
-    //         </div>
-    //       ))}
-    //     </div>
-    //   )}
-    //   {caseData && caseData.length == 0 && <div>目前沒有提案</div>}
-    //   //{" "}
-    // </div>
-    <div>
-      <DisplayCases title="All Cases" Loading={Loading} caseData={caseData} />
+    <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center h-1280px w-full mt-40 opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
+        <div className="h-2/3 flex flex-col items-center">
+          <button className="btn btn-secondary">
+            <img src={notion} />
+          </button>
+          <br />
+          <br />
+          <p className="text-5xl font-bold">現在就在區塊鏈上</p>
+          <br />
+          <br />
+          <p className="text-5xl font-bold">捐款或募款</p>
+          <br />
+          <br />
+
+          <p className="text-[1rem] font-light">享受金流的完全透明</p>
+        </div>
+        <div className="h-1/3 mt-10">
+          <Link
+            to="/register"
+            class="btn btn-secondary text-xl w-[150px] h-[70px]"
+          >
+            立即開始
+          </Link>
+        </div>
+      </div>
+      {/* The following code will be animated when scrolled */}
+      <div
+        className={`divider mt-80 ${
+          isScrolled ? "animate-fade-in-from-left" : "opacity-0 -translate-x-16"
+        }`}
+      ></div>
+      <div className="mt-20">
+        <div
+          className={`ml-24 ${
+            isScrolled
+              ? "animate-fade-in-from-left"
+              : "opacity-0 -translate-x-16"
+          }`}
+        >
+          <p className="font-light text-[1rem]">怎麼運作？</p>
+        </div>
+        <div
+          className={`ml-24 mt-4 ${
+            isScrolled
+              ? "animate-fade-in-from-left"
+              : "opacity-0 -translate-x-16"
+          }`}
+        >
+          <p className="text-3xl font-bold">在平台上捐款</p>
+          <br />
+          <p className="text-3xl font-bold">迅速驗證至區塊鏈</p>
+        </div>
+        <ul
+          className={`steps w-[600px] mt-16 ${
+            isScrolled
+              ? "animate-fade-in-from-left"
+              : "opacity-0 -translate-x-16"
+          }`}
+        >
+          <li className="step step-secondary">
+            <p className="text-xl font-bold ">捐款</p>
+            <p className="font-light text-[0.5rem] mt-2">
+              使用區塊鏈錢包
+              <br />
+              或使用傳統金流
+            </p>
+          </li>
+          <li className="step step-secondary">
+            <p className="text-xl font-bold ">驗證</p>
+            <p className="font-light text-[0.5rem] mt-2">
+              我們將捐款轉換成USDT
+              <br />
+              並捐款給該提案
+            </p>
+          </li>
+          <li className="step step-secondary">
+            <p className="text-xl font-bold ">查看</p>
+            <p className="font-light text-[0.5rem] mt-2">
+              在區塊鏈上查看該捐款金流
+              <br />
+              或其他任何的金流
+            </p>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };
-
 export default Home;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import {
   Home,
@@ -15,6 +15,7 @@ import {
   AdminCaseDetails,
   OrganizeInfo,
   DonationHistory,
+  CampaignPage,
 } from "./pages/index";
 
 import { NavBar, Case, Footer } from "./components/index";
@@ -25,19 +26,44 @@ function App() {
   let [caseData, setCaseData] = useState(null);
   const [Loading, setLoading] = useState(false);
   const [onHome, setOnHome] = useState(false);
+  const [inCampaignPage, setInCampaignPage] = useState(false);
+
+  const [showNavBar, setShowNavBar] = useState(true);
+  const [showFooter, setShowFooter] = useState(true);
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      const shouldHide =
+        window.location.pathname === "/register" ||
+        window.location.pathname === "/login";
+      setShowNavBar(!shouldHide);
+      setShowFooter(!shouldHide);
+    };
+
+    handleRouteChange(); // Call it once on mount
+    window.addEventListener("popstate", handleRouteChange);
+
+    return () => {
+      // Clean up the listener when the component unmounts
+      window.removeEventListener("popstate", handleRouteChange);
+    };
+  }, []);
 
   let [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
   console.log("currentuser:", currentUser);
   console.log("App page: ", caseData);
   return (
     <div>
-      <NavBar
-        currentUser={currentUser}
-        setCurrentUser={setCurrentUser}
-        setCaseData={setCaseData}
-        setLoading={setLoading}
-        onHome={onHome}
-      />
+      {showNavBar && (
+        <NavBar
+          currentUser={currentUser}
+          setCurrentUser={setCurrentUser}
+          setCaseData={setCaseData}
+          setLoading={setLoading}
+          onHome={onHome}
+          inCampaignPage={inCampaignPage}
+        />
+      )}
       <Routes>
         <Route
           exact
@@ -48,6 +74,20 @@ function App() {
               Loading={Loading}
               onHome={onHome}
               setOnHome={setOnHome}
+              setInCampaignPage={setInCampaignPage}
+            />
+          }
+        />
+        <Route
+          exact
+          path="/CampaignPage"
+          element={
+            <CampaignPage
+              caseData={caseData}
+              Loading={Loading}
+              onHome={onHome}
+              setInCampaignPage={setInCampaignPage}
+              setOnHome={setOnHome}
             />
           }
         />
@@ -56,7 +96,11 @@ function App() {
           exact
           path="/login"
           element={
-            <Login currentUser={currentUser} setCurrentUser={setCurrentUser} />
+            <Login
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
+            />
           }
         />
         <Route
@@ -66,6 +110,7 @@ function App() {
             <Profile
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
             />
           }
         />
@@ -76,6 +121,7 @@ function App() {
             <ProfileCampaign
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
             />
           }
         />
@@ -83,7 +129,11 @@ function App() {
           exact
           path="/case"
           element={
-            <Case currentUser={currentUser} setCurrentUser={setCurrentUser} />
+            <Case
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
+            />
           }
         />
         <Route
@@ -93,6 +143,7 @@ function App() {
             <PostCase
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
             />
           }
         />
@@ -100,7 +151,11 @@ function App() {
           exact
           path="/donate"
           element={
-            <Donate currentUser={currentUser} setCurrentUser={setCurrentUser} />
+            <Donate
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
+            />
           }
         />
         <Route exact path="/:title" element={<CampaignDetails />} />
@@ -163,7 +218,7 @@ function App() {
           }
         />
       </Routes>
-      <Footer />
+      {showFooter && <Footer />}
     </div>
   );
 }

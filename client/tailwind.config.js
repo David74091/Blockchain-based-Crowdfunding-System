@@ -2,12 +2,81 @@
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {
-      boxShadow: {
-        myshadow: "0 5px 20px rgba(87, 13, 248, 0.5)",
+    animationFillMode: {
+      forwards: "forwards",
+    },
+    //
+    animation: {
+      "fade-in-forwards": "fadeInForwards 1.5s ease-out forwards",
+      "fade-in-from-left": "fadeInFromLeft 1s ease-out",
+      "fade-in": "fadeIn 1s ease-out",
+      "fade-in-from-left": "fadeInFromLeft 1s ease-out",
+    },
+    keyframes: {
+      fadeIn: {
+        "0%": { opacity: "0" },
+        "100%": { opacity: "1" },
       },
-      colors: {
-        mycolor: "#570DF8",
+      fadeInForwards: {
+        "0%": { opacity: "0" },
+        "100%": { opacity: "1" },
+      },
+      fadeInFromLeft: {
+        "0%": { opacity: "0", transform: "translateX(-50px)" },
+        "100%": { opacity: "1", transform: "translateX(0)" },
+      },
+    },
+
+    extend: {
+      backgroundColor: {
+        primary: "#65C3C8",
+        secondary: "#EF9FBC",
+        accent: "#EEAF3A",
+        neutral: "#291334",
+        "base-100": "#FAF7F5",
+        info: "#3ABFF8",
+        success: "#36D399",
+        warning: "#FBBD23",
+        error: "#F87272",
+      },
+      textColor: {
+        primary: "#65C3C8",
+        secondary: "#EF9FBC",
+        accent: "#EEAF3A",
+        neutral: "#291334",
+        "base-100": "#FAF7F5",
+        info: "#3ABFF8",
+        success: "#36D399",
+        warning: "#FBBD23",
+        error: "#F87272",
+      },
+      borderColor: {
+        primary: "#65C3C8",
+        secondary: "#EF9FBC",
+        accent: "#EEAF3A",
+        neutral: "#291334",
+        "base-100": "#FAF7F5",
+        info: "#3ABFF8",
+        success: "#36D399",
+        warning: "#FBBD23",
+        error: "#F87272",
+      },
+      daisyui: {
+        themes: [
+          {
+            mytheme: {
+              primary: "#65C3C8",
+              secondary: "#EF9FBC",
+              accent: "#EEAF3A",
+              neutral: "#291334",
+              "base-100": "#FAF7F5",
+              info: "#3ABFF8",
+              success: "#36D399",
+              warning: "#FBBD23",
+              error: "#F87272",
+            },
+          },
+        ],
       },
     },
   },

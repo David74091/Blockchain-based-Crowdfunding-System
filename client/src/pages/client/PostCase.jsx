@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ethers } from "ethers";
 import { useStateContext } from "../../context";
@@ -6,7 +6,7 @@ import { checkIfImage } from "../../utils";
 import { Loader } from "../../components/index";
 
 const PostCase = (props) => {
-  let { currentUser } = props;
+  let { currentUser, setInCampaignPage } = props;
   let [message, setMessage] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +46,10 @@ const PostCase = (props) => {
       }
     });
   };
+
+  useEffect(() => {
+    setInCampaignPage(false);
+  }, []);
 
   return (
     <div style={{ padding: "3rem" }} className="w-[600px] container mx-auto">

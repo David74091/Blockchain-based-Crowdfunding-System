@@ -3,12 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import CaseService from "../../services/case.service";
 
 const ProfileCampaign = (props) => {
-  let { currentUser } = props;
+  let { currentUser, setInCampaignPage } = props;
   const [userCases, setUserCases] = useState({});
   const [pageLoading, setPageLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    setInCampaignPage(false);
     setPageLoading(true);
     CaseService.get(currentUser.user._id)
       .then((data) => {

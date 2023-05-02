@@ -50,55 +50,8 @@ const caseSchema = new mongoose.Schema({
   },
 });
 
-caseSchema.methods.getDonorsByTime = async function () {
-  const caseWithDonations = await Case.findById(this._id).populate({
-    path: "donations",
-    select: "hash amount", // 將 select 移動到與 populate 平行的位置
-    populate: {
-      path: "donor",
-      select: "username picture",
-    },
-  });
-
-  const sortedDonations = caseWithDonations.donations
-    .sort((a, b) => new Date(a.donateDate) - new Date(b.donateDate))
-    .map(({ donor, amount, donateDate, hash }) => ({
-      donor: {
-        id: donor._id,
-        username: donor.username,
-        picture: donor.picture,
-      },
-      amount,
-      donateDate,
-      hash, // 添加hash字段
-    }));
-
-  console.log("sortedDonations:", sortedDonations);
-  return sortedDonations;
-};
-
-caseSchema.methods.getTotalAmount = async function () {
-  const caseWithDonations = await Case.findById(this._id).populate("donations");
-  console.log("donations:", caseWithDonations.donations);
-  return caseWithDonations.donations.reduce(
-    (total, donation) => total + donation.amount,
-    0
-  );
-};
-
-caseSchema.virtual("donorsByAmount").get(function () {
-  return this.getDonorsByAmount();
-});
-
-caseSchema.methods.getDonorsByAmount = async function () {
-  const donorsByAmount = {
-    100: [],
-    500: [],
-    1000: [],
-    5000: [],
-  };
-
-  const populatedCase = await this.model("Case")
+caseSchema.methods.getDonationInfo = async function () {
+  const caseWithDonations = await this.model("Case")
     .findById(this._id)
     .populate({
       path: "donations",
@@ -108,24 +61,49 @@ caseSchema.methods.getDonorsByAmount = async function () {
       },
     });
 
-  populatedCase.donations.forEach(({ donor, amount, donateDate }) => {
+  const donorsByTime = caseWithDonations.donations
+    .sort((a, b) => new Date(a.donateDate) - new Date(b.donateDate))
+    .map(({ donor, amount, donateDate, hash }) => ({
+      donor: {
+        id: donor._id,
+        username: donor.username,
+        picture: donor.picture,
+      },
+      amount,
+      donateDate,
+      hash,
+    }));
+
+  const totalAmount = caseWithDonations.donations.reduce(
+    (total, donation) => total + donation.amount,
+    0
+  );
+
+  const donorsByAmount = {
+    100: [],
+    500: [],
+    1000: [],
+    5000: [],
+  };
+
+  caseWithDonations.donations.forEach(({ donor, amount, donateDate, hash }) => {
     switch (amount) {
       case 100:
-        donorsByAmount[100].push({ donor, donateDate });
+        donorsByAmount[100].push({ donor, donateDate, hash });
         break;
       case 500:
-        donorsByAmount[500].push({ donor, donateDate });
+        donorsByAmount[500].push({ donor, donateDate, hash });
         break;
       case 1000:
-        donorsByAmount[1000].push({ donor, donateDate });
+        donorsByAmount[1000].push({ donor, donateDate, hash });
         break;
       case 5000:
-        donorsByAmount[5000].push({ donor, donateDate });
+        donorsByAmount[5000].push({ donor, donateDate, hash });
         break;
     }
   });
 
-  return donorsByAmount;
+  return { donorsByTime, totalAmount, donorsByAmount };
 };
 
 const Case = mongoose.model("Case", caseSchema);

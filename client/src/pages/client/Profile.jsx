@@ -3,7 +3,7 @@ import AuthService from "../../services/auth.service";
 import UserService from "../../services/user.service";
 
 const ProfileComponent = (props) => {
-  let { currentUser, setCurrentUser } = props;
+  let { currentUser, setCurrentUser, setInCampaignPage } = props;
   const [Loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
   const [form, setForm] = useState({
@@ -49,6 +49,7 @@ const ProfileComponent = (props) => {
   };
 
   useEffect(() => {
+    setInCampaignPage(false);
     setLoading(true);
     AuthService.getUserData(currentUser.user._id)
       .then((data) => {

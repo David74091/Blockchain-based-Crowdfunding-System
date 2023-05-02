@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import CaseService from "../services/case.service";
 
 const Case = (props) => {
-  let { currentUser, setCurrentUser } = props;
+  let { currentUser, setCurrentUser, setInCampaignPage } = props;
   const navigate = useNavigate();
   const handleTakeToLogin = () => {
     navigate("/login");
   };
   let [caseData, setCaseData] = useState(null);
   useEffect(() => {
+    setInCampaignPage(false);
     console.log("Using effect.");
     let _id;
     if (currentUser) {

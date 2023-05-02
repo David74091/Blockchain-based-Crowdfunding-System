@@ -61,27 +61,39 @@ router.get("/!verified", (req, res) => {
     });
 });
 
-//根據關鍵字查找案子
+//根據關鍵字查找案子（模糊查詢）
+// 定義一個新的路由，用於通過名稱查找案例
 router.get("/findByName", (req, res) => {
+  // 當請求進入此路由時，在控制台打印日誌
   console.log("請求已進入用name尋找案子的api");
+
+  // 從請求中獲取名稱和類別查詢參數
   const name = req.query.name;
   const category = req.query.category;
 
-  let query = {};
+  // 初始化查詢對象，要求只返回已驗證的案例（Verified 為 true 的案例）
+  let query = { Verified: true };
 
+  // 如果提供了名稱參數，則將其添加到查詢對象中，使用不區分大小寫的正則表達式匹配
   if (name) {
     query.title = { $regex: name, $options: "i" };
   }
 
+  // 如果提供了類別參數，則將其添加到查詢對象中，使用 $elemMatch 和 $eq 操作符匹配
   if (category) {
     query.category = { $elemMatch: { $eq: category } };
   }
 
+  // 使用查詢對象從案例集合中查找匹配的案例
   Case.find(query)
+    .populate("proposer", ["username", "email"])
+    .populate("organize")
     .then((cases) => {
+      // 如果成功找到匹配的案例，則將 HTTP 狀態碼設置為 200 並發送案例
       res.status(200).send(cases);
     })
     .catch((err) => {
+      // 如果出現錯誤，則將 HTTP 狀態碼設置為 500 並發送錯誤
       res.status(500).send(err);
     });
 });
@@ -146,11 +158,9 @@ router.get("/getdonorsbytime/:_id", async (req, res) => {
     const theCase = await Case.findById(req.params._id).populate(
       "donations.donor"
     );
-    const donorsByTime = await theCase.getDonorsByTime();
-    const totalAmount = await theCase.getTotalAmount();
-    const donorsByAmount = await theCase.donorsByAmount;
+    const donationInfo = await theCase.getDonationInfo();
 
-    res.json({ donorsByTime, totalAmount, donorsByAmount });
+    res.json(donationInfo);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server Error" });
