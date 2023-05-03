@@ -40,23 +40,33 @@ const Page4 = ({ state }) => {
         募款總額NT $
         {donations && new Intl.NumberFormat().format(donations.totalAmount)}
       </div>
-      <div className="flex flex-row flex-wrap gap-4 justify-center mt-2">
+      <div className="mt-2 ml-14 text-[0.5em] font-light">
+        已驗證捐款可點擊至區塊鏈上查看詳細金流
+      </div>
+      <div className="flex flex-row flex-wrap gap-4 justify-center mt-10">
         {donations &&
           Array.isArray(donations.donorsByTime) &&
           donations.donorsByTime.map((donor) => {
             return (
-              <div
-                className="flex flex-col items-center border-1 rounded-xl p-4 gap-3 bg-[#E8EDED] cursor-pointer"
-                key={donor.donor.id}
-                onClick={() => handleDonorClick(donor.hash)}
-              >
-                <img
-                  className="w-20 h-20 rounded-full"
-                  src={donor.donor.picture}
-                  alt={donor.donor.username}
-                />
-                <p>{donor.donor.username}</p>
-                <p>$ {new Intl.NumberFormat().format(donor.amount)}</p>
+              <div className="indicator">
+                {donor.hash && (
+                  <span className="indicator-item badge badge-primary">
+                    已驗證
+                  </span>
+                )}
+                <div
+                  className="flex flex-col items-center border-1 rounded-xl p-4 gap-3 bg-[#E8EDED] cursor-pointer"
+                  key={donor.donor.id}
+                  onClick={() => handleDonorClick(donor.hash)}
+                >
+                  <img
+                    className="w-20 h-20 rounded-full"
+                    src={donor.donor.picture}
+                    alt={donor.donor.username}
+                  />
+                  <p>{donor.donor.username}</p>
+                  <p>$ {new Intl.NumberFormat().format(donor.amount)}</p>
+                </div>
               </div>
             );
           })}

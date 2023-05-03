@@ -11,15 +11,19 @@ import DonationService from "../../services/donation.service";
 import { loveIcon } from "../../assets";
 import { calculateBarPercentage, daysLeft } from "../../utils";
 
-import { PageLoading } from "../../components";
+import { PageLoading, DonationAlert, CustomAlert } from "../../components";
 
-const CampaignDetails = () => {
+const CampaignDetails = ({ setInCampaignPage }) => {
   const { state } = useLocation();
   const navigate = useNavigate();
   // const { donate, getDonations, contract, address } = useStateContext();
   const [pageLoading, setPageLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [donations, setDonations] = useState(null);
+  const [showDonationAlert, setShowDonationAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [donationAlertCallback, setDonationAlertCallback] = useState(null);
+  const [alertAmount, setAlertAmount] = useState();
   //按鈕loading
 
   function useMultiState(initialState, callback) {
@@ -53,22 +57,32 @@ const CampaignDetails = () => {
       alert("已超過募款金額");
       return;
     }
-    setBtnLoading({ [amount]: true });
-    alert(`確認捐款${amount}?`);
-    try {
-      // setBtnLoading(true); // 這一行應該刪除
-      await DonationService.pushDonation(
-        state._id,
-        currentUser.user._id,
-        amount
-      );
-      alert("捐款成功！");
-    } catch (error) {
-      console.log("捐款失敗", error);
-    } finally {
-      setBtnLoading({ [amount]: false });
-      window.location.reload();
-    }
+    setAlertAmount(amount);
+    setShowDonationAlert(true);
+    // 將捐款邏輯移到單獨的函數中
+    const proceedDonation = async () => {
+      setBtnLoading({ [amount]: true });
+      setShowDonationAlert(false);
+      try {
+        await DonationService.pushDonation(
+          state._id,
+          currentUser.user._id,
+          amount
+        );
+        setShowAlert(true);
+      } catch (error) {
+        console.log("捐款失敗", error);
+      } finally {
+        setBtnLoading({ [amount]: false });
+        setTimeout(() => {
+          setShowAlert(false);
+          window.location.reload(); // Hide the custom alert after a delay
+        }, 1500);
+      }
+    };
+
+    // 傳遞proceedDonation作為回調函數
+    setDonationAlertCallback(() => proceedDonation);
   };
 
   //處理提案人頭像點擊事件
@@ -87,6 +101,7 @@ const CampaignDetails = () => {
   const remainingDays = daysLeft(state.deadline);
 
   useEffect(() => {
+    setInCampaignPage(false);
     const fetchDonations = async () => {
       try {
         setPageLoading(true);
@@ -120,6 +135,14 @@ const CampaignDetails = () => {
 
   return (
     <div className="flex justify-center">
+      {showAlert && <CustomAlert message="捐款成功" type="sucess" />}
+      {showDonationAlert && (
+        <DonationAlert
+          onClose={() => setShowDonationAlert(false)}
+          onConfirm={donationAlertCallback}
+          amount={alertAmount}
+        />
+      )}
       <div className="flex flex-row w-[1024px]">
         <div className="mt-10 w-3/4">
           <div className="flex flex-col">
@@ -128,8 +151,8 @@ const CampaignDetails = () => {
                 {state.title}
               </h1>
 
-              {state.category.map((categoies) => (
-                <button className="badge badge-accent ml-2">{categoies}</button>
+              {[...new Set(state.category)].map((category) => (
+                <button className="badge badge-accent ml-2">{category}</button>
               ))}
             </div>
             <h1 className="mt-3">{state.description}</h1>

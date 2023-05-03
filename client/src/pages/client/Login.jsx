@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AuthService from "../../services/auth.service";
+import { arrowBack } from "../../assets";
+import { CustomAlert } from "../../components";
 
 const Login = (props) => {
   let { currentUser, setCurrentUser, setInCampaignPage } = props;
@@ -19,6 +21,8 @@ const Login = (props) => {
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
   };
+  const [showAlert, setShowAlert] = useState(false);
+
   const handleLogin = () => {
     AuthService.login(email, password)
       .then((response) => {
@@ -26,53 +30,88 @@ const Login = (props) => {
         if (response.data.token) {
           localStorage.setItem("user", JSON.stringify(response.data));
         }
-        window.alert("登入成功");
+        setShowAlert(true); // Show the custom alert
+
         setCurrentUser(AuthService.getCurrentUser());
-        navigate("/profile");
+        setTimeout(() => {
+          setShowAlert(false); // Hide the custom alert after a delay
+          navigate("/profile");
+        }, 1000);
       })
       .catch((error) => {
         console.log(error.response);
         setMessage(error.response.data);
       });
   };
+  const handleRegisterClick = () => {
+    navigate("/register");
+  };
+
+  const handleArrowBackClick = () => {
+    navigate("/");
+  };
 
   return (
-    <div>
-      <div className="w-full h-full">幹你娘</div>
+    <div className="flex flex-row h-[1000px] bg-base-100">
+      {showAlert && <CustomAlert message="登入成功" type="succes" />}
+      <div className="flex flex-col items-center w-1/2 animate-fade-in-from-left-forwards opacity-0 -translate-x-16 relative">
+        <div
+          className="cursor-pointer absolute top-20 left-[31%]"
+          onClick={handleArrowBackClick}
+        >
+          <img src={arrowBack} />
+        </div>
+        <div className="mt-64 ml-20 ">
+          <div className="font-medium text-3xl">歡迎回來</div>
+          <div className="mt-8 ml-1">立即登入並開始您的區塊鏈募款體驗</div>
+        </div>
+      </div>
       <div
         style={{ padding: "3rem" }}
-        className="col-md-12 w-[600px] container mx-auto"
+        className="flex justify-center w-1/2 col-md-12 w-[600px] container mx-auto rounded-tl-[60px] bg-white shadow-md relative"
       >
-        <div>
-          {message && (
-            <div className="alert alert-danger" role="alert">
-              {message}
+        <div className="max-w-[400px] w-full">
+          <div>
+            <div className="flex justify-end mb-40">
+              <button className="btn btn-ghost" onClick={handleRegisterClick}>
+                沒帳號？ 立即註冊
+              </button>
             </div>
-          )}
-          <div className="form-group">
-            <label htmlFor="username">信箱</label>
-            <input
-              onChange={handleChangeEmail}
-              type="text"
-              className="form-control"
-              name="email"
-            />
-          </div>
-          <br />
-          <div className="form-group">
-            <label htmlFor="password">密碼</label>
-            <input
-              onChange={handleChangePassword}
-              type="password"
-              className="form-control"
-              name="password"
-            />
-          </div>
-          <br />
-          <div className="form-group">
-            <button onClick={handleLogin} className="btn btn-primary btn-block">
-              <span>登入</span>
-            </button>
+            {message && (
+              <div className="alert alert-danger" role="alert">
+                {message}
+              </div>
+            )}
+            <div className="form-group">
+              <label htmlFor="username">信箱</label>
+              <input
+                onChange={handleChangeEmail}
+                type="text"
+                className="form-control mt-1"
+                name="email"
+              />
+            </div>
+            <br />
+            <div className="form-group">
+              <label htmlFor="password">密碼</label>
+              <input
+                onChange={handleChangePassword}
+                type="password"
+                className="form-control mt-1"
+                name="password"
+              />
+            </div>
+            <br />
+            <div className="divider absolute left-0 right-0 mt-20"></div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={handleLogin}
+                className="w-[6rem] btn btn-primary mt-40"
+              >
+                <span>登入</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

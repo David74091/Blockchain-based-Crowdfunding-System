@@ -151,9 +151,9 @@ const Page3 = ({ state, currentUser }) => {
           onChange={handleMessageChange}
         ></textarea>
         <button
-          className={`btn  btn-accent ${
+          className={`btn btn-primary ${
             btnLoading.message ? "loading" : ""
-          } self-end px-4 py-2 mt-2 ml-auto text-white bg-blue-600 rounded-md hover:bg-blue-700`}
+          } self-end px-4 py-2 mt-2 ml-auto rounded-md hover:bg-blue-700`}
           onClick={handleMessageClick}
         >
           {!btnLoading.message ? "送出" : ""}

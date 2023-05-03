@@ -7,12 +7,19 @@ module.exports = {
     },
     //
     animation: {
+      "fade-in-from-left-forwards":
+        "fadeInFromLeftForwards 1s ease-out forwards",
+
       "fade-in-forwards": "fadeInForwards 1.5s ease-out forwards",
       "fade-in-from-left": "fadeInFromLeft 1s ease-out",
       "fade-in": "fadeIn 1s ease-out",
       "fade-in-from-left": "fadeInFromLeft 1s ease-out",
     },
     keyframes: {
+      fadeInFromLeftForwards: {
+        "0%": { opacity: "0", transform: "translateX(-50px)" },
+        "100%": { opacity: "1", transform: "translateX(0)" },
+      },
       fadeIn: {
         "0%": { opacity: "0" },
         "100%": { opacity: "1" },
@@ -28,6 +35,8 @@ module.exports = {
     },
 
     extend: {
+      transform: ["responsive"],
+      skew: ["responsive"],
       backgroundColor: {
         primary: "#65C3C8",
         secondary: "#EF9FBC",

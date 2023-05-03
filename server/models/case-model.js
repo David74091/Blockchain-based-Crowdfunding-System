@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const caseSchema = new mongoose.Schema({
   id: { type: String },
-  bId: { type: String, required: true },
+  bId: { type: String, default: null },
   title: {
     type: String,
     required: true,

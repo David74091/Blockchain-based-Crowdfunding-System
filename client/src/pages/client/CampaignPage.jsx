@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { DisplayCases, PageLoading } from "../../components";
 import { notion } from "../../assets";
 
@@ -32,7 +32,9 @@ const CampaignPage = (props) => {
   }
   return (
     <div>
-      <DisplayCases title="All Cases" Loading={Loading} caseData={caseData} />
+      <div className="">
+        <DisplayCases title="All Cases" Loading={Loading} caseData={caseData} />
+      </div>
     </div>
   );
 };

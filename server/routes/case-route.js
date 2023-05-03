@@ -14,6 +14,7 @@ router.use((req, res, next) => {
 router.put("/verified/:_id", async (req, res) => {
   console.log("請求已進入驗證提案的api");
   let { _id } = req.params;
+  let { _bId } = req.body;
   let cases = await Case.findById({ _id });
   if (!cases) {
     res.status(404);
@@ -22,7 +23,7 @@ router.put("/verified/:_id", async (req, res) => {
   if (cases.Verified === true) {
     res.status(404).send("請勿重複驗證");
   } else {
-    Case.findByIdAndUpdate(_id, { Verified: true }, { new: true })
+    Case.findByIdAndUpdate(_id, { Verified: true, bId: _bId }, { new: true })
       .then(() => {
         res.status(200).send("成功驗證");
       })
@@ -176,7 +177,6 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let {
-    bId,
     title,
     description,
     category,
@@ -195,7 +195,6 @@ router.post("/", async (req, res) => {
   // }
 
   let newCase = new Case({
-    bId,
     title,
     description,
     category,

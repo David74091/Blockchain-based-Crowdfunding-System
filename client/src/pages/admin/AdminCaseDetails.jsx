@@ -21,7 +21,8 @@ const AdminCaseDetails = (props) => {
   // });
 
   const navigate = useNavigate();
-  const { donate, getDonations, contract, address } = useStateContext();
+  const { donate, getDonations, contract, address, fetchNumberOfCampaigns } =
+    useStateContext();
 
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
@@ -79,7 +80,8 @@ const AdminCaseDetails = (props) => {
         state.image
       );
 
-      await CaseService.verifiedCase(state._id).then(() => {
+      const _bId = await fetchNumberOfCampaigns();
+      await CaseService.verifiedCase(state._id, _bId).then(() => {
         alert("已成功驗證");
       });
 

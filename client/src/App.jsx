@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
+
 import {
   Home,
   Register,
@@ -31,23 +32,15 @@ function App() {
   const [showNavBar, setShowNavBar] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
 
+  // Replace the original handleRouteChange with the new one
+  const location = useLocation();
+
   useEffect(() => {
-    const handleRouteChange = () => {
-      const shouldHide =
-        window.location.pathname === "/register" ||
-        window.location.pathname === "/login";
-      setShowNavBar(!shouldHide);
-      setShowFooter(!shouldHide);
-    };
-
-    handleRouteChange(); // Call it once on mount
-    window.addEventListener("popstate", handleRouteChange);
-
-    return () => {
-      // Clean up the listener when the component unmounts
-      window.removeEventListener("popstate", handleRouteChange);
-    };
-  }, []);
+    const shouldHide =
+      location.pathname === "/register" || location.pathname === "/login";
+    setShowNavBar(!shouldHide);
+    setShowFooter(!shouldHide);
+  }, [location]);
 
   let [currentUser, setCurrentUser] = useState(AuthService.getCurrentUser());
   console.log("currentuser:", currentUser);
@@ -158,7 +151,11 @@ function App() {
             />
           }
         />
-        <Route exact path="/:title" element={<CampaignDetails />} />
+        <Route
+          exact
+          path="CampaignPage/:title"
+          element={<CampaignDetails setInCampaignPage={setInCampaignPage} />}
+        />
 
         <Route
           exact

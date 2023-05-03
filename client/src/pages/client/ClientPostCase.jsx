@@ -676,8 +676,6 @@ const ClientPoastCase = (props) => {
       setBtnLoading(true);
 
       try {
-        const blockChainId = await fetchNumberOfCampaigns();
-        setBId(blockChainId);
         const response = await OrganizeService.createOrganize(
           currentUser.user._id,
           organizeImage,
@@ -692,7 +690,6 @@ const ClientPoastCase = (props) => {
         const organizeId = response._id;
 
         const caseResponse = await CaseService.postCase(
-          bId,
           form2.title,
           form2.description,
           category,

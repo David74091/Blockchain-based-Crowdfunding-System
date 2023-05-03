@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import FundCard from "./FundCard";
 
 // import { calculateBarPercentage, daysLeft } from "../utils";
@@ -16,22 +16,35 @@ const DisplayCases = ({ title, isLoading, caseData }) => {
     return <div>沒有資料</div>;
   }
   return (
-    <div className=" mt-[50px]">
-      <h1 className="font-epilogue font-semibold text-[18px] text-left ml-[50px]">
-        提案數量：({caseData.length})
-      </h1>
-      <div className="container mx-auto flex flex-wrap gap-[50px] place-content-center">
-        {caseData &&
-          caseData.length > 0 &&
-          caseData
-            .map((cases) => (
-              <FundCard
-                key={cases.id}
-                cases={cases} //等同於：<FundCard id={cases.id} title={cases.title} description={cases.description} />
-                handleClick={() => handleNavigate(cases)}
-              />
-            ))
-            .reverse()}
+    <div className="mt-10">
+      <div className="container mx-auto flex flex-col flex-wrap place-content-center">
+        <div className="animate-fade-in-from-left-forwards opacity-0 -translate-x-16">
+          <p className="font-bold text-[2rem] mt-10">瀏覽募款提案</p>
+          <p className="font-light text-[1.5rem] mt-2">
+            世界各地的人們 為他們的所需 募集資金
+          </p>
+          <Link to="/clientpostcase" className="btn btn-primary mt-5">
+            我也需要募集資金
+          </Link>
+        </div>
+        <div className="divider mt-20"></div>
+        <p className="font-bold text-[2rem] mt-10 mb-10 opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
+          熱門提案
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
+          {caseData &&
+            caseData.length > 0 &&
+            caseData
+              .map((cases) => (
+                <FundCard
+                  key={cases.id}
+                  cases={cases} //等同於：<FundCard id={cases.id} title={cases.title} description={cases.description} />
+                  handleClick={() => handleNavigate(cases)}
+                />
+              ))
+              .reverse()}
+        </div>
+
         <br />
       </div>
     </div>

@@ -88,7 +88,7 @@ const CashFlowDashBoard = () => {
 
     if (userConfirmed) {
       try {
-        let n = parseInt(pId) + 1;
+        let n = parseInt(pId) - 1;
         let newPID = n.toString();
         let hash = await donate(newPID, fetchedAmountUSD.toString());
         console.log("hash:", hash);

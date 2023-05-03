@@ -10,3 +10,5 @@ export { default as CountBox } from "./CountBox";
 export { default as StripeBuyButton } from "./StripeBuyButton";
 export { default as Footer } from "./Footer";
 export { default as PageLoading } from "./PageLoading";
+export { default as CustomAlert } from "./CustomAlert";
+export { default as DonationAlert } from "./DonationAlert";

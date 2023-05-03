@@ -4,7 +4,6 @@ const API_URL = "http://localhost:8080/api/cases";
 class CaseService {
   //axios將提案資料與提案單位資料一起傳向後端
   postCase(
-    bId,
     title,
     description,
     category,
@@ -26,7 +25,6 @@ class CaseService {
       .post(
         API_URL,
         {
-          bId,
           title,
           description,
           category,
@@ -133,7 +131,7 @@ class CaseService {
     );
   }
 
-  verifiedCase(_id) {
+  verifiedCase(_id, _bId) {
     let token;
     if (localStorage.getItem("user")) {
       token = JSON.parse(localStorage.getItem("user")).token;
@@ -142,7 +140,7 @@ class CaseService {
     }
     return axios.put(
       API_URL + "/verified/" + _id,
-      {},
+      { _bId },
       {
         headers: { Authorization: token },
       }
