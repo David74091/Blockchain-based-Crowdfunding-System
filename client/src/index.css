@@ -12,6 +12,18 @@
   );
 }
 
+.reset-heading-styles h1,
+.reset-heading-styles h2,
+.reset-heading-styles h3,
+.reset-heading-styles h4,
+.reset-heading-styles h5,
+.reset-heading-styles h6 {
+  font-size: revert;
+  font-weight: revert;
+  margin-top: revert;
+  margin-bottom: revert;
+}
+
 input[type="date"]::-webkit-calendar-picker-indicator {
   cursor: pointer;
   filter: invert(0.8);

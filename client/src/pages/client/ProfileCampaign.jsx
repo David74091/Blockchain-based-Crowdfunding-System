@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import CaseService from "../../services/case.service";
 
 const ProfileCampaign = (props) => {
@@ -14,7 +14,6 @@ const ProfileCampaign = (props) => {
     CaseService.get(currentUser.user._id)
       .then((data) => {
         setUserCases(data.data);
-        console.log("找尋到的我的提案：", userCases);
       })
       .catch((error) => {
         console.log("抓取我的提案失敗", error);
@@ -23,9 +22,17 @@ const ProfileCampaign = (props) => {
         setPageLoading(false);
       });
   }, []);
-
+  console.log("找尋到的我的提案：", userCases);
   const handleClick = (userCase) => {
+    if (!userCase.Verified) {
+      alert("管理員尚未驗證");
+      return;
+    }
     navigate(userCase.title, { state: userCase });
+  };
+
+  const handleUpdateClick = (userCase) => {
+    navigate("/UpdatePage", { state: userCase });
   };
 
   if (pageLoading) {
@@ -50,7 +57,8 @@ const ProfileCampaign = (props) => {
             <tr>
               <th></th>
               <th>提案名稱</th>
-              <th>提案金額</th>
+              <th>目標金額</th>
+              <th>已募金額</th>
               <th>狀態</th>
               <th>操作</th>
             </tr>
@@ -66,17 +74,31 @@ const ProfileCampaign = (props) => {
                       style={{ cursor: "pointer" }}
                       onClick={() => handleClick(userCase)}
                       key={userCase._id}
+                      className="flex"
                     >
-                      {userCase.title}
+                      <div className="flex flex-col items-center">
+                        <img
+                          className="h-[100px] rounded-2xl"
+                          src={userCase.image}
+                        />
+                        {userCase.title}
+                      </div>
                     </td>
                     <td>{userCase.target}</td>
+                    <td>{userCase.totalAmount}</td>
+
                     <td>{userCase.Verified ? "已驗證" : "管理員驗證中"}</td>
                     <td>
                       {userCase.Verified && (
-                        <button className="btn btn-primary">編輯提案</button>
+                        <button
+                          onClick={() => handleUpdateClick(userCase)}
+                          className="btn btn-primary"
+                        >
+                          更新進度
+                        </button>
                       )}
                       {!userCase.Verified && (
-                        <button className="btn btn-primary">申請撤銷</button>
+                        <button className="btn btn-secondary">修改內容</button>
                       )}
                     </td>
                   </tr>

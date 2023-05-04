@@ -17,6 +17,7 @@ import {
   OrganizeInfo,
   DonationHistory,
   CampaignPage,
+  UpdatePage,
 } from "./pages/index";
 
 import { NavBar, Case, Footer } from "./components/index";
@@ -163,7 +164,11 @@ function App() {
           element={<AdminCaseDetails />}
         />
 
-        <Route exact path="profilecases/:title" element={<CampaignDetails />} />
+        <Route
+          exact
+          path="profilecases/:title"
+          element={<CampaignDetails setInCampaignPage={setInCampaignPage} />}
+        />
         <Route
           exact
           path="/clientpostcase"
@@ -209,6 +214,16 @@ function App() {
           path="/DonationHistory"
           element={
             <DonationHistory
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+            />
+          }
+        />
+        <Route
+          exact
+          path="/UpdatePage"
+          element={
+            <UpdatePage
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
             />

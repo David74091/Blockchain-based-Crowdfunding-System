@@ -11,6 +11,7 @@ export { default as OrganizeInfo } from "./client/OrganizeInfo";
 export { default as ClientPostCase } from "./client/ClientPostCase";
 export { default as DonationHistory } from "./client/DonationHistory";
 export { default as CampaignPage } from "./client/CampaignPage";
+export { default as UpdatePage } from "./client/UpdatePage";
 //admin
 
 export { default as AdminCheckCase } from "./admin/AdminCheckCase";

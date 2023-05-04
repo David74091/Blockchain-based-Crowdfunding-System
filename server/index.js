@@ -9,6 +9,7 @@ const userRoute = require("./routes").user;
 const organizeRoute = require("./routes").organize;
 const messageRoute = require("./routes").message;
 const donationRoute = require("./routes").donation;
+const updateRoute = require("./routes").update;
 const passport = require("passport");
 require("./config/passport")(passport);
 const cors = require("cors");
@@ -35,6 +36,7 @@ app.use("/api/user", userRoute);
 app.use("/api/message", messageRoute);
 app.use("/api/organize", organizeRoute);
 app.use("/api/donation", donationRoute);
+app.use("/api/update", updateRoute);
 app.use(
   "/api/cases",
   // passport.authenticate("jwt", { session: false }),

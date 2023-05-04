@@ -43,19 +43,19 @@ const Page4 = ({ state }) => {
       <div className="mt-2 ml-14 text-[0.5em] font-light">
         已驗證捐款可點擊至區塊鏈上查看詳細金流
       </div>
-      <div className="flex flex-row flex-wrap gap-4 justify-center mt-10">
+      <div className="flex flex-row flex-wrap gap-5 justify-center mt-10">
         {donations &&
           Array.isArray(donations.donorsByTime) &&
           donations.donorsByTime.map((donor) => {
             return (
               <div className="indicator">
                 {donor.hash && (
-                  <span className="indicator-item badge badge-primary">
+                  <span className="indicator-item badge badge-secondary">
                     已驗證
                   </span>
                 )}
                 <div
-                  className="flex flex-col items-center border-1 rounded-xl p-4 gap-3 bg-[#E8EDED] cursor-pointer"
+                  className="flex flex-col items-center border-1 rounded-xl p-4 gap-3 bg-base-200 cursor-pointer"
                   key={donor.donor.id}
                   onClick={() => handleDonorClick(donor.hash)}
                 >

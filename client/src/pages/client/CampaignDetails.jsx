@@ -134,7 +134,7 @@ const CampaignDetails = ({ setInCampaignPage }) => {
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
       {showAlert && <CustomAlert message="捐款成功" type="sucess" />}
       {showDonationAlert && (
         <DonationAlert
@@ -144,10 +144,10 @@ const CampaignDetails = ({ setInCampaignPage }) => {
         />
       )}
       <div className="flex flex-row w-[1024px]">
-        <div className="mt-10 w-3/4">
+        <div className="mt-10 w-4/6">
           <div className="flex flex-col">
             <div className="flex content-center items-center">
-              <h1 style={{ fontSize: "2rem" }} className="text-mycolor ">
+              <h1 className="text-mycolor text-[2.5rem] font-medium">
                 {state.title}
               </h1>
 
@@ -158,9 +158,9 @@ const CampaignDetails = ({ setInCampaignPage }) => {
             <h1 className="mt-3">{state.description}</h1>
           </div>
           <div className="divider"></div>
-          <div className="h-[250px] w-full flex md:flex-row flex-col mt-10">
+          <div className="h-[450px] w-full flex flex-col mt-10">
             <div className="flex w-full">
-              <div className="w-3/6 rounded-xl">
+              <div className="w-full h-full rounded-xl">
                 <img
                   src={state.image}
                   alt="campaign"
@@ -168,7 +168,7 @@ const CampaignDetails = ({ setInCampaignPage }) => {
                 />
               </div>
 
-              <div className="w-3/6 ml-10">
+              {/* <div className="w-3/6 ml-10">
                 <div className="flex flex-col ">
                   <div className="flex flex-row mb-3">
                     <div className="text-mycolor ">提案人：</div>
@@ -206,11 +206,30 @@ const CampaignDetails = ({ setInCampaignPage }) => {
                   <div className="mt-2">截止日期：{state.deadline}</div>
                   <div className="mt-1">剩餘時間：{remainingDays}天</div>
                 </div>
+              </div> */}
+            </div>
+            <div
+              onClick={handlesOrganizClick}
+              className="flex flex-row items-center mt-3 mb-2 cursor-pointer"
+            >
+              <div className="m-2 rounded-full h-[40px] w-[40px]">
+                <img
+                  className="rounded-full object-contain h-[40px] w-[40px]"
+                  src={state.organize.organizeImage}
+                />
               </div>
+              <div className="text-[1.25rem] font-medium">
+                {state.organize.organizeName}
+              </div>
+
+              <div className=" text-mycolor ml-2 text-[1.25rem]">提案</div>
             </div>
           </div>
+          <div className="divider mt-16"></div>
 
-          <div className="flex flex-col mt-10">
+          {/* //下半部分 */}
+
+          <div className="flex flex-col mt-6">
             <div className="tabs w-full flex justify-center">
               <a
                 className={`tab tab-lg tab-lifted${
@@ -257,25 +276,139 @@ const CampaignDetails = ({ setInCampaignPage }) => {
             </Suspense>
           </div>
         </div>
-        <div className="w-1/4 flex flex-col mt-10 ml-8">
-          <div className="border-2 rounded">
-            <div
-              onClick={handlesOrganizClick}
-              className="flex flex-col items-center mt-4 mb-2 cursor-pointer"
-            >
-              <div
-                style={{ fontSize: "1.25rem" }}
-                className="font-semibold text-mycolor"
-              >
-                提案人
+        {/* 右半邊 */}
+        <div className="w-2/6 flex flex-col mt-[194px] ml-8 rounded-xl shadow-lg">
+          <div className="mx-4 mt-[2rem]">
+            <div className="flex flex-col ">
+              <div className="flex flex-row">
+                <div className="flex">
+                  <div className="mt-2 font-light text-gray-500 mr-1">已募</div>
+                  {donations && donations.totalAmount && (
+                    <div className="text-mycolor text-[1.5rem] font-bold">
+                      ${new Intl.NumberFormat().format(donations.totalAmount)}
+                    </div>
+                  )}
+                </div>
+                <div className="flex ">
+                  <div className="mt-2 ml-1 font-light text-gray- mr-1">
+                    目標
+                  </div>
+
+                  <div className="text-mycolor mt-2 text-gray-500	">
+                    ${new Intl.NumberFormat().format(state.target)}
+                  </div>
+                  <div className="mt-2 ml-1 font-light text-gray-500"> NT</div>
+                </div>
               </div>
-              <div className="m-2 rounded">
-                <img className="rounded " src={state.organize.organizeImage} />
+
+              <div className="relative w-full h-[5px] bg-gray-200 mt-3 flex-2 rounded-md">
+                <div
+                  className="absolute h-full bg-[#65C3C8] rounded-md"
+                  style={
+                    donations && {
+                      width: `${calculateBarPercentage(
+                        state.target,
+                        donations.totalAmount
+                      )}%`,
+                      maxWidth: "100%",
+                    }
+                  }
+                ></div>
               </div>
-              <div>{state.organize.organizeName}</div>
+              <div className="flex justify-between mt-3 text-[0.75rem] text-gray-500">
+                <div>{donations && donations.donorsByTime.length} 筆捐款</div>
+                <div>{state.deadline} 截止</div>
+              </div>
+
+              <div className="divider"></div>
+            </div>
+            <div className="flex flex-col justify-center">
+              <div className="">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="mt-3 font-bold text-[1.5rem]">NT $100</div>
+                  <button
+                    className={`px-5 btn btn-accent text-[1.1rem] ${
+                      btnLoading[100] ? "loading" : ""
+                    }`}
+                    onClick={() => handleDonation(100)}
+                    disabled={completeDonation}
+                  >
+                    {completeDonation ? "募款結束" : "捐款"}
+                  </button>
+                  <div className="flex gap-1 mb-3 text-[0.75rem] text-gray-500">
+                    {donations && donations.donorsByAmount && (
+                      <>{donations.donorsByAmount[100].length} 人捐款</>
+                    )}
+                  </div>
+                </div>
+                <div className="divider"></div>
+              </div>
+
+              <div className="">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="mt-3 font-bold text-[1.5rem]">NT $500</div>
+                  <button
+                    className={`px-5 btn btn-accent text-[1.1rem] ${
+                      btnLoading[500] ? "loading" : ""
+                    }`}
+                    onClick={() => handleDonation(500)}
+                    disabled={completeDonation}
+                  >
+                    {completeDonation ? "募款結束" : "捐款"}
+                  </button>
+                  <div className="flex flex-row gap-1 mb-3 text-[0.75rem] text-gray-500">
+                    {donations && donations.donorsByAmount && (
+                      <>{donations.donorsByAmount[500].length} 人捐款</>
+                    )}
+                  </div>
+                </div>
+                <div className="divider"></div>
+              </div>
+
+              <div className="">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="mt-3 font-bold text-[1.5rem]">NT $1000</div>
+                  <button
+                    className={`px-5 btn btn-accent text-[1.1rem] ${
+                      btnLoading[1000] ? "loading" : ""
+                    }`}
+                    onClick={() => handleDonation(1000)}
+                    disabled={completeDonation}
+                  >
+                    {completeDonation ? "募款結束" : "捐款"}
+                  </button>
+                  <div className="flex flex-row gap-1 mb-3 text-[0.75rem] text-gray-500">
+                    {donations && donations.donorsByAmount && (
+                      <>{donations.donorsByAmount[1000].length} 人捐款</>
+                    )}
+                  </div>
+                </div>
+                <div className="divider"></div>
+              </div>
+
+              <div className="mb-10">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="mt-3 font-bold text-[1.5rem]">NT $5000</div>
+                  <button
+                    className={`px-5 btn btn-accent text-[1.1rem] ${
+                      btnLoading[5000] ? "loading" : ""
+                    }`}
+                    onClick={() => handleDonation(5000)}
+                    disabled={completeDonation}
+                  >
+                    {completeDonation ? "募款結束" : "捐款"}
+                  </button>
+                  <div className="flex gap-1 mb-3 text-[0.75rem] text-gray-500">
+                    {donations && donations.donorsByAmount && (
+                      <>{donations.donorsByAmount[5000].length} 人捐款</>
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <br />
+
+          {/* <br />
           <div className="border-2 rounded">
             <div className="flex flex-col items-center gap-3">
               <div className="mt-3 font-bold text-[1.5rem]">NT $100</div>
@@ -366,7 +499,7 @@ const CampaignDetails = ({ setInCampaignPage }) => {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

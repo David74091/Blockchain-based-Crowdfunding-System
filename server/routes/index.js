@@ -5,4 +5,5 @@ module.exports = {
   message: require("./message-route"),
   organize: require("./organize-route"),
   donation: require("./donation-route"),
+  update: require("./update-route"),
 };

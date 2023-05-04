@@ -28,6 +28,8 @@ const CashFlowDashBoard = () => {
         },
       };
 
+      console.log(typeof amount);
+
       const response = await fetch(
         `https://api.apilayer.com/exchangerates_data/convert?to=USD&from=TWD&amount=${amount}`,
         requestOptions

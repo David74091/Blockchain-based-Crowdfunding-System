@@ -139,26 +139,25 @@ const Page3 = ({ state, currentUser }) => {
     return <PageLoading />;
   }
   return (
-    <div className="h-[1280px] max-w-[1024px]">
-      <h4 className="font-epilogue font-semibold text-lg text-black uppercase mb-4">
-        {`問與答(${messages.length})`}
-      </h4>
-      <div className="w-full max-w-xl flex flex-col justify-center items-center mx-auto space-y-6">
+    <div className="flex flex-col items-start h-[1280px] max-w-[1024px] mt-10">
+      <div className="w-full max-w-xl flex flex-col justify-center items-start space-y-6">
         <textarea
           className="textarea textarea-bordered max-w-xl w-full resize-none border rounded-md p-2"
-          placeholder="請輸入問題"
+          placeholder="留下問題或鼓勵"
           value={message}
           onChange={handleMessageChange}
         ></textarea>
         <button
           className={`btn btn-primary ${
             btnLoading.message ? "loading" : ""
-          } self-end px-4 py-2 mt-2 ml-auto rounded-md hover:bg-blue-700`}
+          } self-end px-4 py-2 mt-3 ml-auto hover:bg-blue-700`}
           onClick={handleMessageClick}
         >
           {!btnLoading.message ? "送出" : ""}
         </button>
-        <h2 className="text-xl">留言列表：</h2>
+        <h2 className="text-[1.25rem] font-bold">
+          {`留言列表(${messages.length})`}
+        </h2>
         {messages
           .slice()
           .reverse()
@@ -171,9 +170,9 @@ const Page3 = ({ state, currentUser }) => {
             return (
               <div
                 key={message._id}
-                className="w-full md:w-[360px] my-4 relative"
+                className="w-full md:w-[360px] mt-5 relative"
               >
-                <div className="flex items-start space-x-4 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
+                <div className="flex items-start space-x-4">
                   <img
                     className="w-12 h-12 rounded-full"
                     src={message.userId.picture}
@@ -186,6 +185,7 @@ const Page3 = ({ state, currentUser }) => {
                       <p className="text-lg font-medium text-gray-800 dark:text-gray-100">
                         {message.userId.username}
                       </p>
+
                       {!message.reply[0] &&
                         currentUser?.user?._id == state.proposer._id && (
                           <button
@@ -196,15 +196,15 @@ const Page3 = ({ state, currentUser }) => {
                           </button>
                         )}
                     </div>
-                    <p className="text-gray-600 dark:text-gray-400">
+                    <p className="text-xs text-gray-500 text-gray-300">
+                      ● {messageTimeDifference}
+                    </p>
+                    <p className="text-gray-600 dark:text-gray-400 mt-2">
                       {message.message}
                     </p>
                   </div>
                 </div>
                 <div className="static">
-                  <p className="text-xs text-gray-500 dark:text-gray-300 ml-4">
-                    {messageTimeDifference}
-                  </p>
                   {showReplyInput === message._id && (
                     <div className="mt-2">
                       <textarea
@@ -225,7 +225,7 @@ const Page3 = ({ state, currentUser }) => {
                   )}
                   {message.reply[0] && (
                     <div className="ml-8 relative">
-                      <div className="absolute top-0  w-0.5 h-full bg-gray-300"></div>
+                      <div className="absolute top-0 w-0.5 h-full bg-gray-300"></div>
                       <div className="">
                         <div className="mt-4">
                           <div className="flex items-start space-x-4 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">

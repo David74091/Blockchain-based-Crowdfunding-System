@@ -140,17 +140,26 @@ router.get("/AllCases", (req, res) => {
 });
 
 //根據提案人的id尋找提案
-router.get("/proposer/:_proposer_id", (req, res) => {
+router.get("/proposer/:_proposer_id", async (req, res) => {
   console.log("請求已進入根據提案人的id尋找提案的API");
+
   let { _proposer_id } = req.params;
-  Case.find({ proposer: _proposer_id }) //查找資料庫內instructor == _proposer_id的資料
-    // .populate("proposer", ["username", "email"])
-    .then((data) => {
-      res.status(200).send(data);
-    })
-    .catch((err) => {
-      res.status(500).send("找不到案子資訊", err);
+  try {
+    const cases = await Case.find({ proposer: _proposer_id }); //查找資料庫內proposer == _proposer_id的資料
+
+    const casesWithTotalAmountPromises = cases.map(async (c) => {
+      const donationInfo = await c.getDonationInfo();
+      const totalAmount = donationInfo.totalAmount;
+      return { ...c.toObject(), totalAmount };
     });
+
+    const casesWithTotalAmount = await Promise.all(
+      casesWithTotalAmountPromises
+    );
+    res.json(casesWithTotalAmount);
+  } catch (err) {
+    res.send(err);
+  }
 });
 
 //取得case的捐款名單
