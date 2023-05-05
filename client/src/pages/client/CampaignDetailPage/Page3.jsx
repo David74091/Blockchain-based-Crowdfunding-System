@@ -150,7 +150,7 @@ const Page3 = ({ state, currentUser }) => {
         <button
           className={`btn btn-primary ${
             btnLoading.message ? "loading" : ""
-          } self-end px-4 py-2 mt-3 ml-auto hover:bg-blue-700`}
+          } self-end px-4 py-2 mt-3 ml-auto hover:text-[#291334] focus:text-[#291334]`}
           onClick={handleMessageClick}
         >
           {!btnLoading.message ? "送出" : ""}
@@ -168,11 +168,33 @@ const Page3 = ({ state, currentUser }) => {
               : "";
 
             return (
-              <div
-                key={message._id}
-                className="w-full md:w-[360px] mt-5 relative"
-              >
-                <div className="flex items-start space-x-4">
+              <div key={message._id} className="w-full  mt-5 relative ">
+                <div className="chat chat-start">
+                  <div className="chat-image avatar">
+                    <div className="w-10 rounded-full">
+                      <img src={message.userId.picture} />
+                    </div>
+                  </div>
+                  <div className="chat-header">
+                    {message.userId.username}
+                    <time className="text-xs opacity-50 ml-2">
+                      {messageTimeDifference}
+                    </time>
+                  </div>
+                  <div className="chat-bubble chat-bubble-secondary">
+                    {message.message}
+                  </div>
+                  {!message.reply[0] &&
+                    currentUser?.user?._id == state.proposer._id && (
+                      <button
+                        className="chat-footer opacity-50"
+                        onClick={() => handleReplyClick(message._id)}
+                      >
+                        回覆
+                      </button>
+                    )}
+                </div>
+                {/* <div className="flex items-start space-x-4">
                   <img
                     className="w-12 h-12 rounded-full"
                     src={message.userId.picture}
@@ -203,7 +225,7 @@ const Page3 = ({ state, currentUser }) => {
                       {message.message}
                     </p>
                   </div>
-                </div>
+                </div> */}
                 <div className="static">
                   {showReplyInput === message._id && (
                     <div className="mt-2">
@@ -214,9 +236,9 @@ const Page3 = ({ state, currentUser }) => {
                         value={reply}
                       ></textarea>
                       <button
-                        className={`btn btn-accent ${
+                        className={`btn btn-primary ${
                           btnLoading.reply ? "loading" : ""
-                        } self-end px-4 py-2 mt-2 ml-auto text-white bg-blue-600 rounded-md hover:bg-blue-700`}
+                        } self-end px-4 py-2 mt-2 ml-[470px]`}
                         onClick={() => handleReplyPost(message._id)}
                       >
                         {!btnLoading.reply ? "送出回覆" : ""}
@@ -224,35 +246,51 @@ const Page3 = ({ state, currentUser }) => {
                     </div>
                   )}
                   {message.reply[0] && (
-                    <div className="ml-8 relative">
-                      <div className="absolute top-0 w-0.5 h-full bg-gray-300"></div>
-                      <div className="">
-                        <div className="mt-4">
-                          <div className="flex items-start space-x-4 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
-                            <img
-                              className="w-10 h-10 rounded-full"
-                              src={state.organize.organizeImage}
-                              alt=""
-                              width="40"
-                              height="40"
-                            />
-                            <div className="w-full flex flex-col justify-between">
-                              <div className="flex justify-between items-start">
-                                <p className="text-lg font-medium text-gray-800 dark:text-gray-100">
-                                  {state.organizeName}
-                                </p>
-                              </div>
-                              <p className="text-gray-600 dark:text-gray-400">
-                                {message.reply[0].message}
-                              </p>
-                            </div>
-                          </div>
-                          <p className="text-xs text-gray-500 dark:text-gray-300 ml-4">
-                            {replyTimeDifference}
-                          </p>
+                    <div className="chat chat-end">
+                      <div className="chat-image avatar">
+                        <div className="w-10 rounded-full">
+                          <img src={state.organize.organizeImage} />
                         </div>
                       </div>
+                      <div className="chat-header">
+                        {state.organize.organizeName}
+                        <time className="text-xs opacity-50 ml-2">
+                          {messageTimeDifference}
+                        </time>
+                      </div>
+                      <div className="chat-bubble chat-bubble-error">
+                        {message.reply[0].message}
+                      </div>
                     </div>
+                    // <div className="ml-8 relative">
+                    //   <div className="absolute top-0 w-0.5 h-full bg-gray-300"></div>
+                    //   <div className="">
+                    //     <div className="mt-4">
+                    //       <div className="flex items-start space-x-4 bg-white dark:bg-gray-800 shadow-md rounded-lg p-4">
+                    //         <img
+                    //           className="w-10 h-10 rounded-full"
+                    //           src={state.organize.organizeImage}
+                    //           alt=""
+                    //           width="40"
+                    //           height="40"
+                    //         />
+                    //         <div className="w-full flex flex-col justify-between">
+                    //           <div className="flex justify-between items-start">
+                    //             <p className="text-lg font-medium text-gray-800 dark:text-gray-100">
+                    //            {state.organize.organizeImage}
+                    //             </p>
+                    //           </div>
+                    //           <p className="text-gray-600 dark:text-gray-400">
+                    //             {message.reply[0].message}
+                    //           </p>
+                    //         </div>
+                    //       </div>
+                    //       <p className="text-xs text-gray-500 dark:text-gray-300 ml-4">
+                    //         {replyTimeDifference}
+                    //       </p>
+                    //     </div>
+                    //   </div>
+                    // </div>
                   )}
                 </div>
               </div>

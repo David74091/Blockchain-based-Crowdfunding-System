@@ -28,4 +28,16 @@ router.post("/postUpdate", async (req, res) => {
   }
 });
 
+router.put("/putUpdate/:_id", async (req, res) => {
+  console.log("請求已進入到putUpdate的API");
+  const { _id } = req.params;
+  const { _title, _detail } = req.body;
+  try {
+    await Update.findByIdAndUpdate(_id, { title: _title, detail: _detail });
+    res.status(200).send("更新成功");
+  } catch (err) {
+    res.json(err);
+  }
+});
+
 module.exports = router;

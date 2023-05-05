@@ -60,13 +60,13 @@ const DonationHistory = (props) => {
                       <th>{index + 1}</th>
                       <td style={{ cursor: "pointer" }} key={history._id}>
                         <div className="flex items-center gap-1">
-                          <div className="h-10 w-10 rounded-full">
+                          <div className="flex flex-col items-center">
                             <img
-                              className="rounded-full"
+                              className="h-[100px] rounded-2xl"
                               src={history.belong.image}
                             />
+                            {history.belong.title}
                           </div>
-                          {history.belong.title}
                         </div>
                       </td>
                       <td>{history.amount} $TWD</td>

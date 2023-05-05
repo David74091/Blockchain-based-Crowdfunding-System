@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect, lazy, Suspense, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 const Page1 = lazy(() => import("./CampaignDetailPage/Page1"));
 const Page2 = lazy(() => import("./CampaignDetailPage/Page2"));
@@ -13,9 +13,20 @@ import { calculateBarPercentage, daysLeft } from "../../utils";
 
 import { PageLoading, DonationAlert, CustomAlert } from "../../components";
 
-const CampaignDetails = ({ setInCampaignPage }) => {
+const CampaignDetails = ({
+  setInCampaignPage,
+  triggerScroll,
+  setTriggerScroll,
+}) => {
+  const buttonRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  const [hasLoaded, setHasLoaded] = useState(false);
+
   const { state } = useLocation();
+
   const navigate = useNavigate();
+
   // const { donate, getDonations, contract, address } = useStateContext();
   const [pageLoading, setPageLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -111,10 +122,29 @@ const CampaignDetails = ({ setInCampaignPage }) => {
         console.log("campaign獲取捐款名單失敗", err);
       } finally {
         setPageLoading(false);
+        setHasLoaded(true); // Set hasLoaded to true when fetchDonations is done
       }
     };
+
     fetchDonations();
   }, []);
+  console.log("triggerScroll", triggerScroll);
+
+  useEffect(() => {
+    if (
+      hasLoaded &&
+      !pageLoading &&
+      buttonRef.current &&
+      scrollRef.current &&
+      triggerScroll
+    ) {
+      requestAnimationFrame(() => {
+        buttonRef.current.click();
+        scrollRef.current.scrollIntoView({ behavior: "smooth" });
+        setTriggerScroll(false); // Reset the triggerScroll state
+      });
+    }
+  }, [hasLoaded, pageLoading, buttonRef, scrollRef, triggerScroll]);
 
   //確認募款金額是否已經超過目標金額
   useEffect(() => {
@@ -133,6 +163,8 @@ const CampaignDetails = ({ setInCampaignPage }) => {
     console.log(pageNumber);
   };
 
+  console.log("state", state);
+
   return (
     <div className="flex justify-center opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
       {showAlert && <CustomAlert message="捐款成功" type="sucess" />}
@@ -143,7 +175,7 @@ const CampaignDetails = ({ setInCampaignPage }) => {
           amount={alertAmount}
         />
       )}
-      <div className="flex flex-row w-[1024px]">
+      <div className="flex flex-row w-[1080px]">
         <div className="mt-10 w-4/6">
           <div className="flex flex-col">
             <div className="flex content-center items-center">
@@ -155,12 +187,12 @@ const CampaignDetails = ({ setInCampaignPage }) => {
                 <button className="badge badge-accent ml-2">{category}</button>
               ))}
             </div>
-            <h1 className="mt-3">{state.description}</h1>
+            <div className="">{state.description}</div>
           </div>
           <div className="divider"></div>
           <div className="h-[450px] w-full flex flex-col mt-10">
             <div className="flex w-full">
-              <div className="w-full h-full rounded-xl">
+              <div className="w-full h-full rounded-xl" ref={scrollRef}>
                 <img
                   src={state.image}
                   alt="campaign"
@@ -208,29 +240,31 @@ const CampaignDetails = ({ setInCampaignPage }) => {
                 </div>
               </div> */}
             </div>
-            <div
-              onClick={handlesOrganizClick}
-              className="flex flex-row items-center mt-3 mb-2 cursor-pointer"
-            >
-              <div className="m-2 rounded-full h-[40px] w-[40px]">
-                <img
-                  className="rounded-full object-contain h-[40px] w-[40px]"
-                  src={state.organize.organizeImage}
-                />
-              </div>
-              <div className="text-[1.25rem] font-medium">
-                {state.organize.organizeName}
-              </div>
+            {state.organize.organizeImage && (
+              <div
+                onClick={handlesOrganizClick}
+                className="flex flex-row items-center mt-3 mb-2 cursor-pointer"
+              >
+                <div className="m-2 rounded-full h-[40px] w-[40px]">
+                  <img
+                    className="rounded-full object-contain h-[40px] w-[40px]"
+                    src={state.organize.organizeImage}
+                  />
+                </div>
+                <div className="text-[1.25rem] font-medium">
+                  {state.organize.organizeName}
+                </div>
 
-              <div className=" text-mycolor ml-2 text-[1.25rem]">提案</div>
-            </div>
+                <div className=" text-mycolor ml-2 text-[1.25rem]">提案</div>
+              </div>
+            )}
           </div>
           <div className="divider mt-16"></div>
 
           {/* //下半部分 */}
 
           <div className="flex flex-col mt-6">
-            <div className="tabs w-full flex justify-center">
+            <div className="tabs w-full flex justify-center ">
               <a
                 className={`tab tab-lg tab-lifted${
                   pageNumber === 1 ? " tab-active" : ""
@@ -244,6 +278,7 @@ const CampaignDetails = ({ setInCampaignPage }) => {
                   pageNumber === 2 ? " tab-active" : ""
                 }`}
                 onClick={handlePageClick(2)}
+                ref={buttonRef}
               >
                 進度分享
               </a>
@@ -277,7 +312,7 @@ const CampaignDetails = ({ setInCampaignPage }) => {
           </div>
         </div>
         {/* 右半邊 */}
-        <div className="w-2/6 flex flex-col mt-[194px] ml-8 rounded-xl shadow-lg">
+        <div className="w-2/6 flex flex-col mt-[194px] ml-8 rounded-xl shadow-lg max-h-[1000px]">
           <div className="mx-4 mt-[2rem]">
             <div className="flex flex-col ">
               <div className="flex flex-row">

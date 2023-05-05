@@ -33,6 +33,9 @@ function App() {
   const [showNavBar, setShowNavBar] = useState(true);
   const [showFooter, setShowFooter] = useState(true);
 
+  //頁面滾動
+  const [triggerScroll, setTriggerScroll] = useState(false);
+
   // Replace the original handleRouteChange with the new one
   const location = useLocation();
 
@@ -160,6 +163,18 @@ function App() {
 
         <Route
           exact
+          path="UpdatePage/:title"
+          element={
+            <CampaignDetails
+              setInCampaignPage={setInCampaignPage}
+              triggerScroll={triggerScroll}
+              setTriggerScroll={setTriggerScroll}
+            />
+          }
+        />
+
+        <Route
+          exact
           path="admincheckcase/:title"
           element={<AdminCaseDetails />}
         />
@@ -226,6 +241,7 @@ function App() {
             <UpdatePage
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              setTriggerScroll={setTriggerScroll}
             />
           }
         />

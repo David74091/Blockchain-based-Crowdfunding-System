@@ -9,5 +9,9 @@ class UpdateService {
   getUpdate(_id) {
     return axios.get(API_URL + "/getUpdate/" + _id);
   }
+
+  putUpdate(_id, _title, _detail) {
+    return axios.put(API_URL + "/putUpdate/" + _id, { _title, _detail });
+  }
 }
 export default new UpdateService();

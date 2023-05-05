@@ -145,7 +145,10 @@ router.get("/proposer/:_proposer_id", async (req, res) => {
 
   let { _proposer_id } = req.params;
   try {
-    const cases = await Case.find({ proposer: _proposer_id }); //查找資料庫內proposer == _proposer_id的資料
+    const cases = await Case.find({ proposer: _proposer_id }).populate(
+      "organize",
+      ["organizeImage", "organizeName"]
+    ); //查找資料庫內proposer == _proposer_id的資料
 
     const casesWithTotalAmountPromises = cases.map(async (c) => {
       const donationInfo = await c.getDonationInfo();
