@@ -169,9 +169,12 @@ const NavBar = (props) => {
 
   return (
     <div className="flex justify-center">
-      <div class="navbar bg-base-100 h-[100px] max-w-[1500px] rounded-full mt-2">
+      <div class="navbar bg-base-200 h-[100px] max-w-[1500px] rounded-full mt-3">
         <div class="flex-grow">
-          <Link to="/" class="btn btn-ghost normal-case text-xl text-[#291334]">
+          <Link
+            to="/"
+            class="btn btn-ghost normal-case text-xl text-[#291334] ml-2"
+          >
             區塊鏈募款-Demo
           </Link>
         </div>
@@ -243,6 +246,18 @@ const NavBar = (props) => {
                 瀏覽提案
               </Link>
             </li>
+            {currentUser &&
+              currentUser.user.role &&
+              currentUser.user.role === "admin" && (
+                <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
+                  <Link
+                    className="text-[#291334] hover:text-[#291334] focus:text-[#291334]"
+                    to="/AdminAllCase"
+                  >
+                    管理提案
+                  </Link>
+                </li>
+              )}
 
             {/* {currentUser && currentUser.role && ( */}
             {/* // currentUser.user.role != "admin" && */}
@@ -272,6 +287,7 @@ const NavBar = (props) => {
                   </Link>
                 </li>
               )}
+
             {currentUser &&
               currentUser.user.role &&
               currentUser.user.role === "proposer" && (

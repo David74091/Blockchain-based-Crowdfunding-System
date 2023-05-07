@@ -21,7 +21,7 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
   const { contract } = useContract(
-    "0xDB34b9105Ec3EB9fc7A54e2bD11D6a0D4157aE0B"
+    "0xbE772979E57f8e00BE23b50c02fdE429125F039A"
   );
   const { mutateAsync: createCampaign, isLoading } = useContractWrite(
     contract,
@@ -49,19 +49,23 @@ export const StateContextProvider = ({ children }) => {
       ]);
 
       console.log("contract call success", data);
-      return data;
+      return data.receipt.transactionHash;
     } catch (error) {
       console.log("contract call failure", error);
     }
   };
 
   const withdraw = async (pId) => {
-    try {
-      const data = await contract.send("withdraw", [pId]);
-      console.log("Withdraw success", data);
-    } catch (error) {
-      console.log("Withdraw failure", error);
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        const data = await contract.call("withdraw", pId);
+        console.log("Withdraw success", data);
+        resolve(data.receipt.transactionHash);
+      } catch (error) {
+        console.log("Withdraw failure", error);
+        reject(error);
+      }
+    });
   };
 
   const searchCampaigns = async (searchTerm) => {

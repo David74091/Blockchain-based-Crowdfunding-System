@@ -68,27 +68,27 @@ const Home = (props) => {
         alt="Example"
       />
       <img
-        className="absolute top-10 left-1/4 w-[50px] transform -translate-x-1/2 -translate-y-1/2 origin-bottom -rotate-45"
+        className="absolute top-[50vh] left-1/4 w-[50px] transform -translate-x-1/2 -translate-y-1/2 origin-bottom -rotate-45"
         src={blockChain2}
         alt="Example"
       />
       <img
-        className="absolute top-24 right-1/4 w-[50px] transform translate-x-1/2 -translate-y-1/2 origin-center rotate-45"
+        className="absolute top-[40vh] right-[10vw] w-[50px] transform translate-x-1/2 -translate-y-1/2 origin-center rotate-45"
         src={blockChain3}
         alt="Example"
       />
       <img
-        className="absolute top-[40vh] right-20 w-[50px] transform translate-x-1/2 -translate-y-1/2 origin-center rotate-12"
+        className="absolute top-[60vh] right-[300px] w-[50px] transform translate-x-1/2 -translate-y-1/2 origin-center rotate-12"
         src={blockChain4}
         alt="Example"
       />
       <img
-        className="absolute bottom-50 left-40 w-[50px] transform -translate-x-1/2 translate-y-1/2 origin-center"
+        className="absolute bottom-[500px] left-40 w-[50px] transform -translate-x-1/2 translate-y-1/2 origin-center"
         src={blockChain5}
         alt="Example"
       />
       <img
-        className="absolute bottom-[890px] left-1/4 w-[50px] transform -translate-x-1/2 translate-y-1/2 origin-center rotate-45"
+        className="absolute bottom-[1200px] left-1/4 w-[50px] transform -translate-x-1/2 translate-y-1/2 origin-center rotate-45"
         src={blockChain6}
         alt="Example"
       />

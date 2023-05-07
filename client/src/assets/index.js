@@ -12,6 +12,8 @@ import blockChain5 from "./binance-svgrepo-com.svg";
 import blockChain6 from "./litecoin-svgrepo-com.svg";
 import donate1 from "./donate-heart-svgrepo-com.svg";
 import donate2 from "./donate-svgrepo-com.svg";
+import form from "./form-svgrepo-com.svg";
+import withdraw from "./money-withdraw-svgrepo-com.svg";
 export {
   loader,
   searchIcon,
@@ -27,4 +29,6 @@ export {
   blockChain6,
   donate1,
   donate2,
+  form,
+  withdraw,
 };

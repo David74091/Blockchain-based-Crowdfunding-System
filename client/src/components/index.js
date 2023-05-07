@@ -12,3 +12,5 @@ export { default as Footer } from "./Footer";
 export { default as PageLoading } from "./PageLoading";
 export { default as CustomAlert } from "./CustomAlert";
 export { default as DonationAlert } from "./DonationAlert";
+export { default as ChangeAlert } from "./ChangeAlert";
+export { default as CashFlowAlert } from "./CashFlowAlert";

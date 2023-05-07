@@ -92,8 +92,11 @@ const ProfileComponent = (props) => {
     );
   }
   return (
-    <div style={{ padding: "3rem" }}>
-      <div className="flex flex-col form-group border-2 rounded-lg p-4">
+    <div
+      style={{ padding: "3rem" }}
+      className="flex flex-col items-center w-full"
+    >
+      <div className="flex flex-col form-group border-2 rounded-lg p-4 max-w-[900px] w-full">
         <div className="flex">
           <label className="label">
             <span className="flex abel-text">用戶頭像</span>

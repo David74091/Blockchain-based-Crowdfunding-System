@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useStateContext } from "../../context";
 import DonationService from "../../services/donation.service";
-import { PageLoading, Loader } from "../../components";
+import {
+  PageLoading,
+  Loader,
+  CustomAlert,
+  CashFlowAlert,
+} from "../../components";
 import { ethers } from "ethers";
 
 const CashFlowDashBoard = () => {
   const { getCampaigns, donate, fetchNumberOfCampaigns } = useStateContext();
   const [blockChainData, setBlockChainData] = useState();
   const [cashFlowData, setCashFlowData] = useState();
+  const [isDonating, setIsDonating] = useState(false);
 
   const [loader, setLoader] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
@@ -15,6 +21,17 @@ const CashFlowDashBoard = () => {
   //台幣兌換美金即時匯率
   const [exchangeRate, setExchangeRate] = useState(null);
   const [amountUSD, setAmountUSD] = useState(null);
+
+  //alert
+  const [showDonationAlert, setShowDonationAlert] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+  const [donationAlertCallback, setDonationAlertCallback] = useState(null);
+  const [alertAmount, setAlertAmount] = useState(null);
+
+  const [showCusAlert, setShowCusAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState();
+  const [alertType, setAlertType] = useState();
+  const [alertIcon, setAlertIcon] = useState();
 
   const [amount, setAmount] = useState(null); // Replace with your custom TWD amount
 
@@ -57,7 +74,6 @@ const CashFlowDashBoard = () => {
         const data = await DonationService.getDonationsFalse();
         console.log("現金流資料：", data.data);
         setCashFlowData(data.data);
-        setPId(cashFlowData[0].belong.bId);
       } catch (err) {
         console.log("現金流資料獲取失敗", err);
       } finally {
@@ -80,33 +96,58 @@ const CashFlowDashBoard = () => {
   //   fetchData();
   // }, []);
   const handleDonate = async (pId, amount, donation_id) => {
-    setLoader(true);
-    const fetchedAmountUSD = await fetchExchangeRate(amount);
-    console.log("轉成美金數值：", fetchedAmountUSD);
+    if (isDonating) {
+      return; // 如果已经在捐赠过程中，直接返回，不执行后续操作
+    }
+    try {
+      setIsDonating(true);
+      setLoader(true);
+      const fetchedAmountUSD = await fetchExchangeRate(amount);
+      console.log("轉成美金數值：", fetchedAmountUSD);
 
-    const userConfirmed = window.confirm(
-      `將台幣捐款轉換成: ${fetchedAmountUSD} 美金，確認這筆交易嗎？`
-    );
+      const proceedBlockChain = async () => {
+        try {
+          setShowDonationAlert(false);
+          let n = parseInt(pId) - 1;
+          let newPID = n.toString();
+          let hash = await donate(newPID, fetchedAmountUSD.toString());
+          console.log("hash:", hash);
+          await DonationService.pushHash(donation_id, hash);
+          await DonationService.DonationVerified(donation_id);
+          setLoader(false);
+          setAlertMessage("成功驗證");
+          setAlertIcon("sucess");
+          setAlertType("sucess");
+          setShowCusAlert(true);
+          setTimeout(() => {
+            setShowCusAlert(false);
+          }, 1500);
+          window.location.reload();
+        } catch (err) {
+          setLoader(false);
+          setAlertMessage("驗證失敗");
+          setAlertIcon("error");
+          setAlertType("error");
+          setShowCusAlert(true);
 
-    if (userConfirmed) {
-      try {
-        let n = parseInt(pId) - 1;
-        let newPID = n.toString();
-        let hash = await donate(newPID, fetchedAmountUSD.toString());
-        console.log("hash:", hash);
-        await DonationService.pushHash(donation_id, hash);
-        await DonationService.DonationVerified(donation_id);
-        setLoader(false);
-        location.reload();
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      setLoader(false);
-      console.log("用戶取消了交易。");
+          setTimeout(() => {
+            setShowCusAlert(false);
+          }, 1500);
+
+          console.log(err);
+          setIsDonating(false);
+        }
+      };
+      setAlertAmount(fetchedAmountUSD);
+      setShowDonationAlert(true);
+      setShowDonationAlert(true);
+      setDonationAlertCallback(() => proceedBlockChain);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error in handleClick:", error);
+      alert("發生錯誤，請查看控制台以獲取更多信息。");
     }
   };
-
   if (pageLoading) {
     return <PageLoading />;
   }
@@ -114,6 +155,21 @@ const CashFlowDashBoard = () => {
   return (
     <div>
       {loader && <Loader />}
+      {showDonationAlert && (
+        <CashFlowAlert
+          onClose={() => {
+            setShowDonationAlert(false);
+            setLoader(false); // Set the loader to false when the user clicks "Cancel"
+            console.log("Cancel button clicked"); // Add this line to see if the code is executed
+          }}
+          onConfirm={donationAlertCallback}
+          amount={alertAmount}
+        />
+      )}
+
+      {showCusAlert && (
+        <CustomAlert message={alertMessage} type={alertType} icon={alertIcon} />
+      )}
       <div className="flex justify-center h-screen">
         <div className="overflow-x-auto w-9/12 border rounded-xl my-20">
           <table className="table w-full">
@@ -154,6 +210,7 @@ const CashFlowDashBoard = () => {
                       <td>
                         <button
                           className="btn btn-primary"
+                          disabled={isDonating} // 当 isDonating 为 true 时，禁用按钮
                           onClick={() =>
                             handleDonate(flow.belong.bId, flow.amount, flow._id)
                           }

@@ -44,6 +44,14 @@ const caseSchema = new mongoose.Schema({
     ref: "Donation",
     default: [],
   },
+  hash: {
+    type: String,
+    default: null,
+  },
+  withdrawHash: {
+    type: String,
+    default: null,
+  },
   Verified: {
     type: Boolean,
     default: false,

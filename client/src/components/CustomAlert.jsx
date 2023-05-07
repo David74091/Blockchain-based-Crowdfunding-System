@@ -5,7 +5,7 @@ const CustomAlert = ({ message, type, onClose, icon }) => {
   return (
     <div
       className={`fixed z-50 top-0 left-1/2 transform -translate-x-1/2 mt-4 p-4 rounded-md shadow-lg ${
-        type === "error" ? "alert-danger" : "alert-success"
+        type === "error" ? "alert-error" : "alert-success"
       }`}
     >
       <div className="flex items-center">

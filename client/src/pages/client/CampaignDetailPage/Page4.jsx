@@ -12,7 +12,7 @@ const Page4 = ({ state }) => {
       alert("該交易待處理中，請稍候管理員上鏈");
       return;
     }
-    window.open(`https://testnet.bscscan.com/tx/${hash}`);
+    window.open(`https://mumbai.polygonscan.com/tx/${hash}`);
   };
   useEffect(() => {
     const fetchDonations = async () => {

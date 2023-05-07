@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "./IERC20.sol";
 
-contract CrowdFunding {
+contract CrowdFundingSolNew {
     struct Campaign {
         address owner;
         string title;
@@ -18,7 +18,7 @@ contract CrowdFunding {
     mapping(uint256 => Campaign) public campaigns;
     uint256 public numberOfCampaigns = 0;
     address public admin;
-    address public tokenAddress = 0xE67A4EECc331005F97Ff66ebA80df63348D66aA8; // 指定代币合约地址
+    address public tokenAddress = 0x699590709E626a65479d9a3365a6326F4E1E5B32; // 指定代币合约地址
 
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can call this function.");
@@ -69,8 +69,9 @@ contract CrowdFunding {
     function withdraw(uint256 _id) public onlyAdmin {
         Campaign storage campaign = campaigns[_id];
 
-        require(campaign.amountCollected >= campaign.target, "The campaign has not reached its target.");
-        require(block.timestamp > campaign.deadline, "The campaign has not yet ended.");
+        uint256 minimumTarget = campaign.target * 99 / 100; // 计算 99% 的目标金额
+
+        require(block.timestamp > campaign.deadline || campaign.amountCollected >= minimumTarget, "The campaign has not reached its minimum target or deadline has not passed yet.");
 
         uint256 amount = campaign.amountCollected;
         campaign.amountCollected = 0;
@@ -79,6 +80,7 @@ contract CrowdFunding {
         IERC20 token = IERC20(tokenAddress);
         token.transfer(admin, amount);
     }
+
 
     function getCampaigns() public view returns (Campaign[] memory) {
         Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns);

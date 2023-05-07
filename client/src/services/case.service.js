@@ -131,7 +131,23 @@ class CaseService {
     );
   }
 
-  verifiedCase(_id, _bId) {
+  putWithdrawHash(_id, _withdrawHash) {
+    console.log("請求進入caseServices的putWithdraw", _id, _withdrawHash);
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.put(
+      API_URL + "/putWithdrawHash/" + _id,
+      { _withdrawHash },
+      { headers: { Authorization: token } }
+    );
+  }
+
+  verifiedCase(_id, _bId, _hash) {
+    console.log("Hash到了verfiedCase", _id, _bId, _hash);
     let token;
     if (localStorage.getItem("user")) {
       token = JSON.parse(localStorage.getItem("user")).token;
@@ -140,7 +156,24 @@ class CaseService {
     }
     return axios.put(
       API_URL + "/verified/" + _id,
-      { _bId },
+      { _bId, _hash },
+      {
+        headers: { Authorization: token },
+      }
+    );
+  }
+
+  downCase(_id) {
+    console.log("Hash到了downCase", _id);
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+    return axios.put(
+      API_URL + "/downVerified/" + _id,
+      {},
       {
         headers: { Authorization: token },
       }

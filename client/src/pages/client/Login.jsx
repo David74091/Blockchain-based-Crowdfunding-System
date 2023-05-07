@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router";
 import AuthService from "../../services/auth.service";
 import { arrowBack } from "../../assets";
@@ -18,6 +18,16 @@ const Login = (props) => {
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
   };
+  //focus
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
   };
@@ -82,25 +92,29 @@ const Login = (props) => {
                 {message}
               </div>
             )}
-            <div className="form-group">
-              <label htmlFor="username">信箱</label>
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text text-[1rem]">信箱：</span>
+              </label>
               <input
                 onChange={handleChangeEmail}
                 type="text"
-                className="form-control mt-1"
+                ref={inputRef}
+                className="input input-bordered w-full max-w-xs"
                 name="email"
               />
-            </div>
-            <br />
-            <div className="form-group">
-              <label htmlFor="password">密碼</label>
+              <br />
+              <label className="label">
+                <span className="label-text text-[1rem]">密碼：</span>
+              </label>
               <input
                 onChange={handleChangePassword}
                 type="password"
-                className="form-control mt-1"
+                className="input input-bordered w-full max-w-xs"
                 name="password"
               />
             </div>
+
             <br />
             <div className="divider absolute left-0 right-0 mt-20"></div>
 

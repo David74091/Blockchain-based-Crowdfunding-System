@@ -15,5 +15,6 @@ export { default as UpdatePage } from "./client/UpdatePage";
 //admin
 
 export { default as AdminCheckCase } from "./admin/AdminCheckCase";
-export { default as AdminCaseDetails } from "./admin/AdminCaseDetails";
+// export { default as AdminCaseDetails } from "./admin/AdminCaseDetails";
 export { default as CashFlowDashboard } from "./admin/CashFlowDashBoard";
+export { default as AdminAllCase } from "./admin/AdminAlllCase";

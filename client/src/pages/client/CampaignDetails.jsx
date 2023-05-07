@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense, useRef } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 const Page1 = lazy(() => import("./CampaignDetailPage/Page1"));
 const Page2 = lazy(() => import("./CampaignDetailPage/Page2"));
 const Page3 = lazy(() => import("./CampaignDetailPage/Page3"));
@@ -8,7 +8,7 @@ import AuthService from "../../services/auth.service";
 import CaseService from "../../services/case.service";
 import DonationService from "../../services/donation.service";
 
-import { loveIcon } from "../../assets";
+import { loveIcon, arrowBack, withdraw, form } from "../../assets";
 import { calculateBarPercentage, daysLeft } from "../../utils";
 
 import { PageLoading, DonationAlert, CustomAlert } from "../../components";
@@ -17,6 +17,7 @@ const CampaignDetails = ({
   setInCampaignPage,
   triggerScroll,
   setTriggerScroll,
+  admin,
 }) => {
   const buttonRef = useRef(null);
   const scrollRef = useRef(null);
@@ -163,10 +164,17 @@ const CampaignDetails = ({
     console.log(pageNumber);
   };
 
+  const handleWithdrawClick = () => {
+    window.open(`https://mumbai.polygonscan.com/tx/${state.withdrawHash}`);
+  };
+  const handleFormClick = () => {
+    window.open(`https://mumbai.polygonscan.com/tx/${state.hash}`);
+  };
+
   console.log("state", state);
 
   return (
-    <div className="flex justify-center opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
+    <div className="relative flex justify-center opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
       {showAlert && <CustomAlert message="捐款成功" type="sucess" />}
       {showDonationAlert && (
         <DonationAlert
@@ -175,10 +183,16 @@ const CampaignDetails = ({
           amount={alertAmount}
         />
       )}
+
       <div className="flex flex-row w-[1080px]">
-        <div className="mt-10 w-4/6">
+        <div className="mt-5 w-4/6">
           <div className="flex flex-col">
             <div className="flex content-center items-center">
+              {admin && (
+                <Link to="/admincheckcase">
+                  <img className="absolute top-5 left-10" src={arrowBack} />
+                </Link>
+              )}
               <h1 className="text-mycolor text-[2.5rem] font-medium">
                 {state.title}
               </h1>
@@ -259,7 +273,7 @@ const CampaignDetails = ({
               </div>
             )}
           </div>
-          <div className="divider mt-16"></div>
+          <div className="divider mt-20"></div>
 
           {/* //下半部分 */}
 
@@ -273,7 +287,7 @@ const CampaignDetails = ({
               >
                 專案內容
               </a>
-              <a
+              <az
                 className={`tab tab-lg tab-lifted${
                   pageNumber === 2 ? " tab-active" : ""
                 }`}
@@ -281,7 +295,7 @@ const CampaignDetails = ({
                 ref={buttonRef}
               >
                 進度分享
-              </a>
+              </az>
               <a
                 className={`tab tab-lg tab-lifted${
                   pageNumber === 3 ? " tab-active" : ""
@@ -312,7 +326,8 @@ const CampaignDetails = ({
           </div>
         </div>
         {/* 右半邊 */}
-        <div className="w-2/6 flex flex-col mt-[194px] ml-8 rounded-xl shadow-lg max-h-[1000px]">
+
+        <div className="w-2/6 flex flex-col mt-[228px] ml-8 rounded-xl shadow-xl max-h-[1200px]">
           <div className="mx-4 mt-[2rem]">
             <div className="flex flex-col ">
               <div className="flex flex-row">
@@ -437,6 +452,27 @@ const CampaignDetails = ({
                     {donations && donations.donorsByAmount && (
                       <>{donations.donorsByAmount[5000].length} 人捐款</>
                     )}
+                  </div>
+                  <div className="divider"></div>
+                  <div className="flex flex-col gap-3">
+                    <div className="font-bold text-[1.25rem] mb-2">
+                      區塊鏈紀錄專區
+                    </div>
+                    <div>
+                      <button class="btn btn-info" onClick={handleFormClick}>
+                        <img src={form} className="h-[30px] mr-1" />
+                        發起紀錄
+                      </button>
+                    </div>
+                    <div>
+                      <button
+                        class="btn btn-info "
+                        onClick={handleWithdrawClick}
+                      >
+                        <img src={withdraw} className="h-[30px] mb-2 mr-1" />
+                        提領紀錄
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

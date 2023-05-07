@@ -24,6 +24,8 @@ const AdminCaseDetails = (props) => {
   const { donate, getDonations, contract, address, fetchNumberOfCampaigns } =
     useStateContext();
 
+  console.log(state);
+
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [donators, setDonators] = useState([]);
@@ -32,39 +34,39 @@ const AdminCaseDetails = (props) => {
   const { createCampaign } = useStateContext();
 
   //台幣兌換美金即時匯率
-  const [exchangeRate, setExchangeRate] = useState(null);
-  const [amountUSD, setAmountUSD] = useState(null);
-  const [amountTWD, setAmountTWD] = useState(state.target); // Replace with your custom TWD amount
+  // const [exchangeRate, setExchangeRate] = useState(null);
+  // const [amountUSD, setAmountUSD] = useState(null);
+  // const [amountTWD, setAmountTWD] = useState(state.target); // Replace with your custom TWD amount
 
-  const fetchExchangeRate = async () => {
-    try {
-      const requestOptions = {
-        method: "GET",
-        redirect: "follow",
-        headers: {
-          apikey: "F3BOVFd97oEBIyGu3t8xQF1SEa0erhpg", // Replace with your API key
-        },
-      };
+  // const fetchExchangeRate = async () => {
+  //   try {
+  //     const requestOptions = {
+  //       method: "GET",
+  //       redirect: "follow",
+  //       headers: {
+  //         apikey: "F3BOVFd97oEBIyGu3t8xQF1SEa0erhpg", // Replace with your API key
+  //       },
+  //     };
 
-      const response = await fetch(
-        `https://api.apilayer.com/exchangerates_data/convert?to=USD&from=TWD&amount=${amountTWD}`,
-        requestOptions
-      );
-      const result = await response.json();
+  //     const response = await fetch(
+  //       `https://api.apilayer.com/exchangerates_data/convert?to=USD&from=TWD&amount=${amountTWD}`,
+  //       requestOptions
+  //     );
+  //     const result = await response.json();
 
-      if (result.success) {
-        setExchangeRate(result.result);
-        setAmountUSD(result.result);
-        return result.result;
-      } else {
-        console.error("Error fetching exchange rate:", result.error);
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching exchange rate:", error);
-      return null;
-    }
-  };
+  //     if (result.success) {
+  //       setExchangeRate(result.result);
+  //       setAmountUSD(result.result);
+  //       return result.result;
+  //     } else {
+  //       console.error("Error fetching exchange rate:", result.error);
+  //       return null;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching exchange rate:", error);
+  //     return null;
+  //   }
+  // };
 
   const handleClick = async () => {
     try {
@@ -107,112 +109,74 @@ const AdminCaseDetails = (props) => {
   // }, [contract, address]);
 
   return (
-    <div className="container mx-auto">
+    <div className="bg-gray-100 min-h-screen">
       {isLoading && <Loader />}
-      <div className="flex justify-center text-[30px] font-epilogue font-semibold">
-        {state.title}
-      </div>
-      <div className="w-full flex md:flex-row flex-col mt-10 gap-[30px]">
-        <div className="flex-1 flex-col">
-          <img
-            src={state.image}
-            alt="campaign"
-            className="w-full h-[410px] object-cover rounded-xl"
-          />
-          <div className="relative w-full h-[5px] bg-[#3a3a43] mt-2">
-            <div
-              className="absolute h-full bg-[#46A3FF]"
-              style={{
-                width: `${calculateBarPercentage(
-                  state.target,
-                  state.amountCollected
-                )}%`,
-                maxWidth: "100%",
-              }}
-            ></div>
-          </div>
-        </div>
-        <div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
-          <CountBox title="剩餘時間" value={remainingDays} />
-          <CountBox title={`需求金額 `} value={state.target} />
-        </div>
-      </div>
-
-      <div className="mt-[60px] flex lg:flex-row flex-col gap-5">
-        <div className="flex-[2] flex flex-col gap-[40px]">
-          <div>
-            <h4 className="font-epilogue font-semibold text-[18px] uppercase">
-              提案單位
-            </h4>
-
-            <div className="mt-[20px] flex flex-row items-center flex-wrap gap-[14px]">
-              <div>
+      <div className="container mx-auto px-4 py-12">
+        <h2 className="text-3xl font-bold mb-6">{state.title}</h2>
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="md:col-span-2">
+            <img
+              src={state.image}
+              alt="campaign"
+              className="w-full h-[410px] object-cover rounded-xl"
+            />
+            <div className="mt-4">
+              <h4 className="text-xl font-semibold mb-2">提案單位</h4>
+              <div className="flex items-center gap-4">
                 <img
-                  className="w-[52px] h-[52px] flex items-center justify-center rounded-full bg-[#2c2f32] cursor-pointer"
-                  src={state.organizeImage}
+                  className="w-14 h-14 rounded-full object-cover"
+                  src={state.organize.organizeImage}
                   alt="提案單位照片"
                 />
-              </div>
-              <div>
-                <h4 className="font-epilogue font-semibold text-[14px] break-all">
-                  {state.organizeName}
+                <h4 className="font-semibold text-lg">
+                  {state.organize.organizeName}
                 </h4>
               </div>
             </div>
+            <div className="mt-8">
+              <h4 className="text-xl font-semibold mb-2">提案介紹</h4>
+              <p className="text-gray-700 text-justify">{state.description}</p>
+            </div>
+            <div className="mt-8">
+              <h4 className="text-xl font-semibold mb-2">提案分類</h4>
+              <div className="flex gap-4 flex-wrap">
+                {state.category.map((categories) => (
+                  <span className="bg-blue-500 text-white rounded-full py-1 px-4">
+                    {categories}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="mt-8">
+              <h4 className="text-xl font-semibold mb-2">提案單位資料</h4>
+              <ul className="list-disc pl-6">
+                <li>聯絡人姓名：{state.organize.personName}</li>
+                <li>聯絡人身分證字號：{state.organize.idNumber}</li>
+                <li>提案聯絡人電話：{state.organize.phoneNumber}</li>
+                <li>提案聯絡人信箱：{state.organize.email}</li>
+                <li>提案人自我介紹：{state.organize.introduction}</li>
+              </ul>
+            </div>
+            <div
+              className="mt-8"
+              dangerouslySetInnerHTML={{ __html: state.details }}
+            ></div>
           </div>
-
-          <div>
-            <h4 className="font-epilogue font-semibold text-[18px] uppercase">
-              提案介紹
-            </h4>
-
-            <div className="mt-[20px]">
-              <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
-                {state.description}
-              </p>
+          <div className="md:col-span-1">
+            <div className="bg-white rounded-xl p-4 shadow">
+              <h4 className="text-xl font-semibold mb-4">案件概況</h4>
+              <CountBox title="剩餘時間" value={remainingDays} />
+              <CountBox title={`需求金額`} value={state.target} />
+              <div className="w-full mt-4">
+                <button
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-xl"
+                  onClick={handleClick}
+                >
+                  通過審核並進行上 行上鏈
+                </button>
+              </div>
             </div>
           </div>
-
-          <div>
-            <h4 className="font-epilogue font-semibold text-[18px] uppercase">
-              提案分類
-            </h4>
-
-            <div className="mt-[20px] flex gap-2 w-full">
-              {state.category.map((categories) => (
-                <div>{categories}</div>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 className="font-epilogue font-semibold text-[18px] uppercase">
-              提案單位資料
-            </h4>
-
-            <div className="mt-[20px]">
-              <p className="font-epilogue font-normal text-[16px] text-[#808191] leading-[26px] text-justify">
-                1.聯絡人姓名：{state.personName}
-                <br />
-                2.聯絡人身分證字號：{state.idNumber}
-                <br />
-                3.提案聯絡人電話：{state.phoneNumber}
-                <br />
-                3.提案聯絡人信箱：{state.email}
-                <br />
-                4.提案人自我介紹：{state.introduction}
-              </p>
-            </div>
-          </div>
-          <div dangerouslySetInnerHTML={{ __html: state.details }}></div>
-        </div>
-
-        <div className="flex-1">
-          <button className="btn btn-accent h-[60px]" onClick={handleClick}>
-            通過審核 <br />
-            <br />
-            進行上鏈
-          </button>
-          {isLoading && <Loader />}
         </div>
       </div>
     </div>

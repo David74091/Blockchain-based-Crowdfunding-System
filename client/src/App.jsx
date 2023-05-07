@@ -13,11 +13,12 @@ import {
   ClientPostCase,
   AdminCheckCase,
   CashFlowDashboard,
-  AdminCaseDetails,
+  // AdminCaseDetails,
   OrganizeInfo,
   DonationHistory,
   CampaignPage,
   UpdatePage,
+  AdminAllCase,
 } from "./pages/index";
 
 import { NavBar, Case, Footer } from "./components/index";
@@ -26,6 +27,8 @@ import AuthService from "./services/auth.service";
 
 function App() {
   let [caseData, setCaseData] = useState(null);
+
+  const admin = true;
   const [Loading, setLoading] = useState(false);
   const [onHome, setOnHome] = useState(false);
   const [inCampaignPage, setInCampaignPage] = useState(false);
@@ -124,6 +127,17 @@ function App() {
         />
         <Route
           exact
+          path="/AdminAllCase"
+          element={
+            <AdminAllCase
+              currentUser={currentUser}
+              setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
+            />
+          }
+        />
+        <Route
+          exact
           path="/case"
           element={
             <Case
@@ -163,6 +177,12 @@ function App() {
 
         <Route
           exact
+          path="AdminAllCase/:title"
+          element={<CampaignDetails setInCampaignPage={setInCampaignPage} />}
+        />
+
+        <Route
+          exact
           path="UpdatePage/:title"
           element={
             <CampaignDetails
@@ -172,12 +192,12 @@ function App() {
             />
           }
         />
-
+        {/* 
         <Route
           exact
           path="admincheckcase/:title"
           element={<AdminCaseDetails />}
-        />
+        /> */}
 
         <Route
           exact
@@ -191,6 +211,7 @@ function App() {
             <ClientPostCase
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
             />
           }
         />
@@ -201,6 +222,16 @@ function App() {
             <AdminCheckCase
               currentUser={currentUser}
               setCurrentUser={setCurrentUser}
+            />
+          }
+        />
+        <Route
+          exact
+          path="/admincheckcase/:title"
+          element={
+            <CampaignDetails
+              setInCampaignPage={setInCampaignPage}
+              admin={admin}
             />
           }
         />

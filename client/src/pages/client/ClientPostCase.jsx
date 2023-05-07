@@ -7,16 +7,20 @@ import { checkIfImage } from "../../utils";
 import { Editor } from "@tinymce/tinymce-react";
 import { useStateContext } from "../../context";
 
-const ClientPoastCase = (props) => {
-  let { setUserUpdate } = props;
+const ClientPostCase = (props) => {
+  let { setUserUpdate, setInCampaignPage } = props;
   //設定步驟
   const [step, setStep] = useState(1);
   const { fetchNumberOfCampaigns } = useStateContext();
   const [bId, setBId] = useState();
 
+  useEffect(() => {
+    setInCampaignPage(false);
+  }, []);
+
   const renderStep1 = () => (
-    <div>
-      <div className="form-group border-2 rounded-lg p-4">
+    <div className="flex justify-center w-full">
+      <div className="form-group border-2 rounded-lg p-10 w-full mt-10">
         <div className="flex">
           提案單位照片
           <div style={{ color: "red" }}>*</div>
@@ -148,7 +152,7 @@ const ClientPoastCase = (props) => {
             value={form1.introduction}
             type="text"
             required
-            className="input input-bordered w-full"
+            className="input input-bordered w-full p-3"
             id="introduction"
             name="introduction"
             onChange={(e) => handleForm1Change("introduction", e)}
@@ -187,7 +191,7 @@ const ClientPoastCase = (props) => {
             value={form2.title}
             name="title"
             type="text"
-            className="form-control"
+            className="input input-bordered w-full"
             id="title"
             onChange={(e) => handleForm2Change("title", e)}
           />
@@ -203,7 +207,7 @@ const ClientPoastCase = (props) => {
           </label>
           <input
             value={form2.description}
-            className="form-control"
+            className="input input-bordered w-full"
             id="description"
             aria-describedby="emailHelp"
             name="description"
@@ -212,121 +216,134 @@ const ClientPoastCase = (props) => {
         </div>
 
         <br />
+
         <label className="label">
           <span className="flex abel-text">
             提案類別<div style={{ color: "red" }}>*</div>
           </span>
         </label>
-        <div className="w-full">
-          <div className="form-control flex flex-row">
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="教育"
-                checked={category.includes("教育")}
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">教育</span>
-            </label>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="醫療"
-                checked={category.includes("醫療")}
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">醫療</span>
-            </label>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="環境"
-                checked={category.includes("環境")}
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">環境</span>
+        <div className="pl-10 border-2 rounded-full">
+          <div className="w-full">
+            <div className="form-control flex flex-row">
               <label className="label cursor-pointer">
                 <input
                   type="checkbox"
-                  value="兒少"
+                  value="教育"
+                  checked={category.includes("教育")}
                   onChange={handleCategoryChange}
                   className="checkbox"
                 />
-                <span className="label-text">兒少</span>
+                <span className="label-text border-r-2 pr-1 ml-1">教育</span>
               </label>
               <label className="label cursor-pointer">
                 <input
                   type="checkbox"
-                  value="長者"
-                  checked={category.includes("長者")}
+                  value="醫療"
+                  checked={category.includes("醫療")}
                   onChange={handleCategoryChange}
                   className="checkbox"
                 />
-                <span className="label-text">長者</span>
+                <span className="label-text border-r-2 pr-1 ml-1">醫療</span>
               </label>
-            </label>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="人本關懷"
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">人本關懷</span>
-            </label>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="動物保育"
-                checked={category.includes("動物保育")}
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">動物保育</span>
-            </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="環境"
+                  checked={category.includes("環境")}
+                  onChange={handleCategoryChange}
+                  className="checkbox "
+                />
+                <span className="label-text border-r-2 pr-1 ml-1">環境</span>
+                <label className="label cursor-pointer">
+                  <input
+                    type="checkbox"
+                    value="兒少"
+                    onChange={handleCategoryChange}
+                    className="checkbox"
+                  />
+                  <span className="label-text border-r-2 pr-1 ml-1">兒少</span>
+                </label>
+                <label className="label cursor-pointer">
+                  <input
+                    type="checkbox"
+                    value="長者"
+                    checked={category.includes("長者")}
+                    onChange={handleCategoryChange}
+                    className="checkbox"
+                  />
+                  <span className="label-text border-r-2 pr-1 ml-1">長者</span>
+                </label>
+              </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="人本關懷"
+                  onChange={handleCategoryChange}
+                  className="checkbox"
+                />
+                <span className="label-text border-r-2 pr-1 ml-1">
+                  人本關懷
+                </span>
+              </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="動物保育"
+                  checked={category.includes("動物保育")}
+                  onChange={handleCategoryChange}
+                  className="checkbox"
+                />
+                <span className="label-text border-r-2 pr-1 ml-1">
+                  動物保育
+                </span>
+              </label>
 
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="翻轉人生"
-                checked={category.includes("翻轉人生")}
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">翻轉人生</span>
-            </label>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="藝術人文"
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">藝術人文</span>
-            </label>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="地方創生"
-                checked={category.includes("地方創生")}
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">地方創生</span>
-            </label>
-            <label className="label cursor-pointer">
-              <input
-                type="checkbox"
-                value="國際支援"
-                checked={category.includes("國際支援")}
-                onChange={handleCategoryChange}
-                className="checkbox"
-              />
-              <span className="label-text">國際支援</span>
-            </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="翻轉人生"
+                  checked={category.includes("翻轉人生")}
+                  onChange={handleCategoryChange}
+                  className="checkbox"
+                />
+                <span className="label-text border-r-2 pr-1 ml-1">
+                  翻轉人生
+                </span>
+              </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="藝術人文"
+                  onChange={handleCategoryChange}
+                  className="checkbox"
+                />
+                <span className="label-text border-r-2 pr-1 ml-1">
+                  藝術人文
+                </span>
+              </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="地方創生"
+                  checked={category.includes("地方創生")}
+                  onChange={handleCategoryChange}
+                  className="checkbox"
+                />
+                <span className="label-text border-r-2 pr-1 ml-1">
+                  地方創生
+                </span>
+              </label>
+              <label className="label cursor-pointer">
+                <input
+                  type="checkbox"
+                  value="國際支援"
+                  checked={category.includes("國際支援")}
+                  onChange={handleCategoryChange}
+                  className="checkbox"
+                />
+                <span className="label-text ml-1">國際支援</span>
+              </label>
+            </div>
           </div>
         </div>
         <br />
@@ -341,7 +358,7 @@ const ClientPoastCase = (props) => {
             name="target"
             type="number"
             step="100"
-            className="form-control"
+            className="input input-bordered w-full"
             id="target"
             onChange={(e) => handleForm2Change("target", e)}
           />
@@ -359,7 +376,7 @@ const ClientPoastCase = (props) => {
             value={form2.deadline}
             name="deadline"
             type="date"
-            className="form-control"
+            className="input input-bordered w-full"
             id="deadline"
             onChange={(e) => handleForm2Change("deadline", e)}
           />
@@ -377,7 +394,7 @@ const ClientPoastCase = (props) => {
             value={form2.image}
             name="image"
             type="text"
-            className="form-control"
+            className="input input-bordered w-full"
             id="image"
             onChange={(e) => handleForm2Change("image", e)}
           />
@@ -445,62 +462,125 @@ const ClientPoastCase = (props) => {
   };
   const renderStep3 = () => (
     <div className="flex flex-col form-group border-2 rounded-lg p-4">
-      <p className="mt-4 ">
-        當您在區塊鏈上發起專案時，請先閱讀並同意下述「區塊鏈群募平台提案合約」的所有內容。區塊鏈會在您撰寫完提案內容時，要求您務必詳閱合約內容後才可送出，本專案送出後，將由專人與您連絡。若您對本合約的內容有任何疑問，歡迎來信(客服信箱service@gmail.com)與我們聯絡。
-      </p>
+      <div className="container mx-auto p-4">
+        <h1 className="font-[2rem] font-bold mb-4 text-accent">提案契約書</h1>
+        <div className="divider"></div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">一、提案人</h2>
+          <p className="mb-4">(一) 提案人需年滿18歲。</p>
+          <p className="mb-4">(二) 提案人需為具有完全行為能力之自然人。</p>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">二、回饋及執行</h2>
+          <p className="mb-4">(一) 提案人應依照回饋內容及時間執行回饋事項。</p>
+          <p className="mb-4">
+            (二)
+            若提案人無法達成回饋目標，應先行通知贊助人，並與贊助人協商處理。
+          </p>
+          <p className="mb-4">
+            (三) 回饋執行期間，提案人應將資訊公開至區塊鏈募款平台專案頁面。
+          </p>
+          <p className="mb-4">
+            (四) 提案人應在募資成功後的14天內開始回饋事項的執行。
+          </p>
+          <p className="mb-4">
+            (五)
+            提案人應在回饋執行期間，每月至少更新一次【進度分享】，將資訊公開至區塊鏈募款平台專案頁面。
+          </p>
+          <p className="mb-4">
+            (六)
+            若回饋執行進度延誤，或回饋內容有所變更，提案人應於第一時間內更新【進度分享】，將資訊公開至區塊鏈募款平台專案頁面。贊助人若因內容變更，而要求變更贊助或退款，提案人不得拒絕或扣除部分費用。
+          </p>
+          <p className="mb-4">
+            (七)
+            提案人所提所有專案，由提案人自行負責，與本平台無關，若所提專案與其他平台重複，或有其他經本平台評估，需停止募資之專案，本平台可以隨時下架處理。
+          </p>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">三、相關費用支付</h2>
+          <p className="mb-4">
+            (一)
+            刊載於區塊鏈募款平台的公益集資案到期後，只要達到或超過提案人設定的集資金額，區塊鏈募款平台將自動收取募得總金額8%費用為專案上架費，雙方若有其他約定，需在開始集資前另行議定之。
+          </p>
+          <p className="mb-4">
+            (二)
+            如集資案件到期後，未達到提案人設定之集資金額，區塊鏈募款平台將不收取任何上架費，並於收到金流服務公司撥款後之7至10個工作天(不包含例假日及國定假日)，將集資金額退還予該案之贊助人，惟每筆退款產生之金流手續費，由贊助人自行吸收。此筆費用為支付予金流服務公司之用，而非進入區塊鏈募款平台帳戶裡。
+          </p>
+          <p className="mb-4">
+            (三)
+            專案集資成功後，區塊鏈募款平台將於收到匯款資料後的7至10個工作天內(不包含例假及國定假日)，將款項以匯款方式匯予提案人指定之受款帳戶。
+          </p>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">
+            四、內容授權與智慧財產權確保
+          </h2>
+          <p className="mb-4">
+            (一)
+            提案人上載、傳送或提供物件資料或其他相關資料至區塊鏈募款平台時，視為提案人已授權區塊鏈募款平台得以利用、儲存及刊載該等資料，以供特定或不特定之使用者搜尋及瀏覽，並視為提案人已授權區塊鏈募款平台得經由平面或電子形式，重製、散布、公開播送、公開上映、改作、編輯、公開發行、公開發表、或公開傳輸該等資料。
+          </p>
+          <p className="mb-4">
+            (二)
+            提案人上載、傳送或提供物件資料或其他相關資料至區塊鏈募款平台時，應擔保其有上載、傳送或提供該等資料之權利，若該等資料涉有第三人之智慧財產權，提案人保證已取得合法使用之權利，並已取得於區塊鏈募款平台上使用、公開、播放或公開傳輸該等資料之授權，以免造成區塊鏈募款平台因此受有損害。
+          </p>
+          <p className="mb-4">
+            (三)
+            如有第三人侵犯區塊鏈募款平台或其使用者的智慧財產權，提案人應協助區塊鏈募款平台或其使用者進行維權。
+          </p>
+          <p className="mb-4">
+            (四)
+            若提案人上載、傳送或提供物件資料或其他相關資料至區塊鏈募款平台，導致區塊鏈募款平台或其使用者受有損害，提案人應負賠償責任。
+          </p>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">五、個資保護</h2>
+          <p className="mb-4">
+            (一)
+            提案人上載、傳送或提供物件資料或其他相關資料至區塊鏈募款平台時，應遵守相關個資保護法規，不得非法蒐集、處理、使用或揭露他人之個人資料，並遵守區塊鏈募款平台之隱私權政策。
+          </p>
+          <p className="mb-4">
+            (二)
+            若提案人因違反個資保護法規，導致區塊鏈募款平台或其使用者受有損害，提案人應負賠償責任。
+          </p>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">六、違約責任</h2>
+          <p className="mb-4">
+            (一)
+            若提案人違反本契約書之規定，區塊鏈募款平台得隨時終止提案人在區塊鏈募款平台的資格，並要求提案人賠償因此所生之損害。
+          </p>
+          <p className="mb-4">
+            (二)
+            若提案人違反本契約書之規定，導致區塊鏈募款平台或其使用者受有損害，提案人應負賠償責任。
+          </p>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">七、準據法及管轄法院</h2>
+          <p className="mb-4">
+            (一)
+            本契約書之解釋及適用，以及與本契約書有關之爭議，應依照中華民國法律規定。
+          </p>
+          <p className="mb-4">
+            (二)
+            若有關本契約書之爭議，雙方同意以台灣臺北地方法院為第一審管轄法院。
+          </p>
+        </div>
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-2">八、其他</h2>
+          <p className="mb-4">
+            (一)
+            本契約書為區塊鏈募款平台之通則，若與提案人間有其他特別約定，應以該特別約定為準。
+          </p>
+          <p className="mb-4">
+            (二) 本契約書之條款如有任何部分無效，不影響其他部分之效力。
+          </p>
+          <p className="mb-4">
+            (三)
+            區塊鏈募款平台保留隨時修改本契約書之權利，修改後之內容將公告於區塊鏈募款平台網站，不另行通知。提案人應不定期查閱本契約書，以確保其權益。
+          </p>
+        </div>
+      </div>
       <div className="divider"></div>
-
-      <h1 className="mb-4" style={{ fontSize: "2rem", color: "orange" }}>
-        區塊鏈群眾募資平台提案合約
-      </h1>
-      <p>
-        提案人為辦理集資專案，需付費使用區塊鏈集資平台提供之網站空間，向第三人提出贊助邀約。若專案諮詢至已進行撰寫之程度，亦將另酌收費用。其雙方權利與義務等相關事宜如下述，提案人完成提案並勾選「同意提案合約」時，即表示已閱讀、暸解、並同意以下所有約定條款之內容。
-        一、集資專案申請資格
-        (一)提案人必須是具備完全行為能力的自然人，或合法登記的法人或團體。若提案者為未滿十八歲之自然人，應由其法定代理人閱讀、暸解、並同意區塊鏈群募平台提案合約
-        (以下簡稱「本合約」)之所有約定內容，及其修改後之內容，始得開始使用或繼續使用本服務。
-        (二)提案人應依本服務所訂之方式，完成註冊及認證，始能成為會員，並開始提案。註冊程序包括詳實填寫個人資料、提供註冊流程中所要求之相關文件或資料。
-        (三)
-        提案人應擔保其所提供的所有資料，均具正確、即時、合法性，且不得以第三人之名義申請集資專案；如提案人所提供的資料事後有變更，應立即更新並公告。如提案人未即時提供資料、未按指定方式提供資料、所提供之資料不正確或與事實不符，區塊鏈得不經事先通知，隨時拒絕、或暫停對該提案人提供全部或部分之服務。
-        (四)提案人所提之專案，若受助人或贊助人為不特定公眾對象，提案人需在專案中主動揭露公益勸募字號。
-        二、禁止集資事項 (一)禁止以資金、股份或有價證券作為給予贊助人之回饋。
-        (二)禁止具博弈性質之競賽、抽獎，及永久的會員資格。
-        (三)禁止鼓吹色情、暴力、具殺傷力之武器、組裝方式及組成零件、仇恨或歧視特定及不特定族群，及一切違法之內容。
-        (四)禁止對身體產生生理傷害和依賴性之菸草製品、管制藥品及其用具。
-        (五)禁止任何宣稱使用於診斷、治療、減輕、直接預防人類疾病、調節生育，或足以影響人類身體結構及機能之藥物，包含所有藥品之原料、製劑及達成其主要功能之儀器、器械、用具、物質、軟體、體外試劑及其相關物品，包含保健食品。
-        (六)禁止政治獻金。 (七)禁止其他經平台判斷之不當內容。
-        (八)禁止於度度客募資期間，於另一個平台，或其他任何通路、管道等，募資同一標的，若經平台發現，無須事先告知提案人，可直接移除專案。
-        三、集資平台服務 (一)
-        區塊鏈提供網路集資平台服務，供提案人自行刊載內容進行集資。專案集資期間，區塊鏈提供平台供贊助內容刊載、代收贊助款項，並記錄贊助者所選回饋項目與金額。
-        (二)提案人應完整刊載之專案內容，包含：
-        (1)專案說明影片(3分鐘以內較佳，1分50秒更完美) (2)集資金額目標和集資期間
-        (3)專案介紹文案及照片，或相關平面設計│圖像化資訊
-        (4)贊助金額級距設定及回饋項目 (三
-        )dodoker上所刊載之物件、說明內容、影音檔案等所有相關資料，均係由提案人自行提供、上載、及發布，並由本服務系統刊載於網站上，提案者應擔保其內容之真實性、正確性、合法性、即時性等。dodoker就刊載內容之真實性、正確性、合法性、即時性等並無審查之義務，亦不負任何明示或默示之承諾或擔保。提案人所刊載之物件、說明內容、影音檔案等所有相關資料，如有違反法令、違背公序良俗、侵害第三人權益、或有違反本合約之虞之情形，dodoker得不經事先通知，直接加以移除、使之無法被存取或被閱讀、或採取其他限制性措施。
-        (四)透過dodoker所進行之專案集資與回饋項目，應由提案人自行負責回饋之磋商及履行。dodoker認為必要時，得就提案人提供之資料、所刊載之物件、內容介紹、影音檔案等相關資料、以及與集資相關之事項說明等，要求提案人就其所涉及之疑義或爭議，即時提出說明及有關資料。
-        (五)贊助人可於專案集資期間，要求退款或變更贊助項目，惟募資截止前48小時(不含周休二日及國定假日)，贊助人不得要求退款。如贊助人於專案結束後要求退款或變更贊助項目，將交由提案人自行衡量可否，並自行處理退款，概與dodoker無涉；如需將其款項轉贊助於其他專案，必須經由贊助人同意，並將其個資交由另一個專案的提案人處理。
-        (六)若回饋執行進度延誤，或回饋內容有所變更，提案人應於第一時間內更新【進度分享】，將資訊公開至dodoker專案頁面。贊助人若因內容變更，而要求變更贊助或退款，提案人不得拒絕或扣除部分費用。
-        (七)提案人所提所有專案，由提案人自行負責，與本平台無關，若所提專案與其他平台重複，或有其他經本平台評估，需停止募資之專案，本平台可以隨時下架處理。
-        四、相關費用支付
-        (一)刊載於dodoker的公益集資案到期後，只要達到或超過提案人設定的集資金額，dodoker將自動收取募得總金額8%費用為專案上架費，雙方若有其他約定，需在開始集資前另行議定之。
-        (二)如集資案件到期後，未達到提案人設定之集資金額，dodoker
-        將不收取任何上架費，並於收到金流服務公司撥款後之7至10個工作天(不包含例假日及國定假日)，將集資金額退還予該案之贊助人，惟每筆退款產生之金流手續費，由贊助人自行吸收。此筆費用為支付予金流服務公司之用，而非進入dodoker帳戶裡。
-        (三)專案集資成功後，dodoker將於收到匯款資料後的7至10
-        個工作天內(不包含例假及國定假日)，將款項以匯款方式匯予提案人指定之受款帳戶。
-        五、內容授權與智慧財產權確保
-        (一)提案人上載、傳送或提供物件資料或其他相關資料至dodoker時，視為提案人已授權dodoker得以利用、儲存及刊載該等資料，以供特定或不特定之使用者搜尋及瀏覽，並視為提案人已授權dodoker得經由平面或電子形式，重製、散布、公開播送、公開上映、改作、編輯、公開發行、公開發表、或公開傳輸該等資料。
-        (二)提案人上載、傳送或提供物件資料或其他相關資料至dodoker時，應擔保其有上載、傳送或提供該等資料之權利，若該等資料涉有第三人之智慧財產權，提案人保證已取得合法使用之權利，並已取得於台灣地區(含台、澎、金、馬等外島地區)公開發表、公開播送及公開傳輸等權利。若因提案人提供之內容致使有相關之智慧財產權和法律問題時，提案人須自行負擔責任，概與dodoker無涉。
-        六、使用期間專屬授權
-        除dodoker書面同意者外，提案人不得提供第三人或其他群眾募資平台，進行相同或近似內容之展示。
-        七、損害賠償違約金
-        任何dodoker平台使用者如違反本合約中任何一條之條文，以致dodoker受損或提案人取得不當所得，應以dodoker
-        所受損害(含律師費用)或提案人所受利益，兩者取其高，作為給付
-        dodoker之損害賠償金。 八、其他
-        (一)書面：本合約得以電子文件形式代替書面文件形式。
-        (二)送達：本合約得以電子郵件為送達方式。
-        (三)合約解釋、補充協議及疑義解釋：本合約條文如有未盡事宜，經雙方同意得以附件補充之，如有任何疑義應由雙方本善意互助互信之原則協商處理。
-        (四)合意準據法與管轄：本合約以中華民國為準據法，並同意以台灣台北地方法院為第一審管轄法院。
-        (五)本合約以電子文件形式行之，或勾選「同意提案合約」時，即視為已閱讀、暸解、並同意以上約定條款的所有內容。
-      </p>
       <div className="mr-auto mt-4">
         <label className="label cursor-pointer">
           <input
@@ -757,39 +837,43 @@ const ClientPoastCase = (props) => {
   };
 
   return (
-    <div style={{ padding: "3rem" }}>
-      {/* 進圖條 */}
-      <ul className="steps w-full mb-4">
-        <li
-          className="step step-info cursor-pointer"
-          onClick={handleStep1Click}
-        >
-          個人資料填寫
-        </li>
-        <li
-          className={
-            step == 2
-              ? "step step-info cursor-pointer"
-              : step == 3
-              ? "step step-info cursor-pointer"
-              : "step cursor-pointer"
-          }
-          onClick={handleStep2Click}
-        >
-          提案內容
-        </li>
-        <li
-          className={
-            step == 3 ? "step step-info cursor-pointer" : "step cursor-pointer"
-          }
-          onClick={handleStep3Click}
-        >
-          提案合約
-        </li>
-      </ul>
-      {renderCurrentStep()}
+    <div className="flex items-center w-full justify-center">
+      <div className="max-w-[60vw] w-full" style={{ padding: "3rem" }}>
+        {/* 進圖條 */}
+        <ul className="steps w-full mb-4">
+          <li
+            className="step step-accent cursor-pointer"
+            onClick={handleStep1Click}
+          >
+            個人資料填寫
+          </li>
+          <li
+            className={
+              step == 2
+                ? "step step-accent cursor-pointer"
+                : step == 3
+                ? "step step-accent cursor-pointer"
+                : "step cursor-pointer"
+            }
+            onClick={handleStep2Click}
+          >
+            提案內容
+          </li>
+          <li
+            className={
+              step == 3
+                ? "step step-accent cursor-pointer"
+                : "step cursor-pointer"
+            }
+            onClick={handleStep3Click}
+          >
+            提案合約
+          </li>
+        </ul>
+        {renderCurrentStep()}
+      </div>
     </div>
   );
 };
 
-export default ClientPoastCase;
+export default ClientPostCase;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import AuthService from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
 import { arrowBack } from "../../assets";
@@ -10,8 +10,16 @@ const RegisterComponent = () => {
   let [username, setUsername] = useState("");
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
-  let [roles, setRole] = useState("");
+  let [roles, setRole] = useState("proposer");
   let [message, setMessage] = useState("");
+
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   const handleChangeUsername = (e) => {
     setUsername(e.target.value);
@@ -78,75 +86,44 @@ const RegisterComponent = () => {
               <button className="btn btn-ghost" onClick={handleLoginClick}>
                 已註冊？ 立即登入
               </button>
-            </div>
-            <div>
-              {message && <div className="alert alert-danger">{message}</div>}
-              <label htmlFor="username">名稱:</label>
+            </div>{" "}
+            {message && <div className="alert alert-danger">{message}</div>}
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text text-[1rem]">名稱：</span>
+              </label>
               <input
                 onChange={handleChangeUsername}
                 type="text"
-                className="form-control mt-1"
-                name="username"
-                onFocus={true}
+                className="input input-bordered w-full max-w-xs"
+                name="UserName"
+                ref={inputRef}
               />
-            </div>
-            <br />
-            <div className="form-group">
-              <label htmlFor="email">信箱:</label>
+              <br />
+              <label className="label">
+                <span className="label-text text-[1rem]">信箱：</span>
+              </label>
               <input
                 onChange={handleChangeEmail}
-                type="text"
-                className="form-control mt-1"
+                type="email"
+                className="input input-bordered w-full max-w-xs"
                 name="email"
               />
-            </div>
-            <br />
-            <div className="form-group">
-              <label htmlFor="password">密碼:</label>
+              <br />
+              <label className="label">
+                <span className="label-text text-[1rem]">密碼：</span>
+              </label>
               <input
                 onChange={handleChangePassword}
                 type="password"
-                className="form-control mt-1"
+                className="input input-bordered w-full max-w-xs"
                 name="password"
               />
-            </div>
-            <br />
-            <div>
-              <label htmlFor="role">身份:</label>
-              <div className="flex gap-2 justify-center mt-1">
-                <div className="form-control">
-                  <label className="label cursor-pointer">
-                    <span className="label-text">提案人</span>
-                    <input
-                      type="radio"
-                      name="role"
-                      value="proposer"
-                      className="radio checked:bg-error"
-                      onChange={handleChangeRole}
-                      checked={roles === "proposer"}
-                    />
-                  </label>
-                </div>
-                <div className="form-control">
-                  <label className="label cursor-pointer">
-                    <span className="label-text">捐款人</span>
-                    <input
-                      type="radio"
-                      name="role"
-                      value="donor"
-                      className="radio checked:bg-info"
-                      onChange={handleChangeRole}
-                      checked={roles === "donor"}
-                    />
-                  </label>
-                </div>
-              </div>
             </div>
             <br />
             <br />
             <br />
             <div className="divider absolute left-0 right-0 mt-20"></div>
-
             <div className="flex justify-end">
               <button
                 onClick={handleRegister}

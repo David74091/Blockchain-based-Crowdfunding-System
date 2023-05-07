@@ -12,9 +12,9 @@ router.use((req, res, next) => {
 // 将不同的 HTTP 方法（如 GET、PUT、POST 等）分组到一起，以便更容易发现潜在的冲突。
 //驗證提案Verified
 router.put("/verified/:_id", async (req, res) => {
-  console.log("請求已進入驗證提案的api");
   let { _id } = req.params;
-  let { _bId } = req.body;
+  let { _bId, _hash } = req.body;
+  console.log("請求已進入驗證提案的api", _id, _bId, _hash);
   let cases = await Case.findById({ _id });
   if (!cases) {
     res.status(404);
@@ -23,13 +23,56 @@ router.put("/verified/:_id", async (req, res) => {
   if (cases.Verified === true) {
     res.status(404).send("請勿重複驗證");
   } else {
-    Case.findByIdAndUpdate(_id, { Verified: true, bId: _bId }, { new: true })
+    Case.findByIdAndUpdate(
+      _id,
+      { Verified: true, bId: _bId, hash: _hash },
+      { new: true }
+    )
       .then(() => {
         res.status(200).send("成功驗證");
       })
       .catch((err) => {
         res.status(404).send("無法驗證", err);
       });
+  }
+});
+
+router.put("/downVerified/:_id", async (req, res) => {
+  let { _id } = req.params;
+
+  console.log("請求已進入下架提案的api");
+  let cases = await Case.findById({ _id });
+  if (!cases) {
+    res.status(404);
+    return res.json({ success: false, message: "沒有找到案子" });
+  }
+  if (cases.Verified === false) {
+    res.status(404).send("請勿重複下架");
+  } else {
+    Case.findByIdAndUpdate(_id, { Verified: false }, { new: true })
+      .then(() => {
+        res.status(200).send("成功下架");
+      })
+      .catch((err) => {
+        res.status(404).send("無法下架", err);
+      });
+  }
+});
+
+router.put("/putWithdrawHash/:_id", async (req, res) => {
+  let { _id } = req.params;
+  let { _withdrawHash } = req.body;
+  console.log("請求已進入withdrawHash的API", _id, _withdrawHash);
+  try {
+    const updatedCase = await Case.findByIdAndUpdate(
+      { _id },
+      { $set: { withdrawHash: _withdrawHash } }, // 使用 $set 替換 $push
+      { new: true } // 返回更新後的文檔
+    );
+    console.log("更新後的案例：", updatedCase);
+    res.json("成功");
+  } catch (err) {
+    res.json(err);
   }
 });
 
@@ -40,6 +83,10 @@ router.get("/verified", (req, res) => {
   Case.find({ Verified: true })
     .populate("proposer", ["username", "email"])
     .populate("organize")
+    .populate({
+      path: "donations",
+      match: { Verified: true },
+    })
     .then((cases) => {
       res.send(cases);
     })
@@ -53,7 +100,8 @@ router.get("/!verified", (req, res) => {
   console.log("請求進入尋找verified為false的API");
 
   Case.find({ Verified: false })
-    .populate("proposer", ["username", "email"])
+    .populate("proposer")
+    .populate("organize")
     .then((cases) => {
       res.send(cases);
     })
