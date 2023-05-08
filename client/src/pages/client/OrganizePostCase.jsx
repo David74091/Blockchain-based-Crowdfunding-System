@@ -7,7 +7,7 @@ import { checkIfImage } from "../../utils";
 import { Editor } from "@tinymce/tinymce-react";
 import { useStateContext } from "../../context";
 
-const ClientPostCase = (props) => {
+const OrganizePostCase = (props) => {
   let { setUserUpdate, setInCampaignPage, currentUser, setCurrentUser } = props;
   //設定步驟
   const [step, setStep] = useState(1);
@@ -25,160 +25,28 @@ const ClientPostCase = (props) => {
 
   const renderStep1 = () => (
     <div className="flex justify-center w-full">
-      <div className="form-group border-2 rounded-lg p-10 w-full mt-10">
-        <div className="flex">
-          提案單位照片
-          <div style={{ color: "red" }}>*</div>
-          <label class="fileInput">
-            <div class="ml-20">
-              <buttn className="btn btn-accent">
-                {organizeImage && "更換照片"}
-                {!organizeImage && "請選擇圖檔"}
-                <input
-                  hidden
-                  accept="image/*"
-                  id="organizeImage"
-                  name="organizeImage"
-                  required
-                  type="file"
-                  onChange={handleorganizeImageUpload}
-                />
-              </buttn>
-            </div>
-          </label>
-          <div className="ml-auto">
-            {organizeImage && (
-              <button className="btn btn-error" onClick={deletImage}>
-                移除照片
-              </button>
-            )}
+      <div className="flex flex-col border-2 rounded-lg p-10 w-full mt-10">
+        <button className="btn btn-error ml-auto">修改</button>
+        <div className="flex flex-col items-center ">
+          <img
+            src={userData.organize.organizeImage}
+            className="h-[200px] rounded-xl shadow-md"
+          />
+          <div className="font-bold mt-5 text-[1.25rem]">
+            {userData.organize.organizeName}
+          </div>
+
+          <div className="font-medium mt-5 text-[1rem]">
+            {userData.organize.introduction}
           </div>
         </div>
-        {organizeImage && <img src={organizeImage} alt="Preview" />} <br />
-        <div className="w-full max-w-">
-          <label className="label">
-            <span className="flex abel-text">
-              提案單位名稱<div style={{ color: "red" }}>*</div>
-            </span>
-          </label>
-          <input
-            value={form1.organizeName}
-            type="text"
-            className="input input-bordered w-full"
-            required
-            id="organizeName"
-            name="organizeName"
-            onChange={(e) => handleForm1Change("organizeName", e)}
-          />
-        </div>
-        <br />
-        <div className="w-full max-w-">
-          <label className="label">
-            <span className="flex abel-text">
-              聯絡人姓名<div style={{ color: "red" }}>*</div>
-            </span>
-          </label>
-          <input
-            value={form1.personName}
-            type="text"
-            required
-            className="input input-bordered w-full"
-            id="personName"
-            name="personName"
-            onChange={(e) => handleForm1Change("personName", e)}
-          />
-        </div>
-        <br />
-        <div className="w-full max-w-">
-          <label className="label">
-            <span className="flex abel-text">
-              身分證字號/統一編號<div style={{ color: "red" }}>*</div>
-            </span>
-          </label>
-          <input
-            value={form1.idNumber}
-            type="text"
-            required
-            className="input input-bordered w-full"
-            id="idNumber"
-            name="idNumber"
-            onChange={(e) => handleForm1Change("idNumber", e)}
-          />
-        </div>
-        <br />
-        <div className="w-full max-w-">
-          <label className="label">
-            <span className="flex abel-text">
-              聯絡電話<div style={{ color: "red" }}>*</div>
-            </span>
-          </label>
-          <input
-            value={form1.phoneNumber}
-            type="number"
-            required
-            className="input input-bordered w-full"
-            id="phoneNumber"
-            name="phoneNumber"
-            onChange={(e) => handleForm1Change("phoneNumber", e)}
-          />
-        </div>
-        <br />
-        <div className="w-full max-w-">
-          <label className="label">
-            <span className="flex abel-text">
-              E-mail<div style={{ color: "red" }}>*</div>
-            </span>
-          </label>
-          <input
-            value={form1.email}
-            type="email"
-            required
-            className="input input-bordered w-full"
-            id="email"
-            name="email"
-            onChange={(e) => handleForm1Change("email", e)}
-          />
-          <label className="label">
-            <span className="label-text-alt">
-              <div style={{ color: "gray" }}>
-                請確實填寫，Email為平台聯絡您的主要方式
-              </div>
-            </span>
-          </label>
-        </div>
-        <br />
-        <div className="w-full max-w-">
-          <label className="label">
-            <span className="flex abel-text">
-              自我介紹<div style={{ color: "red" }}>*</div>
-            </span>
-          </label>
-          <textarea
-            value={form1.introduction}
-            type="text"
-            required
-            className="input input-bordered w-full p-3"
-            id="introduction"
-            name="introduction"
-            onChange={(e) => handleForm1Change("introduction", e)}
-          />
-          <label className="label">
-            <span className="label-text-alt">
-              <div style={{ color: "gray" }}>簡短介紹以便贊助人了解您</div>
-            </span>
-          </label>
-        </div>
-        <br />
-        {message && (
-          <div className="alert alert-warning" role="alert">
-            {message}
-          </div>
-        )}
-        <div className="flex">
-          <button className="btn btn-accent ml-auto" onClick={handleNext}>
-            下一步
-          </button>
-        </div>
+        <div className="divider"></div>
+        <button
+          className="btn btn-accent ml-auto mr-auto mt-10"
+          onClick={handleStep2Click}
+        >
+          使用此組織進行提案
+        </button>
       </div>
     </div>
   );
@@ -760,18 +628,7 @@ const ClientPostCase = (props) => {
       setBtnLoading(true);
 
       try {
-        const response = await OrganizeService.createOrganize(
-          currentUser.user._id,
-          organizeImage,
-          form1.organizeName,
-          form1.personName,
-          form1.idNumber,
-          form1.phoneNumber,
-          form1.email,
-          form1.introduction
-        );
-        console.log("Organize created:", response);
-        const organizeId = response._id;
+        const organizeId = userData.organize._id;
 
         const caseResponse = await CaseService.postCase(
           form2.title,
@@ -813,18 +670,6 @@ const ClientPostCase = (props) => {
     setStep(1);
   };
   const handleStep2Click = () => {
-    if (
-      form1.organizeName == "" ||
-      organizeImage == null ||
-      form1.personName == "" ||
-      form1.idNumber == "" ||
-      form1.phoneNumber == "" ||
-      form1.email == "" ||
-      form1.introduction == ""
-    ) {
-      alert("請完成步驟1的表單");
-      return;
-    }
     setStep(2);
   };
   const handleStep3Click = () => {
@@ -849,7 +694,7 @@ const ClientPostCase = (props) => {
             className="step step-accent cursor-pointer"
             onClick={handleStep1Click}
           >
-            個人資料填寫
+            提案組織確認
           </li>
           <li
             className={
@@ -880,4 +725,4 @@ const ClientPostCase = (props) => {
   );
 };
 
-export default ClientPostCase;
+export default OrganizePostCase;

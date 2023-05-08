@@ -184,7 +184,8 @@ const AdminCheckCase = (props) => {
               <th></th>
               <th>提案名稱</th>
               <th>目標金額</th>
-              <th>提案資料</th>
+              <th>提案組織</th>
+              <th>組織資料</th>
               <th>提案帳號</th>
               <th>操作</th>
             </tr>
@@ -213,11 +214,16 @@ const AdminCheckCase = (props) => {
                     <td>${new Intl.NumberFormat().format(userCase.target)}</td>
                     <td>
                       <div className="flex flex-col">
-                        <div className="flex">
-                          <div className="text-gray-400">組織： </div>
-                          {userCase.organize.organizeName}
-                        </div>
+                        <img
+                          className="rounded-full h-10 w-10 mb-5"
+                          src={userCase && userCase.organize.organizeImage}
+                        />
 
+                        {userCase.organize && userCase.organize.organizeName}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex flex-col">
                         <div className="flex">
                           <div className="text-gray-400">姓名： </div>
                           {userCase.organize.personName}
@@ -266,8 +272,7 @@ const AdminCheckCase = (props) => {
                           onClick={() => handleBlockChainClick(userCase)}
                         >
                           <div className="flex flex-col gap-1">
-                            <div>審核通過且</div>
-                            <div>區塊鏈驗證</div>
+                            <div>審核通過</div>
                           </div>
                         </button>
                       )}

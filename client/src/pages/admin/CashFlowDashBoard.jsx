@@ -209,7 +209,7 @@ const CashFlowDashBoard = () => {
                       </td>
                       <td>
                         <button
-                          className="btn btn-primary"
+                          className="btn btn-secondary"
                           disabled={isDonating} // 当 isDonating 为 true 时，禁用按钮
                           onClick={() =>
                             handleDonate(flow.belong.bId, flow.amount, flow._id)

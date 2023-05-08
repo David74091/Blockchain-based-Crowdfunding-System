@@ -19,6 +19,8 @@ import {
   CampaignPage,
   UpdatePage,
   AdminAllCase,
+  UserPage,
+  OrganizePostCase,
 } from "./pages/index";
 
 import { NavBar, Case, Footer } from "./components/index";
@@ -183,6 +185,12 @@ function App() {
 
         <Route
           exact
+          path="UserPage"
+          element={<UserPage setInCampaignPage={setInCampaignPage} />}
+        />
+
+        <Route
+          exact
           path="UpdatePage/:title"
           element={
             <CampaignDetails
@@ -210,7 +218,16 @@ function App() {
           element={
             <ClientPostCase
               currentUser={currentUser}
-              setCurrentUser={setCurrentUser}
+              setInCampaignPage={setInCampaignPage}
+            />
+          }
+        />
+        <Route
+          exact
+          path="/OrganizePostCase"
+          element={
+            <OrganizePostCase
+              currentUser={currentUser}
               setInCampaignPage={setInCampaignPage}
             />
           }

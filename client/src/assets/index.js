@@ -14,6 +14,7 @@ import donate1 from "./donate-heart-svgrepo-com.svg";
 import donate2 from "./donate-svgrepo-com.svg";
 import form from "./form-svgrepo-com.svg";
 import withdraw from "./money-withdraw-svgrepo-com.svg";
+import account from "./account_circle_black_24dp.svg";
 export {
   loader,
   searchIcon,
@@ -31,4 +32,5 @@ export {
   donate2,
   form,
   withdraw,
+  account,
 };

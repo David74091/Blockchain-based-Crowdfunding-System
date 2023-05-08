@@ -12,9 +12,11 @@ export { default as ClientPostCase } from "./client/ClientPostCase";
 export { default as DonationHistory } from "./client/DonationHistory";
 export { default as CampaignPage } from "./client/CampaignPage";
 export { default as UpdatePage } from "./client/UpdatePage";
+export { default as OrganizePostCase } from "./client/OrganizePostCase";
 //admin
 
 export { default as AdminCheckCase } from "./admin/AdminCheckCase";
 // export { default as AdminCaseDetails } from "./admin/AdminCaseDetails";
 export { default as CashFlowDashboard } from "./admin/CashFlowDashBoard";
 export { default as AdminAllCase } from "./admin/AdminAlllCase";
+export { default as UserPage } from "./admin/UserPage";

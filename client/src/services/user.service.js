@@ -27,6 +27,10 @@ class UserService {
   getCurrentUser(_id) {
     return axios.get(API_URL + "/getcurrentuser/" + _id);
   }
+
+  getAllUser() {
+    return axios.get(API_URL + "/getAllUser");
+  }
 }
 
 export default new UserService();

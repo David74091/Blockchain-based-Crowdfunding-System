@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
 import AuthService from "../../services/auth.service";
 import UserService from "../../services/user.service";
+import { CustomAlert, PageLoading } from "../../components";
 
 const ProfileComponent = (props) => {
   let { currentUser, setCurrentUser, setInCampaignPage } = props;
+
+  //alert
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState();
+  const [alertType, setAlertType] = useState();
+  const [alertIcon, setAlertIcon] = useState();
+  const [btnLoading, setBtnLoading] = useState(false);
+
   const [Loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
   const [form, setForm] = useState({
@@ -22,14 +31,31 @@ const ProfileComponent = (props) => {
   };
 
   const handleModify = async () => {
+    setBtnLoading(true);
     UserService.updateUser(form, picture)
       .then((data) => {
-        alert("成功更新！");
+        setAlertMessage("修改成功");
+        setAlertIcon("sucess");
+        setAlertType("sucess");
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          window.location.reload();
+        }, [1500]);
         console.log(data);
       })
       .catch((err) => {
         console.log(err);
-        alert("更新失敗，請聯絡管理員");
+        setAlertMessage("修改失敗");
+        setAlertIcon("error");
+        setAlertType("error");
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+        }, [1500]);
+      })
+      .finally(() => {
+        setBtnLoading(false);
       });
   };
 
@@ -84,18 +110,16 @@ const ProfileComponent = (props) => {
   }, [userData]);
 
   if (Loading) {
-    return (
-      <div className="w-full h-[720px] flex flex-col justify-center items-center">
-        <progress className="progress progress-accent w-56 "></progress>
-        <h1 className="mt-3">請稍等...</h1>
-      </div>
-    );
+    return <PageLoading />;
   }
   return (
     <div
       style={{ padding: "3rem" }}
       className="flex flex-col items-center w-full"
     >
+      {showAlert && (
+        <CustomAlert message={alertMessage} type={alertType} icon={alertIcon} />
+      )}
       <div className="flex flex-col form-group border-2 rounded-lg p-4 max-w-[900px] w-full">
         <div className="flex">
           <label className="label">
@@ -253,10 +277,12 @@ const ProfileComponent = (props) => {
         <br />
         <button
           disabled={Loading}
-          className="btn btn-error ml-auto"
+          className={`btn btn-error ml-auto ${
+            btnLoading ? "loading" : ""
+          } w-[100px]`}
           onClick={handleModify}
         >
-          修改
+          {btnLoading ? "" : "修改"}
         </button>
       </div>
     </div>

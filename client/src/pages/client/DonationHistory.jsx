@@ -12,7 +12,7 @@ const DonationHistory = (props) => {
       alert("請等待管理員驗證至區塊鏈");
       return;
     }
-    window.open(`https://testnet.bscscan.com/tx/${hash}`);
+    window.open(`https://mumbai.polygonscan.com/tx/${hash}`);
   };
 
   useEffect(() => {

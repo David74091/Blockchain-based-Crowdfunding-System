@@ -7,6 +7,9 @@ import MessageService from "../services/message.service";
 import { searchIcon } from "../assets";
 
 const NavBar = (props) => {
+  const [isManageDropdownOpen, setIsManageDropdownOpen] = useState(false);
+  const [isReviewDropdownOpen, setIsReviewDropdownOpen] = useState(false);
+
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -125,6 +128,10 @@ const NavBar = (props) => {
   ];
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
+  const handleMangerClick = () => {
+    setIsManageDropdownOpen(true);
+  };
+
   const handleCategoryDropdownClick = (event) => {
     event.stopPropagation();
     setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
@@ -175,7 +182,7 @@ const NavBar = (props) => {
             to="/"
             class="btn btn-ghost normal-case text-xl text-[#291334] ml-2"
           >
-            區塊鏈募款-Demo
+            區塊鏈募款
           </Link>
         </div>
         <div className="flex-grow justify-center">
@@ -246,47 +253,11 @@ const NavBar = (props) => {
                 瀏覽提案
               </Link>
             </li>
-            {currentUser &&
-              currentUser.user.role &&
-              currentUser.user.role === "admin" && (
-                <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
-                  <Link
-                    className="text-[#291334] hover:text-[#291334] focus:text-[#291334]"
-                    to="/AdminAllCase"
-                  >
-                    管理提案
-                  </Link>
-                </li>
-              )}
 
             {/* {currentUser && currentUser.role && ( */}
             {/* // currentUser.user.role != "admin" && */}
 
             {/* )} */}
-            {currentUser &&
-              currentUser.user.role &&
-              currentUser.user.role === "admin" && (
-                <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
-                  <Link
-                    className="text-[#291334] hover:text-[#291334] focus:text-[#291334]"
-                    to="/admincheckcase"
-                  >
-                    審核提案
-                  </Link>
-                </li>
-              )}
-            {currentUser &&
-              currentUser.user.role &&
-              currentUser.user.role === "admin" && (
-                <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
-                  <Link
-                    className="text-[#291334] hover:text-[#291334] focus:text-[#291334]"
-                    to="/CashFlowDashBoard"
-                  >
-                    審核金流
-                  </Link>
-                </li>
-              )}
 
             {currentUser &&
               currentUser.user.role &&
@@ -294,12 +265,72 @@ const NavBar = (props) => {
                 <li className="nav-item font-medium text-[rgba(112,121,139,1)]">
                   <Link
                     className="text-[#291334] hover:text-[#291334] focus:text-[#291334]"
-                    to="/clientpostcase"
+                    to={
+                      currentUser.user.organize
+                        ? "/OrganizePostCase"
+                        : "/clientpostcase"
+                    }
                   >
                     發布提案
                   </Link>
                 </li>
               )}
+
+            {currentUser &&
+              currentUser.user.role &&
+              currentUser.user.role === "admin" && (
+                <li className="dropdown dropdown-end nav-item font-medium text-[rgba(112,121,139,1)]">
+                  <label
+                    tabIndex={0}
+                    className="text-[#291334] hover:text-[#291334] focus:text-[#291334]"
+                  >
+                    管理
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-36"
+                  >
+                    <li>
+                      <Link className="text-[#291334]" to="/AdminAllCase">
+                        管理提案
+                      </Link>
+                    </li>
+                    <li>
+                      <Link to="/UserPage" className="text-[#291334]">
+                        管理用戶
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              )}
+            {currentUser &&
+              currentUser.user.role &&
+              currentUser.user.role === "admin" && (
+                <li className="dropdown dropdown-end nav-item font-medium text-[rgba(112,121,139,1)]">
+                  <label
+                    tabIndex={0}
+                    className="text-[#291334] hover:text-[#291334] focus:text-[#291334]"
+                  >
+                    審核
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-36"
+                  >
+                    <li>
+                      <Link className="text-[#291334]" to="/admincheckcase">
+                        審核提案
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="text-[#291334]" to="/CashFlowDashBoard">
+                        審核金流
+                      </Link>
+                    </li>
+                  </ul>
+                </li>
+              )}
+
             <div class="flex">
               {!currentUser && (
                 <li className="nav-item font-medium text-[#291334]">

@@ -57,11 +57,13 @@ router.put("/update/:_id", async (req, res) => {
       res.status(400).send("更新失敗");
     });
 });
+
 //用作更新用戶資料後，刷新localstorage裡的user資訊
 router.get("/getcurrentuser/:_id", (req, res) => {
   console.log("請求已進入getcurrentuser的API");
   let _id = req.params;
   User.findOne({ _id: _id })
+
     .then((user) => {
       const tokenObject = { _id: user._id, email: user.email };
       const token = jwt.sign(tokenObject, process.env.PASSPORT_SECRET);
@@ -69,6 +71,18 @@ router.get("/getcurrentuser/:_id", (req, res) => {
     })
     .catch((err) => {
       res.status(400).send("getcurrentuser失敗", err);
+    });
+});
+
+router.get("/getAllUser", (req, res) => {
+  console.log("請求已進入取得全部用戶的API");
+  User.find()
+    .populate("organize")
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      res.json(err);
     });
 });
 

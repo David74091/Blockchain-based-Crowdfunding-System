@@ -48,6 +48,7 @@ router.post("/register", async (req, res) => {
 router.get("/userData/:_id", async (req, res) => {
   let { _id } = req.params;
   User.findOne({ _id })
+
     .then((data) => {
       res.status(200).send(data);
     })
@@ -79,7 +80,7 @@ router.post("/login", async (req, res) => {
         }
       });
     }
-  });
+  }).populate("organize");
 });
 
 module.exports = router;
