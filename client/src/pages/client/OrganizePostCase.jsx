@@ -45,7 +45,7 @@ const OrganizePostCase = (props) => {
           className="btn btn-accent ml-auto mr-auto mt-10"
           onClick={handleStep2Click}
         >
-          使用此組織進行提案
+          使用此身份進行提案
         </button>
       </div>
     </div>
@@ -538,7 +538,7 @@ const OrganizePostCase = (props) => {
         return null;
     }
   };
-  //設定步驟1的單位圖片
+  //設定步驟1的身份圖片
   const [organizeImage, setorganizeImage] = useState(null);
 
   let [form1, setForm1] = useState({
@@ -574,7 +574,7 @@ const OrganizePostCase = (props) => {
   const handleTakeToLogin = () => {
     navigate("/login");
   };
-  //step1處理提案單位照片
+  //step1處理提案身份照片
   const handleorganizeImageUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -610,7 +610,7 @@ const OrganizePostCase = (props) => {
 
   // 首先，檢查isChecked變量，如果用戶未勾選同意條款，則直接返回提示。
   // 檢查圖片URL是否有效，如果無效則提示並返回。
-  // 使用try-catch語句依次執行創建組織、創建案例、將案例添加到組織以及將組織添加到用戶的操作。如果有任何錯誤，將顯示一個一般性的錯誤消息並輸出具體的錯誤日誌。
+  // 使用try-catch語句依次執行創建身份、創建案例、將案例添加到身份以及將身份添加到用戶的操作。如果有任何錯誤，將顯示一個一般性的錯誤消息並輸出具體的錯誤日誌。
   const postCase = async (e) => {
     if (!isChecked) {
       alert("請閱讀完合約後勾選同意方框");
@@ -656,9 +656,9 @@ const OrganizePostCase = (props) => {
         console.log("4.新獲取的用戶資訊：", userResponse.data);
         setCurrentUser(userResponse.data);
 
-        alert("提案組織及提案已創建，請等待管理員審核");
+        alert("提案身份及提案已創建，請等待管理員審核");
       } catch (error) {
-        console.log("創建提案組織或提案失敗", error);
+        console.log("創建提案身份或提案失敗", error);
         alert("無法上傳");
       } finally {
         setBtnLoading(false);
@@ -686,7 +686,7 @@ const OrganizePostCase = (props) => {
   };
 
   return (
-    <div className="flex items-center w-full justify-center">
+    <div className="flex items-center w-full justify-center opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
       <div className="max-w-[60vw] w-full" style={{ padding: "3rem" }}>
         {/* 進圖條 */}
         <ul className="steps w-full mb-4">
@@ -694,7 +694,7 @@ const OrganizePostCase = (props) => {
             className="step step-accent cursor-pointer"
             onClick={handleStep1Click}
           >
-            提案組織確認
+            提案身份確認
           </li>
           <li
             className={

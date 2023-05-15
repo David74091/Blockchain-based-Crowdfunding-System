@@ -228,7 +228,7 @@ router.get("/getdonorsbytime/:_id", async (req, res) => {
   }
 });
 
-//上傳提案與提案單位
+//上傳提案與提案身份
 router.post("/", async (req, res) => {
   console.log("請求已進入創建提案的API");
   //validate the inputs before making a new Case

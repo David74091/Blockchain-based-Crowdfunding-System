@@ -20,10 +20,10 @@ router.post("/addorganize/:_id", async (req, res) => {
     const user = await User.findOneAndUpdate({ _id }, { $set: newOrganize });
     if (user) {
       res.status(200).send("已添加organize");
-      console.log("添加組織成功");
+      console.log("添加身份成功");
     } else {
       res.status(404).send("找不到用戶");
-      console.log("添加組織失敗");
+      console.log("添加身份失敗");
     }
   } catch (err) {
     console.error(err);

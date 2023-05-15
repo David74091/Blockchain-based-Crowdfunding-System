@@ -17,16 +17,13 @@ const Page2 = ({ state }) => {
     };
     fetchUpdate();
   }, []);
-
+  console.log(updateData);
   const handleClick = () => {
     navigate("/UpdatePage", { state: state });
     console.log("Navigation called successfully");
   };
   return (
-    <div class="flex flex-col max-w-[1024px]">
-      <button class="btn btn-outline ml-auto mt-2" onClick={handleClick}>
-        更新進度
-      </button>
+    <div class="flex flex-col max-w-[1024px] mt-10">
       {updateData &&
         updateData
           .map((data) => {

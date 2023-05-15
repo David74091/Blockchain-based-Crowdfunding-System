@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "./IERC20.sol";
 
-contract CrowdFundingSolNew {
+contract NkustCrowdFunding {
     struct Campaign {
         address owner;
         string title;

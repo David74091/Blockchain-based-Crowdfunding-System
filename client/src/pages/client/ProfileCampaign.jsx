@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import CaseService from "../../services/case.service";
+import { PageLoading } from "../../components";
 
 const ProfileCampaign = (props) => {
   let { currentUser, setInCampaignPage } = props;
@@ -36,12 +37,7 @@ const ProfileCampaign = (props) => {
   };
 
   if (pageLoading) {
-    return (
-      <div className="w-full h-[720px] flex flex-col justify-center items-center">
-        <progress className="progress progress-primary w-56"></progress>
-        <h1 className="mt-3">請稍等...</h1>
-      </div>
-    );
+    return <PageLoading />;
   }
 
   if (userCases.length === 0) {
@@ -49,7 +45,7 @@ const ProfileCampaign = (props) => {
   }
 
   return (
-    <div className="flex justify-center h-screen">
+    <div className="flex justify-center h-screen opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
       <div className="overflow-x-auto w-9/12 border rounded-xl my-20">
         <table className="table w-full">
           {/* head */}
@@ -98,7 +94,7 @@ const ProfileCampaign = (props) => {
                         </button>
                       )}
                       {!userCase.Verified && (
-                        <button className="btn btn-secondary">修改內容</button>
+                        <button className="btn btn-secondary">申請撤消</button>
                       )}
                     </td>
                   </tr>

@@ -121,12 +121,12 @@ const AdminCaseDetails = (props) => {
               className="w-full h-[410px] object-cover rounded-xl"
             />
             <div className="mt-4">
-              <h4 className="text-xl font-semibold mb-2">提案單位</h4>
+              <h4 className="text-xl font-semibold mb-2">提案身份</h4>
               <div className="flex items-center gap-4">
                 <img
                   className="w-14 h-14 rounded-full object-cover"
                   src={state.organize.organizeImage}
-                  alt="提案單位照片"
+                  alt="提案身份照片"
                 />
                 <h4 className="font-semibold text-lg">
                   {state.organize.organizeName}
@@ -148,7 +148,7 @@ const AdminCaseDetails = (props) => {
               </div>
             </div>
             <div className="mt-8">
-              <h4 className="text-xl font-semibold mb-2">提案單位資料</h4>
+              <h4 className="text-xl font-semibold mb-2">提案身份資料</h4>
               <ul className="list-disc pl-6">
                 <li>聯絡人姓名：{state.organize.personName}</li>
                 <li>聯絡人身分證字號：{state.organize.idNumber}</li>

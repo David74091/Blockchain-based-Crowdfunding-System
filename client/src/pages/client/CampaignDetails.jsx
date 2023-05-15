@@ -165,7 +165,9 @@ const CampaignDetails = ({
   };
 
   const handleWithdrawClick = () => {
-    window.open(`https://mumbai.polygonscan.com/tx/${state.withdrawHash}`);
+    window.open(
+      `https://mumbai.polygonscan.com/tx/0x48af25aa9fcea2bb4dd2dabe22359f0951fc6149b72cdf5678fdca6a80878eb7`
+    );
   };
   const handleFormClick = () => {
     window.open(`https://mumbai.polygonscan.com/tx/${state.hash}`);

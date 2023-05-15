@@ -42,6 +42,7 @@ router.post("/register", async (req, res) => {
     res.status(200).send({ msg: "使用者儲存成功", saveObject: savedUser });
   } catch (err) {
     res.status(400).send("使用者無法儲存");
+    console.log("註冊出錯", err);
   }
 });
 

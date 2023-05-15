@@ -6,9 +6,9 @@ router.use((req, res, next) => {
   next();
 });
 
-//創建提案組織
+//創建提案身份
 router.post("/", async (req, res) => {
-  console.log("請求已進入創建提案組織的API");
+  console.log("請求已進入創建提案身份的API");
   const {
     userId,
     organizeImage,
@@ -35,9 +35,9 @@ router.post("/", async (req, res) => {
     const savedOrganize = await newOrganize.save();
     res
       .status(200)
-      .json({ message: "新提案組織已創建！", _id: savedOrganize._id });
+      .json({ message: "新提案身份已創建！", _id: savedOrganize._id });
   } catch (err) {
-    res.status(500).send("提案組織創建失敗！", err);
+    res.status(500).send("提案身份創建失敗！", err);
   }
 });
 

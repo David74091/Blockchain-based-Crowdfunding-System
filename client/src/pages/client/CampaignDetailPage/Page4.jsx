@@ -43,7 +43,7 @@ const Page4 = ({ state }) => {
       <div className="mt-2 ml-14 text-[0.5em] font-light">
         已驗證捐款可點擊至區塊鏈上查看詳細金流
       </div>
-      <div className="flex flex-row flex-wrap gap-5 justify-center mt-10">
+      <div className="flex flex-row flex-wrap gap-10 justify-center mt-10">
         {donations &&
           Array.isArray(donations.donorsByTime) &&
           donations.donorsByTime.map((donor) => {

@@ -20,7 +20,7 @@ const loginValidation = (data) => {
   return schema.validate(data);
 };
 
-//提案發布認證+提案單位，含表單1與表單2
+//提案發布認證+提案身份，含表單1與表單2
 const caseValidation = (data) => {
   const schema = Joi.object({
     //提案內容認證
@@ -33,7 +33,7 @@ const caseValidation = (data) => {
     details: Joi.string().required(),
     organizeId: Joi.string(),
     proposer: Joi.string(),
-    //提案單位認證
+    //提案身份認證
     // organizeImage: Joi.string().required(),
     // organizeName: Joi.string().required(),
     // personName: Joi.string().required(),

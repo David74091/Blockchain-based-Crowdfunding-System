@@ -115,7 +115,7 @@ const ProfileComponent = (props) => {
   return (
     <div
       style={{ padding: "3rem" }}
-      className="flex flex-col items-center w-full"
+      className="flex flex-col items-center w-full opacity-0 transition-opacity duration-500 animate-fade-in-forwards"
     >
       {showAlert && (
         <CustomAlert message={alertMessage} type={alertType} icon={alertIcon} />
@@ -152,7 +152,7 @@ const ProfileComponent = (props) => {
         </div>
         {picture && (
           <div className="avatar">
-            <div className="w-36 rounded">
+            <div className="w-36 rounded border-2 rounded-md">
               <img src={picture} alt="profile picture" />
             </div>
           </div>

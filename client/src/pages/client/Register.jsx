@@ -6,6 +6,7 @@ import { CustomAlert } from "../../components";
 
 const RegisterComponent = () => {
   const navigate = useNavigate();
+  const [btnLoading, setBtnLoading] = useState(false);
 
   let [username, setUsername] = useState("");
   let [email, setEmail] = useState("");
@@ -37,6 +38,7 @@ const RegisterComponent = () => {
   const [showAlert, setShowAlert] = useState(false);
 
   const handleRegister = () => {
+    setBtnLoading(true);
     AuthService.register(username, email, password, roles)
       .then(() => {
         setShowAlert(true);
@@ -48,6 +50,9 @@ const RegisterComponent = () => {
       .catch((error) => {
         console.log(error);
         setMessage(error);
+      })
+      .finally(() => {
+        setBtnLoading(false);
       });
   };
   const handleLoginClick = () => {
@@ -56,6 +61,12 @@ const RegisterComponent = () => {
 
   const handleArrowBackClick = () => {
     navigate("/");
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleRegister();
+    }
   };
 
   return (
@@ -68,7 +79,10 @@ const RegisterComponent = () => {
         >
           <img src={arrowBack} />
         </div>
-        <div className="mt-64 ml-20 ">
+
+        <div className="mt-40 ml-20 ">
+          <div className="font-bold text-[3rem] mb-2">註冊</div>
+          <div className="divider"></div>
           <div className="font-medium text-3xl">
             讓我們開始您的區塊鏈募款體驗
           </div>
@@ -118,6 +132,7 @@ const RegisterComponent = () => {
                 type="password"
                 className="input input-bordered w-full max-w-xs"
                 name="password"
+                onKeyDown={handleKeyPress}
               />
             </div>
             <br />
@@ -127,9 +142,11 @@ const RegisterComponent = () => {
             <div className="flex justify-end">
               <button
                 onClick={handleRegister}
-                className="w-[6rem] btn btn-primary mt-40"
+                className={`w-[6rem] btn btn-primary mt-40 ${
+                  btnLoading ? "loading" : ""
+                }`}
               >
-                <span>註冊</span>
+                <span>{btnLoading ? "" : "註冊"}</span>
               </button>
             </div>
           </div>

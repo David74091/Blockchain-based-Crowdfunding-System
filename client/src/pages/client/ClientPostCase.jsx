@@ -6,6 +6,7 @@ import UserService from "../../services/user.service";
 import { checkIfImage } from "../../utils";
 import { Editor } from "@tinymce/tinymce-react";
 import { useStateContext } from "../../context";
+import { CustomAlert } from "../../components";
 
 const ClientPostCase = (props) => {
   let { setUserUpdate, setInCampaignPage, currentUser, setCurrentUser } = props;
@@ -14,6 +15,8 @@ const ClientPostCase = (props) => {
   const { fetchNumberOfCampaigns } = useStateContext();
   const [bId, setBId] = useState();
   const [userData, setUserData] = useState(currentUser.user);
+
+  const [showAlert, setShowAlert] = useState(false);
 
   useEffect(() => {
     setInCampaignPage(false);
@@ -27,7 +30,7 @@ const ClientPostCase = (props) => {
     <div className="flex justify-center w-full">
       <div className="form-group border-2 rounded-lg p-10 w-full mt-10">
         <div className="flex">
-          提案單位照片
+          提案身份照片
           <div style={{ color: "red" }}>*</div>
           <label class="fileInput">
             <div class="ml-20">
@@ -58,7 +61,7 @@ const ClientPostCase = (props) => {
         <div className="w-full max-w-">
           <label className="label">
             <span className="flex abel-text">
-              提案單位名稱<div style={{ color: "red" }}>*</div>
+              提案身份名稱<div style={{ color: "red" }}>*</div>
             </span>
           </label>
           <input
@@ -670,7 +673,7 @@ const ClientPostCase = (props) => {
         return null;
     }
   };
-  //設定步驟1的單位圖片
+  //設定步驟1的身份圖片
   const [organizeImage, setorganizeImage] = useState(null);
 
   let [form1, setForm1] = useState({
@@ -706,7 +709,7 @@ const ClientPostCase = (props) => {
   const handleTakeToLogin = () => {
     navigate("/login");
   };
-  //step1處理提案單位照片
+  //step1處理提案身份照片
   const handleorganizeImageUpload = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -742,7 +745,7 @@ const ClientPostCase = (props) => {
 
   // 首先，檢查isChecked變量，如果用戶未勾選同意條款，則直接返回提示。
   // 檢查圖片URL是否有效，如果無效則提示並返回。
-  // 使用try-catch語句依次執行創建組織、創建案例、將案例添加到組織以及將組織添加到用戶的操作。如果有任何錯誤，將顯示一個一般性的錯誤消息並輸出具體的錯誤日誌。
+  // 使用try-catch語句依次執行創建身份、創建案例、將案例添加到身份以及將身份添加到用戶的操作。如果有任何錯誤，將顯示一個一般性的錯誤消息並輸出具體的錯誤日誌。
   const postCase = async (e) => {
     if (!isChecked) {
       alert("請閱讀完合約後勾選同意方框");
@@ -799,9 +802,13 @@ const ClientPostCase = (props) => {
         console.log("4.新獲取的用戶資訊：", userResponse.data);
         setCurrentUser(userResponse.data);
 
-        alert("提案組織及提案已創建，請等待管理員審核");
+        setShowAlert(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          navigate("/profilecases");
+        }, 1500);
       } catch (error) {
-        console.log("創建提案組織或提案失敗", error);
+        console.log("創建提案身份或提案失敗", error);
         alert("無法上傳");
       } finally {
         setBtnLoading(false);
@@ -841,7 +848,14 @@ const ClientPostCase = (props) => {
   };
 
   return (
-    <div className="flex items-center w-full justify-center">
+    <div className="flex items-center w-full justify-center opacity-0 transition-opacity duration-500 animate-fade-in-forwards">
+      {showAlert && (
+        <CustomAlert
+          message="提案上傳成功，靜待管理員審核"
+          type="sucess"
+          icon="sucess"
+        />
+      )}
       <div className="max-w-[60vw] w-full" style={{ padding: "3rem" }}>
         {/* 進圖條 */}
         <ul className="steps w-full mb-4">

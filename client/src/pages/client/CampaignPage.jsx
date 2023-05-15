@@ -32,7 +32,7 @@ const CampaignPage = (props) => {
   }
   return (
     <div>
-      <div className="">
+      <div className="flex flex-col items-center">
         <DisplayCases title="All Cases" Loading={Loading} caseData={caseData} />
       </div>
     </div>

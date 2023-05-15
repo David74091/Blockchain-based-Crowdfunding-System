@@ -4,20 +4,21 @@ import AuthService from "../services/auth.service";
 import { useStateContext } from "../context";
 import CaseService from "../services/case.service";
 import MessageService from "../services/message.service";
-import { searchIcon } from "../assets";
+import { searchIcon, arrowDown, account } from "../assets";
+import { CustomAlert } from "../components";
 
 const NavBar = (props) => {
+  const dropdownRef = useRef(null);
   const [isManageDropdownOpen, setIsManageDropdownOpen] = useState(false);
   const [isReviewDropdownOpen, setIsReviewDropdownOpen] = useState(false);
-
-  const dropdownRef = useRef(null);
-
+  const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsCategoryDropdownOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
@@ -105,10 +106,7 @@ const NavBar = (props) => {
   const handleSelectChange = (value) => {
     console.log("Select option changed to:", value);
     setSelectedValue(value);
-    setIsCategoryDropdownOpen(false);
-
-    // Manually trigger mousedown event
-    document.dispatchEvent(new MouseEvent("mousedown"));
+    setIsCategoryDropdownOpen(false); // Close the dropdown menu
   };
 
   const [searchInput, setSearchInput] = useState("");
@@ -131,25 +129,51 @@ const NavBar = (props) => {
   const handleMangerClick = () => {
     setIsManageDropdownOpen(true);
   };
-
   const handleCategoryDropdownClick = (event) => {
-    event.stopPropagation();
     setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
   };
 
   const handleSearch = async () => {
     setLoading(true);
-    if (selectedValue === "提案類別") {
+
+    if (selectedValue === "提案類別" && searchInput === "") {
       CaseService.getAllTrue()
         .then((data) => {
-          console.log("NavBar Data", data.data);
+          console.log("神喔都沒幹", data.data);
           setCaseData(data.data);
           setLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          setLoading(false);
         });
-    } else {
+    } else if (selectedValue === "提案類別" && searchInput !== "") {
+      // 情況2: 提案類別沒有選擇，但輸入數值有
+      CaseService.getCaseByName(searchInput, "")
+        .then((data) => {
+          console.log("searchInput: ", searchInput);
+          console.log("資料在此: ", data);
+          setCaseData(data.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
+    } else if (selectedValue !== "提案類別" && searchInput === "") {
+      // 情況3: 提案類別有選擇，但輸入數值沒有
+      CaseService.getCaseByName("", selectedValue)
+        .then((data) => {
+          console.log("資料在此: ", data);
+          setCaseData(data.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
+    } else if (selectedValue !== "提案類別" && searchInput !== "") {
+      // 情況4: 提案類別有選擇，輸入數值也有
       CaseService.getCaseByName(searchInput, selectedValue)
         .then((data) => {
           console.log("searchInput: ", searchInput);
@@ -170,13 +194,17 @@ const NavBar = (props) => {
   const handleLogout = () => {
     AuthService.logout();
     setCurrentUser(null);
-    window.alert("登出成功");
-    navigate("/");
+    setShowAlert(true);
+    setTimeout(() => {
+      setShowAlert(false);
+      navigate("/");
+    }, [1500]);
   };
 
   return (
-    <div className="flex justify-center">
-      <div class="navbar bg-base-200 h-[100px] max-w-[1500px] rounded-full mt-3">
+    <div className="flex justify-center bg-base-100 fixed top-0 left-0 right-0 z-10">
+      {showAlert && <CustomAlert message="登出成功" className=""/>}
+      <div class="navbar bg-base-200 h-[100px] max-w-[1800px] rounded-full mt-3 ">
         <div class="flex-grow">
           <Link
             to="/"
@@ -218,6 +246,9 @@ const NavBar = (props) => {
                   onClick={handleCategoryDropdownClick}
                 >
                   {selectedValue}
+                  <div className="">
+                    <img src={arrowDown} />
+                  </div>
                 </button>
 
                 <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
@@ -226,11 +257,13 @@ const NavBar = (props) => {
                       key={option}
                       className="menu-item"
                       onClick={(e) => {
+                        e.stopPropagation(); // 防止事件被其他元素處理
                         handleSelectChange(option);
+                        setIsCategoryDropdownOpen(false); // 關閉下拉選單
                       }}
                     >
                       <a
-                        href="#"
+                        href="javascript:void(0)"
                         className="text-[#291334] hover:text-[#291334] focus:text-[#291334]"
                       >
                         {option}
@@ -352,7 +385,11 @@ const NavBar = (props) => {
                     className="btn btn-ghost btn-circle avatar"
                   >
                     <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white shadow-xl">
-                      <img src={userData.picture} alt="user avatar" />
+                      {userData.picture ? (
+                        <img src={userData.picture} alt="user avatar" />
+                      ) : (
+                        <img src={account} />
+                      )}
                     </div>
                   </label>
                   {isOpen && (

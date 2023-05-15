@@ -184,8 +184,8 @@ const AdminCheckCase = (props) => {
               <th></th>
               <th>提案名稱</th>
               <th>目標金額</th>
-              <th>提案組織</th>
-              <th>組織資料</th>
+              <th>提案身份</th>
+              <th>身份資料</th>
               <th>提案帳號</th>
               <th>操作</th>
             </tr>
@@ -222,7 +222,7 @@ const AdminCheckCase = (props) => {
                         {userCase.organize && userCase.organize.organizeName}
                       </div>
                     </td>
-                    <td>
+                    <td className="max-w-[200px]">
                       <div className="flex flex-col">
                         <div className="flex">
                           <div className="text-gray-400">姓名： </div>
@@ -238,11 +238,12 @@ const AdminCheckCase = (props) => {
                         </div>
                         <div className="flex">
                           <div className="text-gray-400">介紹： </div>
-                          {userCase.organize.introduction}
+                          <div className="whitespace-normal">
+                            {userCase.organize.introduction}
+                          </div>
                         </div>
                       </div>
                     </td>
-
                     <td
                       style={{ cursor: "pointer" }}
                       onClick={() => handleClick(userCase)}
@@ -252,9 +253,9 @@ const AdminCheckCase = (props) => {
                       <div className="flex flex-col items-center">
                         <img
                           className="h-[100px] rounded-2xl"
-                          src={userCase.proposer.picture}
+                          src={userCase.proposer && userCase.proposer.picture}
                         />
-                        {userCase.proposer.username}
+                        {userCase.proposer && userCase.proposer.username}
                       </div>
                     </td>
                     <td>

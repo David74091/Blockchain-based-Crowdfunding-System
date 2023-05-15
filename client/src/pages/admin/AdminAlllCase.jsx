@@ -178,8 +178,11 @@ const AdminAllCase = (props) => {
                         {userCase.title}
                       </div>
                     </td>
-                    <td>{userCase.target}</td>
-                    <td>{totalDonationAmount}</td>
+
+                    <td>${new Intl.NumberFormat().format(userCase.target)}</td>
+                    <td>
+                      ${new Intl.NumberFormat().format(totalDonationAmount)}
+                    </td>
 
                     <td>
                       {Math.round(

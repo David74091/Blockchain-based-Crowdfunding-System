@@ -2,7 +2,7 @@ import axios from "axios";
 const API_URL = "http://localhost:8080/api/cases";
 
 class CaseService {
-  //axios將提案資料與提案單位資料一起傳向後端
+  //axios將提案資料與提案身份資料一起傳向後端
   postCase(
     title,
     description,
