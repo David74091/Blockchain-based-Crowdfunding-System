@@ -7,7 +7,7 @@
 
 ---
 
- ## Demo：
+ ## Demo（第一次點擊瀏覽提案，加載較耗時）：
  https://6464afd9ba2b1c1f5b827999--sensational-rabanadas-0d17de.netlify.app/
  
  ### 管理員帳密：
