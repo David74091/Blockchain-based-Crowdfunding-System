@@ -5,7 +5,7 @@
 ---
 
 ## 技術架構概要
-前端部分採用React和daisyUI，編譯工具使用Vite。後端選用MongoDB作為資料庫。而區塊鏈則搭建於Polygon Mumbai測試鏈上。
+前端部分採用React和daisyUI。後端選用MongoDB作為資料庫。而區塊鏈則搭建於Polygon Mumbai測試鏈上。
 
 ---
 
